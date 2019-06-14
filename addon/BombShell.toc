@@ -1,0 +1,6 @@
+## Interface: 30200
+## Title: BombShell Project  
+## Notes: Project BombShell
+
+BombShell.lua
+BombShell.xml
