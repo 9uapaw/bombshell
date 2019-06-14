@@ -6,7 +6,9 @@ import pyautogui
 from pynput.mouse import Controller, Listener
 
 from core.config import Config
-from game.character import Character
+from game.behavior import CharacterBehavior
+from game.character import Character, Resource
+from game.control import BasicController
 from game.state_handler import StateHandler
 from image.extractor import ImageExtractor
 
@@ -16,7 +18,8 @@ class GameLoop:
     def __init__(self, config: Config=None):
         self.config = config
         self.extractor = ImageExtractor((0, 150, 400, 400))
-        self.state = StateHandler()
+        self.character = Character(resource_type=Resource.mana)
+        self.state = StateHandler(self.character, BasicController, CharacterBehavior({"100": {"lt": {1}}}, BasicController))
 
     def start(self):
         while True:

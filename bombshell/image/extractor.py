@@ -13,8 +13,8 @@ class ImageExtractor:
     def extract_data_from_screen(self, screen: Image) -> ExtractedData:
         raw_data = pytesseract.image_to_string(self._crop_image(screen))
         split_raw = [r for r in raw_data.split('\n')]
-        health = split_raw[0] if 'HEALTH' in split_raw[0] else 0
-        data = ExtractedData(player_health=health, player_position=raw_data)
+        health = 95 if 'HEALTH' in split_raw[0] else 0
+        data = ExtractedData(player_health=health, player_position=raw_data, target_health=40)
 
         print(data)
         return data
