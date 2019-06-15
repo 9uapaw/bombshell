@@ -1,3 +1,6 @@
+import time
+from concurrent.futures import thread
+
 import numpy as np
 
 from PIL import ImageGrab
@@ -17,15 +20,16 @@ class GameLoop:
 
     def __init__(self, config: Config=None):
         self.config = config
-        self.extractor = ImageExtractor((0, 150, 400, 400))
+        self.extractor = ImageExtractor((0, 0, 400, 400))
         self.character = Character(resource_type=Resource.mana)
         self.state = StateHandler(self.character, BasicController, CharacterBehavior({"100": {"lt": {1}}}, BasicController))
 
     def start(self):
+        time.sleep(5)
         while True:
             print(self.state.character)
             screen = ImageGrab.grab(bbox=(0, 40, 800, 640))
-            roi = screen.crop((0, 150, 400, 400))
+            roi = screen.crop((0, 0, 400, 400))
             data = self.extractor.extract_data_from_screen(screen)
             self.state.update(data)
             screen = np.array(roi)

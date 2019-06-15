@@ -1,5 +1,7 @@
 import abc
 
+import pyautogui
+
 
 class CharacterController(metaclass=abc.ABCMeta):
 
@@ -16,8 +18,9 @@ class BasicController(CharacterController):
 
     @classmethod
     def move_forward(cls):
-        pass
+        pyautogui.press('.')
 
     @classmethod
     def cast_spell(cls, key: int):
+        pyautogui.press(str(key))
         print('Casted spell {}'.format(key))

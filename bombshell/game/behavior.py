@@ -10,5 +10,10 @@ class CharacterBehavior:
         self.controller = controller
 
     def interpret(self, character: Character, target: Target):
-        if character.hp < 100:
-            self.controller.cast_spell(self.behavior['100']['lt'])
+        if character.hp > 50:
+            if target.hp > 60:
+                self.controller.cast_spell(1)
+            else:
+                self.controller.cast_spell(4)
+        else:
+            self.controller.cast_spell(2)

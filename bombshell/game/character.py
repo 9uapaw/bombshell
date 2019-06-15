@@ -14,6 +14,7 @@ class Character:
         self.resource = 0
         self.position = (0, 0)
         self.resource_type = resource_type
+        self.is_moving = False
 
     def update_health(self, health: int):
         self.hp = health

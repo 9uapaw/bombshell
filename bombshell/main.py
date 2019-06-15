@@ -1,3 +1,5 @@
+import pyautogui
+
 from core.game_loop import GameLoop
 
 
