@@ -13,6 +13,14 @@ class CharacterController(metaclass=abc.ABCMeta):
     def cast_spell(cls, key: int):
         raise NotImplementedError()
 
+    @classmethod
+    def turn_left(cls, key_presses: int):
+        raise NotImplementedError()
+
+    @classmethod
+    def turn_right(cls, key_presses: int):
+        raise NotImplementedError()
+
 
 class BasicController(CharacterController):
 
@@ -24,3 +32,13 @@ class BasicController(CharacterController):
     def cast_spell(cls, key: int):
         pyautogui.press(str(key))
         print('Casted spell {}'.format(key))
+
+    @classmethod
+    def turn_left(cls, key_presses: int):
+        for i in range(0, key_presses):
+            pyautogui.press('a')
+
+    @classmethod
+    def turn_right(cls, key_presses: int):
+        for i in range(0, key_presses):
+            pyautogui.press('d')

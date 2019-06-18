@@ -6,6 +6,7 @@ import numpy as np
 from cv2 import cv2
 
 from core.config import Config
+from core.waypoint import PositionStorage
 from game.behavior import CharacterBehavior
 from game.character import Character, Resource
 from game.control import BasicController
@@ -19,7 +20,7 @@ class GameLoop:
     def __init__(self, config: Config=None):
         self.config = config
         self.extractor = ImageExtractor((0, 0, 400, 400))
-        self.state = StateHandler(BasicController, CharacterBehavior({"100": {"lt": {1}}}, BasicController))
+        self.state = StateHandler(BasicController, CharacterBehavior({"100": {"lt": {1}}}, BasicController), PositionStorage())
         self.screen = Screen((0, 40, 800, 640))
 
     def start(self):
@@ -37,13 +38,13 @@ class GameLoop:
                 cv2.destroyAllWindows()
                 break
 
-    def record_waypoints(self):
+    def record_waypoints(self, path: str):
         time.sleep(5)
         waypoints = {'type': 'circle', 'waypoints': []}
         for screen in self.screen.capture():
             data = self.extractor.extract_data_from_screen(screen)
             waypoints['waypoints'].append(data.player_position)
 
-        with open('../waypoints/test.json') as wp:
+        with open(path, 'w') as wp:
             json.dump(waypoints, wp)
 

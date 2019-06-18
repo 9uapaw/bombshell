@@ -1,3 +1,4 @@
+import sys
 from typing import Tuple, List, Dict
 
 from PIL.Image import Image
@@ -23,15 +24,17 @@ class ImageExtractor:
         try:
             extracted_values = self._extract_value(split_raw)
             data = ExtractedData(player_health=extracted_values[ADDON_DATA_POSITION[0]][0],
-                             player_position=(
-                             extracted_values[ADDON_DATA_POSITION[2]][0], extracted_values[ADDON_DATA_POSITION[3]][0]),
-                             player_resource=extracted_values[ADDON_DATA_POSITION[1]][0],
-                             combat=bool(extracted_values[ADDON_DATA_POSITION[4]][0]),
-                             target_health=extracted_values[ADDON_DATA_POSITION[5]][0],
-                             target_distance=DistanceRange(int(extracted_values[ADDON_DATA_POSITION[6]][0])))
+                                 player_position=(
+                                     extracted_values[ADDON_DATA_POSITION[2]][0],
+                                     extracted_values[ADDON_DATA_POSITION[3]][0]),
+                                 player_resource=extracted_values[ADDON_DATA_POSITION[1]][0],
+                                 combat=bool(extracted_values[ADDON_DATA_POSITION[4]][0]),
+                                 target_health=extracted_values[ADDON_DATA_POSITION[5]][0],
+                                 target_distance=DistanceRange(int(extracted_values[ADDON_DATA_POSITION[6]][0])))
         except Exception as e:
-            print(e)
+            print(e.__class__.__name__, e, file=sys.stderr)
             return
+
         print(data)
         return data
 

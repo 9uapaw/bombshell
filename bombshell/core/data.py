@@ -1,5 +1,6 @@
 import enum
 from dataclasses import dataclass
+from typing import Tuple
 
 
 class DistanceRange(enum.Enum):
@@ -12,7 +13,7 @@ class DistanceRange(enum.Enum):
 class ExtractedData:
     player_health: float
     player_resource: float
-    player_position: (float, float)
+    player_position: Tuple[float, float]
     target_health: float
     target_distance: DistanceRange
     combat: bool
