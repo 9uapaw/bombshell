@@ -1,7 +1,7 @@
 import enum
 
 from sympy import Point, Line
-from mpmath import degree
+from mpmath import degree, radians
 
 
 class Direction(enum.Enum):
@@ -36,7 +36,7 @@ class Trajectory:
         return self.vector.angle_between(other.vector).evalf()
 
     def calculate_direction(self, other: 'Trajectory'):
-        a, b, c = self.vector.coefficients()
+        a, b, c = self.vector.coefficients
         y = (-a * other.end_point[0] - c) / b
 
         if y >= other.end_point[1]:

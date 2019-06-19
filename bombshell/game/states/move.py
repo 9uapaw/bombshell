@@ -20,7 +20,7 @@ class MoveState(BaseState):
         self._coords = []  # type: List[Position]
 
     def interpret(self, character: Character, target: Target):
-        if character.position != self._coords[-1]:
+        if len(self._coords) == 0 or character.position != self._coords[-1]:
             self._coords.append(character.position)
 
         if len(self._coords) >= 2:
@@ -31,9 +31,9 @@ class MoveState(BaseState):
             direction = char_trajectory.calculate_direction(waypoint_trajectory)
 
             if direction == Direction.right:
-                self.controller.turn_right(math.ceil(angle * self.RAD_PER_TURN))
+                self.controller.turn_right(math.ceil(angle / self.RAD_PER_TURN))
             else:
-                self.controller.turn_right(math.ceil(angle * self.RAD_PER_TURN))
+                self.controller.turn_right(math.ceil(angle / self.RAD_PER_TURN))
 
     def transition(self):
         return None

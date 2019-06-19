@@ -41,9 +41,14 @@ class GameLoop:
     def record_waypoints(self, path: str):
         time.sleep(5)
         waypoints = {'type': 'circle', 'waypoints': []}
+        i = 0
         for screen in self.screen.capture():
             data = self.extractor.extract_data_from_screen(screen)
             waypoints['waypoints'].append(data.player_position)
+            time.sleep(2)
+            i += 1
+            if i == 10:
+                break
 
         with open(path, 'w') as wp:
             json.dump(waypoints, wp)

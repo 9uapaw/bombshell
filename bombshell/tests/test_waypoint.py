@@ -1,16 +1,21 @@
 import json
 import unittest
+from math import pi, isclose
 from unittest import mock
 
 from core.data import ExtractedData, DistanceRange
 from core.game_loop import GameLoop
-from core.position import Position, Trajectory
+from core.position import Position, Trajectory, Direction
+from core.waypoint import PositionStorage
+from game.states.move import MoveState
 
 
 class FakeScreen:
 
     def capture(self, *args):
         return range(0, 10)
+
+
 
 
 class TestWaypoint(unittest.TestCase):
@@ -34,17 +39,16 @@ class TestWaypoint(unittest.TestCase):
             self.assertEqual(10, len(json.load(test)['waypoints']))
 
     def test_calculate_angle(self):
-        c1 = Position(1, 2)
-        c2 = Position(2, 3)
-        c3 = Position(3, 6)
+        p1 = Position(0, 0)
+        p2 = Position(1, 1)
+        p3 = Position(1, 2)
+        p4 = Position(2, 1)
 
-        c5 = Position(0, 0)
-        c6 = Position(2, -6)
+        v1 = Trajectory(p1, p2)
+        v2 = Trajectory(p2, p3)
+        v3 = Trajectory(p2, p4)
 
-        v1 = Trajectory(c1, c2)
-        v2 = Trajectory(c1, c3)
-        v3 = Trajectory(c5, c6)
-
-        print(v1.angle, v2.angle, v3.angle, v3.end_point)
-
-        print(v1.calculate_angle(v2))
+        self.assertTrue(isclose(pi/4, v1.calculate_angle(v2)))
+        self.assertEqual(Direction.left, v1.calculate_direction(v2))
+        self.assertTrue(isclose(pi/4, v1.calculate_angle(v3)))
+        self.assertEqual(Direction.right, v1.calculate_direction(v3))
