@@ -1,4 +1,7 @@
 from PIL import ImageGrab, Image
+import numpy
+
+import mss
 
 
 class Screen:
@@ -7,7 +10,8 @@ class Screen:
             self.screen_size = (0, 40, 800, 640)
 
         def capture(self):
-            while True:
-                screen = ImageGrab.grab(bbox=self.screen_size)
-                yield screen
+            with mss.mss() as image:
+                while True:
+                    screen = image.grab(self.screen_size)
+                    yield Image.fromarray(numpy.array(screen))
 

@@ -17,6 +17,9 @@ class Position:
     def __eq__(self, other: 'Position'):
         return other.point.x == self.point.x and other.point.y == self.point.y
 
+    def __repr__(self):
+        return self.point.__repr__()
+
 
 class Trajectory:
 

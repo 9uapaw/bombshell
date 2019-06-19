@@ -1,3 +1,4 @@
+import datetime
 import json
 import time
 
@@ -25,10 +26,14 @@ class GameLoop:
 
     def start(self):
         time.sleep(5)
+        time_before = datetime.datetime.now()
         for screen in self.screen.capture():
+            delta = datetime.datetime.now() - time_before
             print(self.state.character)
             roi = screen.crop((0, 0, 400, 400))
             data = self.extractor.extract_data_from_screen(screen)
+            print(delta.total_seconds() * 1000)
+            time_before = datetime.datetime.now()
             if not data:
                 continue
             self.state.update(data)
