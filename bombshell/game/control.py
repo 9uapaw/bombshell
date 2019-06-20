@@ -10,6 +10,10 @@ class CharacterController(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
     @classmethod
+    def stop(cls):
+        raise NotImplementedError()
+
+    @classmethod
     def cast_spell(cls, key: int):
         raise NotImplementedError()
 
@@ -26,6 +30,10 @@ class BasicController(CharacterController):
 
     @classmethod
     def move_forward(cls):
+        pyautogui.press('.')
+
+    @classmethod
+    def stop(cls):
         pyautogui.press('.')
 
     @classmethod

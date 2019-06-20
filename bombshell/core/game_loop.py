@@ -1,5 +1,6 @@
 import datetime
 import json
+import sys
 import time
 
 import numpy as np
@@ -8,6 +9,7 @@ from cv2 import cv2
 
 from core.config import Config
 from core.waypoint import PositionStorage
+from exception.base import BombShellException
 from game.behavior import CharacterBehavior
 from game.character import Character, Resource
 from game.control import BasicController
@@ -27,21 +29,24 @@ class GameLoop:
     def start(self):
         time.sleep(5)
         time_before = datetime.datetime.now()
-        for screen in self.screen.capture():
-            delta = datetime.datetime.now() - time_before
-            print(self.state.character)
-            roi = screen.crop((0, 0, 400, 400))
-            data = self.extractor.extract_data_from_screen(screen)
-            print(delta.total_seconds() * 1000)
-            time_before = datetime.datetime.now()
-            if not data:
-                continue
-            self.state.update(data)
-            screen = np.array(roi)
-            cv2.imshow('window', screen)
-            if cv2.waitKey(25) & 0xFF == ord('q'):
-                cv2.destroyAllWindows()
-                break
+        try:
+            for screen in self.screen.capture():
+                delta = datetime.datetime.now() - time_before
+                print(self.state.character)
+                roi = screen.crop((0, 0, 400, 400))
+                data = self.extractor.extract_data_from_screen(screen)
+                print(delta.total_seconds() * 1000)
+                time_before = datetime.datetime.now()
+                if not data:
+                    continue
+                self.state.update(data)
+                screen = np.array(roi)
+                cv2.imshow('window', screen)
+                if cv2.waitKey(25) & 0xFF == ord('q'):
+                    cv2.destroyAllWindows()
+                    break
+        except BombShellException as e:
+            print(e, file=sys.stderr)
 
     def record_waypoints(self, path: str):
         time.sleep(5)

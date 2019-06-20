@@ -15,6 +15,6 @@ class BaseState:
     def interpret(self, character: Character, target: Target):
         raise NotImplementedError()
 
-    def transition(self) -> 'BaseState' or None:
+    def transition(self, character: Character, target: Target) -> 'BaseState' or None:
         raise NotImplementedError()
 

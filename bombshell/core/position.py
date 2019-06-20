@@ -1,6 +1,6 @@
 import enum
 
-from sympy import Point, Line
+from sympy import Point, Line, Ellipse
 from mpmath import degree, radians
 
 
@@ -13,6 +13,13 @@ class Position:
 
     def __init__(self, x: float, y: float):
         self.point = Point(x, y)
+
+    def is_close_to(self, other: 'Position', threshold: float):
+        hradius = self.point.x * threshold
+        vradius = self.point.y * threshold
+        area = Ellipse(self.point, hradius, vradius)
+
+        return area.encloses_point(other.point)
 
     def __eq__(self, other: 'Position'):
         return other.point.x == self.point.x and other.point.y == self.point.y
