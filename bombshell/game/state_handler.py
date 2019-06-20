@@ -4,7 +4,6 @@ from game.behavior import CharacterBehavior
 from game.character import Character, Resource
 from game.control import CharacterController
 from game.states.base import BaseState
-from game.states.move import MoveState
 from game.states.start import StartState
 
 
