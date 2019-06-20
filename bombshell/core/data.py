@@ -17,3 +17,4 @@ class ExtractedData:
     target_health: float
     target_distance: DistanceRange
     combat: bool
+    facing: float

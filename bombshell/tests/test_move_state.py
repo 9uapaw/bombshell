@@ -2,8 +2,8 @@ import math
 import unittest
 from math import pi
 
-from core.position import Position
-from core.waypoint import PositionStorage
+from core.position.position import Position
+from core.position.waypoint import PositionStorage
 from game.states.move import MoveState
 
 
@@ -18,12 +18,19 @@ class FakeController:
     def turn_left(self, val):
         self.val = val
 
+    def move_forward(self):
+        pass
+
+    def stop(self):
+        pass
+
 
 class FakeCharacter:
 
     def __init__(self):
         self.position = Position(0, 0)
         self.current_waypoint = 0
+        self.is_moving = False
 
 
 class TestMoveState(unittest.TestCase):

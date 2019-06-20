@@ -1,4 +1,5 @@
 import enum
+import math
 
 from sympy import Point, Line, Ellipse
 from mpmath import degree, radians
@@ -15,11 +16,14 @@ class Position:
         self.point = Point(x, y)
 
     def is_close_to(self, other: 'Position', threshold: float):
-        hradius = self.point.x * threshold
-        vradius = self.point.y * threshold
+        hradius = self.point.x * threshold if self.point.x else threshold
+        vradius = self.point.y * threshold if self.point.y else threshold
         area = Ellipse(self.point, hradius, vradius)
 
         return area.encloses_point(other.point)
+
+    def calculate_distance_from(self, other: 'Position'):
+        return math.sqrt((self.point.x - other.point.x)**2 + (self.point.y - other.point.y)**2)
 
     def __eq__(self, other: 'Position'):
         return other.point.x == self.point.x and other.point.y == self.point.y
@@ -53,5 +57,8 @@ class Trajectory:
             return Direction.right
         else:
             return Direction.left
+
+    def __repr__(self):
+        return self.vector.__repr__()
 
 

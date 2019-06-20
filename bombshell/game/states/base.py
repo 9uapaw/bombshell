@@ -1,4 +1,4 @@
-from core.waypoint import PositionStorage
+from core.position.waypoint import PositionStorage
 from game.behavior import CharacterBehavior
 from game.character import Character
 from game.control import CharacterController

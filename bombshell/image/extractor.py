@@ -4,8 +4,7 @@ from typing import Tuple, List, Dict
 from PIL.Image import Image
 import pytesseract
 from core.data import ExtractedData, DistanceRange
-
-ADDON_DATA_POSITION = ["HEALTH", "MANA", "X", "Y", "COMBAT", "TARGET HEALTH", "TARGET DISTANCE"]
+from etc.const import ADDON_DATA_POSITION
 
 
 class ImageExtractor:
@@ -30,7 +29,8 @@ class ImageExtractor:
                                  player_resource=extracted_values[ADDON_DATA_POSITION[1]][0],
                                  combat=bool(extracted_values[ADDON_DATA_POSITION[4]][0]),
                                  target_health=extracted_values[ADDON_DATA_POSITION[5]][0],
-                                 target_distance=DistanceRange(int(extracted_values[ADDON_DATA_POSITION[6]][0])))
+                                 target_distance=DistanceRange(int(extracted_values[ADDON_DATA_POSITION[6]][0])),
+                                 facing=extracted_values[ADDON_DATA_POSITION[7]][0])
         except Exception as e:
             print(e.__class__.__name__, e, file=sys.stderr)
             return
