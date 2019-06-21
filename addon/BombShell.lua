@@ -45,6 +45,12 @@ frame.facing:SetJustifyH("LEFT")
 frame.facing:SetTextColor(0, 0, 0, 1)
 frame.facing:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 22)
 
+frame.distance = frame:CreateFontString("Facing", "BACKGROUND", "GameFontNormal")
+frame.distance:SetPoint("CENTER", 0, -210)
+frame.distance:SetJustifyH("LEFT")
+frame.distance:SetTextColor(0, 0, 0, 1)
+frame.distance:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 22)
+
 frame:SetPoint("LEFT", 0, 200)
 
 frame:SetBackdrop(
@@ -95,17 +101,32 @@ frame:SetScript(
             elseif (CheckInteractDistance("target", 4)) then
                 distance = 2
             end
-            frame.facing:SetText("TARGET DISTANCE: " .. distance)
+            frame.distance:SetText("TARGET DISTANCE: " .. distance)
         end
     end
 )
 
+function GetPlayerFacing()
+    local p = Minimap
+    local m = ({p:GetChildren()})[9]
+    return m:GetFacing()
+end
+
+function GetTruePosition()
+    local posX, posY = GetPlayerMapPosition("player")
+    local w = WorldMapButton:GetWidth()
+    local h = WorldMapButton:GetHeight()
+    return posX * w, posY * h
+end
+
 frame:SetScript(
     "OnUpdate",
     function(self, event)
-        local posX, posY = GetPlayerMapPosition("player")
+        local posX, posY = GetTruePosition()
         frame.posx:SetText("X: " .. string.sub(posX, 0, 8))
         frame.posy:SetText("Y: " .. string.sub(posY, 0, 8))
+
+        frame.facing:SetText("FACING: " .. string.sub(GetPlayerFacing(), 0, 8))
     end
 )
 function ShowFrame()
