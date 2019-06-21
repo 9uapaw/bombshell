@@ -13,13 +13,13 @@ class StateHandler:
         self.character = Character(resource_type=Resource.mana)
         self.controller = controller
         self.behavior = behavior
-        self.state = StartState(self.controller, self.behavior)  # type: BaseState
+        self.state = StartState(self.controller, self.behavior, waypoints)  # type: BaseState
         self.target = None
 
     def update(self, data: ExtractedData):
         self.character.update(data)
         self.state.interpret(self.character, self.target)
 
-        transition = self.state.transition()
+        transition = self.state.transition(self.character, self.target)
         if transition:
             self.state = transition

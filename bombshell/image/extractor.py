@@ -29,8 +29,8 @@ class ImageExtractor:
                                  player_resource=extracted_values[ADDON_DATA_POSITION[1]][0],
                                  combat=bool(extracted_values[ADDON_DATA_POSITION[4]][0]),
                                  target_health=extracted_values[ADDON_DATA_POSITION[5]][0],
-                                 target_distance=DistanceRange(int(extracted_values[ADDON_DATA_POSITION[6]][0])),
-                                 facing=extracted_values[ADDON_DATA_POSITION[7]][0])
+                                 target_distance=DistanceRange(int(extracted_values[ADDON_DATA_POSITION[7]][0])),
+                                 facing=extracted_values[ADDON_DATA_POSITION[6]][0])
         except Exception as e:
             print(e.__class__.__name__, e, file=sys.stderr)
             return
