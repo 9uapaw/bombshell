@@ -1,10 +1,9 @@
-import math
 from typing import List
 
-from core.position.position import Position, Trajectory, Direction
-from core.position.transform import calculate_turn
+from core.position.position import Position, Direction
+from core.position.transform import calculate_turn, transform_turn
 from core.position.waypoint import PositionStorage
-from etc.const import WAYPOINT_DIFFERENCE_THRESHOLD, TURN_THRESHOLD, RAD_PER_TURN
+from etc.const import WAYPOINT_DIFFERENCE_THRESHOLD, TURN_THRESHOLD
 from game.behavior import CharacterBehavior
 from game.character import Character
 from game.control import CharacterController
@@ -41,9 +40,9 @@ class MoveState(BaseState):
                 self.controller.stop()
                 character.is_moving = False
                 if direction == Direction.right:
-                    self.controller.turn_right(math.ceil(angle / RAD_PER_TURN))
+                    self.controller.turn_right(transform_turn(angle))
                 else:
-                    self.controller.turn_right(math.ceil(angle / RAD_PER_TURN))
+                    self.controller.turn_right(transform_turn(angle))
 
     def transition(self, character: Character, target: Target) -> 'BaseState' or None:
         pass

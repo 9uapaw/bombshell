@@ -1,7 +1,7 @@
 import math
 
 from core.position.position import Trajectory, Direction
-from core.position.transform import calculate_trajectory, calculate_turn, calculate_turn_from_trajectory
+from core.position.transform import calculate_trajectory, calculate_turn, calculate_turn_from_trajectory, transform_turn
 from etc.const import WAYPOINT_DIFFERENCE_THRESHOLD, RAD_PER_TURN
 from exception.core import PrerequisiteException
 from game.character import Character
@@ -19,12 +19,12 @@ class StartState(BaseState):
         angle, direction = calculate_turn_from_trajectory(current_trajectory, waypoint_trajectory)
 
         if direction == Direction.left:
-            self.controller.turn_left(math.ceil(angle / RAD_PER_TURN))
+            self.controller.turn_left(transform_turn(angle))
         else:
-            self.controller.turn_right(math.ceil(angle / RAD_PER_TURN))
+            self.controller.turn_right(transform_turn(angle))
 
     def transition(self, character: Character, target: Target) -> 'BaseState' or None:
-        if character.position.is_close_to(self.waypoints.waypoints[character.current_waypoint],
+        if character.position.is_close_to(self.waypoints.peek(character.current_waypoint),
                                           WAYPOINT_DIFFERENCE_THRESHOLD):
             return MoveState(self.controller, self.behavior, self.waypoints)
         else:

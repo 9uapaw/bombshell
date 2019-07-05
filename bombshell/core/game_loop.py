@@ -32,11 +32,11 @@ class GameLoop:
     def start(self, paths: Dict[str, str]):
         self._parse_waypoints(paths['waypoint'])
 
-        time.sleep(5)
+        # time.sleep(5)
         time_before = datetime.datetime.now()
         try:
             for screen in self.screen.capture():
-                self._show_window(screen)
+                # self._show_window(screen)
                 delta = datetime.datetime.now() - time_before
                 print(self.state.character)
                 data = self.extractor.extract_data_from_screen(screen)

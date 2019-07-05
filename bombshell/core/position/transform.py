@@ -1,7 +1,9 @@
+import math
 from math import pi, sin, tan
 from typing import Tuple
 
 from core.position.position import Position, Trajectory, Direction
+from etc.const import RAD_PER_TURN
 
 
 def calculate_turn(current: Tuple[Position, Position], follow_up:Tuple[Position, Position]):
@@ -54,5 +56,7 @@ def normalize_facing(facing: float) -> float:
     return normalized
 
 
+def transform_turn(angle: float):
+    return math.ceil(angle / RAD_PER_TURN)
 
 
