@@ -6,24 +6,16 @@ from multiprocessing import Process
 
 import PySimpleGUIQt as sg
 from core.game_loop import GameLoop
+from gui.general import general_layout
 
 sg.SetOptions(button_color=sg.COLOR_SYSTEM_DEFAULT)
 # sg.ChangeLookAndFeel('GreenTan')
 
-BUTTON_SIZE = (80, 20)
+
 
 def run_window():
-    debug_line = sg.Output(size=(400, 300))
-    layout = [
-        [sg.Text('Waypoint path: '), sg.InputText(key='waypoint'),
-         sg.Button('Record', size=BUTTON_SIZE), sg.Button('Stop record', size=BUTTON_SIZE)],
-        [sg.Text('Open waypoint'), sg.InputText(key='waypoint'), sg.FileBrowse(key='Browse', size=BUTTON_SIZE)],
-        [debug_line],
-        [sg.Button('Start bot', size=BUTTON_SIZE), sg.Cancel('Stop bot', size=BUTTON_SIZE)],
-        [sg.CloseButton("Close", size=BUTTON_SIZE)]
 
-    ]
-
+    layout = [[sg.TabGroup(general_layout)]]
     window = sg.Window('Project BombShell', default_element_size=(40, 1)).Layout(layout).Finalize()
     paths = {}
     game_loop = GameLoop()
