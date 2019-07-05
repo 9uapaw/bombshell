@@ -1,65 +1,65 @@
 local frame = CreateFrame("Frame", "MainFrame", UIParent)
 frame:ClearAllPoints()
 frame:SetHeight(600)
-frame:SetWidth(300)
+frame:SetWidth(320)
 
 frame.text = frame:CreateFontString("Health", "BACKGROUND", "GameFontNormal")
 frame.text:SetPoint("CENTER", 0, 0)
 frame.text:SetJustifyH("LEFT")
 frame.text:SetTextColor(0, 0, 0, 1)
-frame.text:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 22)
+frame.text:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 24)
 
 frame.mana = frame:CreateFontString("Mana", "BACKGROUND", "GameFontNormal")
 frame.mana:SetPoint("CENTER", 0, -30)
 frame.mana:SetJustifyH("LEFT")
 frame.mana:SetTextColor(0, 0, 0, 1)
-frame.mana:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 22)
+frame.mana:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 24)
 
 frame.posx = frame:CreateFontString("PositionY", "BACKGROUND", "GameFontNormal")
 frame.posx:SetPoint("CENTER", 0, -60)
 frame.posx:SetJustifyH("LEFT")
 frame.posx:SetTextColor(0, 0, 0, 1)
-frame.posx:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 22)
+frame.posx:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 24)
 
 frame.posy = frame:CreateFontString("PositionY", "BACKGROUND", "GameFontNormal")
 frame.posy:SetPoint("CENTER", 0, -90)
 frame.posy:SetJustifyH("LEFT")
 frame.posy:SetTextColor(0, 0, 0, 1)
-frame.posy:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 22)
+frame.posy:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 24)
 
 frame.combat = frame:CreateFontString("Combat", "BACKGROUND", "GameFontNormal")
 frame.combat:SetPoint("CENTER", 0, -120)
 frame.combat:SetJustifyH("LEFT")
 frame.combat:SetTextColor(0, 0, 0, 1)
-frame.combat:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 22)
+frame.combat:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 24)
 
 frame.targetHealth = frame:CreateFontString("TargetHealth", "BACKGROUND", "GameFontNormal")
 frame.targetHealth:SetPoint("CENTER", 0, -150)
 frame.targetHealth:SetJustifyH("LEFT")
 frame.targetHealth:SetTextColor(0, 0, 0, 1)
-frame.targetHealth:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 22)
+frame.targetHealth:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 24)
 
 frame.facing = frame:CreateFontString("Facing", "BACKGROUND", "GameFontNormal")
 frame.facing:SetPoint("CENTER", 0, -180)
 frame.facing:SetJustifyH("LEFT")
 frame.facing:SetTextColor(0, 0, 0, 1)
-frame.facing:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 22)
+frame.facing:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 24)
 
 frame.distance = frame:CreateFontString("Facing", "BACKGROUND", "GameFontNormal")
 frame.distance:SetPoint("CENTER", 0, -210)
 frame.distance:SetJustifyH("LEFT")
 frame.distance:SetTextColor(0, 0, 0, 1)
-frame.distance:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 22)
+frame.distance:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 24)
 
 frame:SetPoint("LEFT", 0, 200)
 
 frame:SetBackdrop(
     {
-        bgFile = "Interface/AddOns/BombShell/data/b",
-        edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
-        tile = true,
-        tileSize = 16,
-        edgeSize = 16,
+        -- bgFile = "Interface/AddOns/BombShell/data/b",
+        -- edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+        -- tile = true,
+        -- tileSize = 16,
+        -- edgeSize = 16,
         insets = {left = 4, right = 4, top = 4, bottom = 4},
         backdropColor = {r = 1, g = 1, b = 1, a = 0}
     }
@@ -86,7 +86,7 @@ frame:SetScript(
             local health = UnitHealth("player")
             local targetHealth = UnitHealth("target")
             frame.text:SetText("HEALTH: " .. health)
-            frame.targetHealth:SetText("TARGET HEALTH: " .. targetHealth)
+            frame.targetHealth:SetText("THP: " .. targetHealth)
         elseif (event == "UNIT_MANA") then
             local mana = UnitMana("player")
             frame.mana:SetText("MANA: " .. mana)
@@ -101,7 +101,7 @@ frame:SetScript(
             elseif (CheckInteractDistance("target", 4)) then
                 distance = 2
             end
-            frame.distance:SetText("TARGET DISTANCE: " .. distance)
+            frame.distance:SetText("TDIST: " .. distance)
         end
     end
 )
