@@ -29,7 +29,7 @@ class ImageExtractor:
                                  player_resource=extracted_values[ADDON_DATA_POSITION[1]][0],
                                  combat=bool(extracted_values[ADDON_DATA_POSITION[4]][0]),
                                  target_health=extracted_values[ADDON_DATA_POSITION[5]][0],
-                                 target_distance=DistanceRange(int(extracted_values[ADDON_DATA_POSITION[7]][0])),
+                                 target_distance=DistanceRange(int(extracted_values.get(ADDON_DATA_POSITION[7], [-1])[0])),
                                  facing=extracted_values[ADDON_DATA_POSITION[6]][0])
         except Exception as e:
             print(e.__class__.__name__, e, file=sys.stderr)
@@ -42,15 +42,13 @@ class ImageExtractor:
         return screen.crop(self.screen_roi_range)
 
     def _extract_value(self, raw: List[str]) -> Dict[(str, List[float])]:
-        clean = ["".join(filter(lambda s: s in "0123456789.", d)) for d in raw]
+        clean = ["".join(filter(lambda s: s in "0123456789.", d)) for d in raw if d.replace(' ', '')]
         res = {}
         pos = 0
 
         for s in clean:
             try:
-                split_by_whitespace = list(s.split(" "))
-                val = list(filter(lambda d: d, split_by_whitespace))
-                val = list(map(float, val))
+                val = [float(s)]
 
                 if not val:
                     continue

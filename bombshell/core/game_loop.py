@@ -24,7 +24,7 @@ class GameLoop:
 
     def __init__(self, config: Config=None):
         self.config = config
-        self.extractor = ImageExtractor((0, 0, 400, 400))
+        self.extractor = ImageExtractor((0, 0, 240, 360))
         self.waypoints = PositionStorage()
         self.state = StateHandler(BasicController, CharacterBehavior({"100": {"lt": {1}}}, BasicController), self.waypoints)
         self.screen = Screen((0, 40, 800, 640))
@@ -36,7 +36,7 @@ class GameLoop:
         time_before = datetime.datetime.now()
         try:
             for screen in self.screen.capture():
-                # self._show_window(screen)
+                self._show_window(screen)
                 delta = datetime.datetime.now() - time_before
                 print(self.state.character)
                 data = self.extractor.extract_data_from_screen(screen)
@@ -64,7 +64,7 @@ class GameLoop:
             json.dump(waypoints, wp)
 
     def _show_window(self, screen: Image):
-        roi = screen.crop((0, 0, 400, 400))
+        roi = screen.crop((0, 0, 240, 360))
         to_show = np.array(roi)
         cv2.imshow('window', to_show)
         if cv2.waitKey(25) & 0xFF == ord('q'):

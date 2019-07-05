@@ -6,7 +6,7 @@ from math import pi, isclose
 from core.data import ExtractedData, DistanceRange
 from core.game_loop import GameLoop
 from core.position.position import Position, Trajectory, Direction
-from core.position.util import calculate_trajectory
+from core.position.transform import calculate_trajectory, normalize_facing
 
 
 class FakeScreen:
@@ -27,7 +27,7 @@ class TestWaypoint(unittest.TestCase):
         def fake_points(*args):
             c = coords.__next__()
 
-            return ExtractedData(0, 0, (c, c), 0, DistanceRange.out_of_range, False)
+            return ExtractedData(0, 0, (c, c), 0, DistanceRange.out_of_range, False, 0)
 
         self.game_loop.extractor.extract_data_from_screen = fake_points
 
@@ -51,7 +51,7 @@ class TestWaypoint(unittest.TestCase):
         self.assertEqual(Direction.right, v1.calculate_direction(v3))
 
     def test_calculate_trajectory(self):
-        p1 = Position(1, 1)
+        p1 = Position(2, 2)
         a1 = pi / 4
         a2 = 3 * pi / 4
         a3 = 5 * pi / 4
@@ -62,14 +62,23 @@ class TestWaypoint(unittest.TestCase):
         v3 = calculate_trajectory(p1, a3)
         v4 = calculate_trajectory(p1, a4)
 
-        self.assertTrue(math.isclose(0.9, v1.vector.p2.x))
-        self.assertTrue(math.isclose(1.1, v1.vector.p2.y))
+        self.assertTrue(math.isclose(1, v1.vector.p2.x))
+        self.assertTrue(math.isclose(3, v1.vector.p2.y))
 
-        self.assertTrue(math.isclose(0.9, v2.vector.p2.x))
-        self.assertTrue(math.isclose(0.9, v2.vector.p2.y))
+        self.assertTrue(math.isclose(1, v2.vector.p2.x))
+        self.assertTrue(math.isclose(1, v2.vector.p2.y))
 
-        self.assertTrue(math.isclose(1.1, v3.vector.p2.x))
-        self.assertTrue(math.isclose(0.9, v3.vector.p2.y))
+        self.assertTrue(math.isclose(3, v3.vector.p2.x))
+        self.assertTrue(math.isclose(1, v3.vector.p2.y))
 
-        self.assertTrue(math.isclose(1.1, v4.vector.p2.x))
-        self.assertTrue(math.isclose(1.1, v4.vector.p2.y))
+        self.assertTrue(math.isclose(3, v4.vector.p2.x))
+        self.assertTrue(math.isclose(3, v4.vector.p2.y))
+
+    def test_normalize_facing(self):
+        a1 = 1
+        a2 = 6
+        a3 = 2
+
+        self.assertTrue(math.isclose(normalize_facing(a1), pi / 2 + a1))
+        self.assertTrue(math.isclose(normalize_facing(a2), 2 * pi - a2))
+        self.assertTrue(math.isclose(normalize_facing(a3), pi / 2 + a3))

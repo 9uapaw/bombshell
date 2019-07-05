@@ -22,7 +22,7 @@ def calculate_turn_from_trajectory(current: Trajectory, follow_up: Trajectory):
 
 
 def calculate_trajectory(point: Position, facing: float) -> Trajectory:
-    sample_y_length = 0.1
+    sample_y_length = 1
     normalized_angle = facing
     x_sign = -1
     y_sign = 1
@@ -38,12 +38,20 @@ def calculate_trajectory(point: Position, facing: float) -> Trajectory:
         x_sign = 1
         normalized_angle = 2 * pi - facing
 
-    bc = tan(normalized_angle) * sample_y_length
+    bc = round(tan(normalized_angle) * sample_y_length, 6)
     projected_x = point.point.x + x_sign * bc
     projected_y = point.point.y + y_sign * sample_y_length
 
     return Trajectory(point, Position(projected_x, projected_y))
 
+
+def normalize_facing(facing: float) -> float:
+    if facing > 3 * pi / 2:
+        normalized = 2 * pi - facing
+    else:
+        normalized = pi / 2 + facing
+
+    return normalized
 
 
 

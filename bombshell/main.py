@@ -11,5 +11,5 @@ def main():
 
 
 if __name__ == '__main__':
-    # main()
-    run_window()
+    main()
+    # run_window()

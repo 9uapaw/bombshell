@@ -2,7 +2,7 @@ import math
 from typing import List
 
 from core.position.position import Position, Trajectory, Direction
-from core.position.util import calculate_turn
+from core.position.transform import calculate_turn
 from core.position.waypoint import PositionStorage
 from etc.const import WAYPOINT_DIFFERENCE_THRESHOLD, TURN_THRESHOLD, RAD_PER_TURN
 from game.behavior import CharacterBehavior

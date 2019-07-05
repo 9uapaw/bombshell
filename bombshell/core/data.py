@@ -4,6 +4,7 @@ from typing import Tuple
 
 
 class DistanceRange(enum.Enum):
+    unknown = -1
     out_of_range = 0
     melee = 1
     cast = 2

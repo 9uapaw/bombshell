@@ -51,12 +51,18 @@ class Trajectory:
 
     def calculate_direction(self, other: 'Trajectory'):
         a, b, c = self.vector.coefficients
-        y = (-a * other.end_point[0] - c) / b
+        if b:
+            y = (-a * other.end_point[0] - c) / b
 
-        if y >= other.end_point[1]:
-            return Direction.right
+            if y >= other.end_point[1]:
+                return Direction.right
+            else:
+                return Direction.left
         else:
-            return Direction.left
+            if other.end_point[0] < self.end_point[0]:
+                return Direction.left
+            else:
+                return Direction.right
 
     def __repr__(self):
         return self.vector.__repr__()
