@@ -1,7 +1,7 @@
 from typing import List
 
 from core.position.position import Position, Direction
-from core.position.transform import calculate_turn, transform_turn
+from core.position.transform import transform_turn
 from core.position.waypoint import PositionStorage
 from etc.const import WAYPOINT_DIFFERENCE_THRESHOLD, TURN_THRESHOLD
 from game.behavior import CharacterBehavior

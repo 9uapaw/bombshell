@@ -1,7 +1,7 @@
 import math
 
 from core.position.position import Trajectory, Direction
-from core.position.transform import calculate_trajectory, calculate_turn, calculate_turn_from_trajectory, transform_turn
+from core.position.transform import calculate_trajectory, transform_turn
 from etc.const import WAYPOINT_DIFFERENCE_THRESHOLD, RAD_PER_TURN
 from exception.core import PrerequisiteException
 from game.character import Character
@@ -16,7 +16,8 @@ class StartState(BaseState):
         current_trajectory = calculate_trajectory(character.position, character.facing)
         waypoint_trajectory = Trajectory(character.position, self.waypoints.waypoints[character.current_waypoint])
 
-        angle, direction = calculate_turn_from_trajectory(current_trajectory, waypoint_trajectory)
+        angle, direction = current_trajectory.calculate_turn(waypoint_trajectory)
+        print('Angle: {} - Direction: {}'.format(angle, direction))
 
         if direction == Direction.left:
             self.controller.turn_left(transform_turn(angle))

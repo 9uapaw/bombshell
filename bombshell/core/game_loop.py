@@ -38,9 +38,9 @@ class GameLoop:
             for screen in self.screen.capture():
                 # self._show_window(screen)
                 delta = datetime.datetime.now() - time_before
-                print(self.state.character)
+                # print(self.state.character)
                 data = self.extractor.extract_data_from_screen(screen)
-                print(delta.total_seconds() * 1000)
+                # print(delta.total_seconds() * 1000)
                 time_before = datetime.datetime.now()
                 if not data:
                     continue
@@ -48,19 +48,17 @@ class GameLoop:
         except BombShellException as e:
             print(e, file=sys.stderr)
 
-    def record_waypoints(self, path: str):
-        time.sleep(5)
+    def record_waypoints(self, paths: Dict[str, str]):
+        # time.sleep(5)
         waypoints = {'type': 'circle', 'waypoints': []}
-        i = 0
         for screen in self.screen.capture():
             data = self.extractor.extract_data_from_screen(screen)
+            print('Recording position: ', data.player_position)
             waypoints['waypoints'].append(data.player_position)
             time.sleep(2)
-            i += 1
-            if i == 10:
-                break
 
-        with open(path, 'w') as wp:
+        print('Saving file to: ', paths.get('waypoint', 'NO PATH'))
+        with open(paths['waypoint'], 'w') as wp:
             json.dump(waypoints, wp)
 
     def _show_window(self, screen: Image):

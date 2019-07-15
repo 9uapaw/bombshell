@@ -15,7 +15,7 @@ class ImageExtractor:
     def extract_data_from_screen(self, screen: Image) -> ExtractedData or None:
         raw_data = pytesseract.image_to_string(self._crop_image(screen))
         split_raw = [r for r in raw_data.split('\n')]
-        print(split_raw)
+        # print(split_raw)
 
         if not split_raw:
             return
@@ -25,7 +25,7 @@ class ImageExtractor:
             data = ExtractedData(player_health=extracted_values[ADDON_DATA_POSITION[0]][0],
                                  player_position=(
                                      extracted_values[ADDON_DATA_POSITION[2]][0],
-                                     extracted_values[ADDON_DATA_POSITION[3]][0]),
+                                     -extracted_values[ADDON_DATA_POSITION[3]][0]),
                                  player_resource=extracted_values[ADDON_DATA_POSITION[1]][0],
                                  combat=bool(extracted_values[ADDON_DATA_POSITION[4]][0]),
                                  target_health=extracted_values[ADDON_DATA_POSITION[5]][0],
@@ -35,7 +35,6 @@ class ImageExtractor:
             print(e.__class__.__name__, e, file=sys.stderr)
             return
 
-        print(data)
         return data
 
     def _crop_image(self, screen: Image) -> Image:
