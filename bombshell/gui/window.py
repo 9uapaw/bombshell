@@ -19,19 +19,24 @@ def run_window():
     window = sg.Window('Project BombShell', default_element_size=(40, 1)).Layout(layout).Finalize()
     paths = {}
     game_loop = GameLoop()
-    t = threading.Thread(target=game_loop.start, args=(paths, ))
+    start = threading.Thread(target=game_loop.start, args=(paths, ))
+    record = threading.Thread(target=game_loop.record_waypoints, args=(paths, ))
 
     while True:
         event, values = window.Read()
         if event == 'Record':
-            print(values['waypoint'])
-            paths['waypoint'] = values['waypoint']
-            game_loop.record_waypoints(paths['waypoint'])
+            print(values['save_waypoint'])
+            paths['waypoint'] = values['save_waypoint']
+            record.start()
         elif event == 'Start bot':
             paths['waypoint'] = values['waypoint']
-            t.start()
-        elif event == 'Stop record' or event == 'Stop bot':
+            start.start()
+        elif event == 'Stop record':
             game_loop.screen.stop_capturing()
-            t.join()
+            record.join()
+        elif event == 'Stop bot':
+            game_loop.screen.stop_capturing()
+            start.join()
+
 
 
