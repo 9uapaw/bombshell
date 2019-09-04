@@ -5,12 +5,16 @@ from PIL.Image import Image
 import pytesseract
 from core.data import ExtractedData, DistanceRange
 from etc.const import ADDON_DATA_POSITION
+from exception.core import RecoverableException, ExtractException
+from image.policies.extract_policy import ExtractPolicy
+from image.policies.recover import RecoverPolicy
 
 
 class ImageExtractor:
 
-    def __init__(self, roi: Tuple):
+    def __init__(self, roi: Tuple, policy: ExtractPolicy=None):
         self.screen_roi_range = roi
+        self.policy = policy if policy else RecoverPolicy()
 
     def extract_data_from_screen(self, screen: Image) -> ExtractedData or None:
         raw_data = pytesseract.image_to_string(self._crop_image(screen))
@@ -22,19 +26,13 @@ class ImageExtractor:
 
         try:
             extracted_values = self._extract_value(split_raw)
-            data = ExtractedData(player_health=extracted_values[ADDON_DATA_POSITION[0]][0],
-                                 player_position=(
-                                     extracted_values[ADDON_DATA_POSITION[2]][0],
-                                     -extracted_values[ADDON_DATA_POSITION[3]][0]),
-                                 player_resource=extracted_values[ADDON_DATA_POSITION[1]][0],
-                                 combat=bool(extracted_values[ADDON_DATA_POSITION[4]][0]),
-                                 target_health=extracted_values[ADDON_DATA_POSITION[5]][0],
-                                 target_distance=DistanceRange(int(extracted_values.get(ADDON_DATA_POSITION[7], [-1])[0])),
-                                 facing=extracted_values[ADDON_DATA_POSITION[6]][0])
-        except Exception as e:
+        except ExtractException as e:
+            extracted_values = self.policy.rollback(e.partial)
+        except RecoverableException as e:
             print(e.__class__.__name__, e, file=sys.stderr)
             return
 
+        data = self._convert_data(extracted_values)
         return data
 
     def _crop_image(self, screen: Image) -> Image:
@@ -56,5 +54,18 @@ class ImageExtractor:
                 pos += 1
             except Exception as e:
                 print(e)
+                self.policy.decide(ADDON_DATA_POSITION[pos], res)
 
         return res
+
+    def _convert_data(self, extracted_values: Dict) -> ExtractedData:
+        return ExtractedData(player_health=extracted_values[ADDON_DATA_POSITION[0]][0],
+                             player_position=(
+                                 extracted_values[ADDON_DATA_POSITION[2]][0],
+                                 -extracted_values[ADDON_DATA_POSITION[3]][0]),
+                             player_resource=extracted_values[ADDON_DATA_POSITION[1]][0],
+                             combat=bool(extracted_values[ADDON_DATA_POSITION[4]][0]),
+                             target_health=extracted_values[ADDON_DATA_POSITION[5]][0],
+                             target_distance=DistanceRange(int(extracted_values.get(ADDON_DATA_POSITION[7], [-1])[0])),
+                             facing=extracted_values[ADDON_DATA_POSITION[6]][0])
+

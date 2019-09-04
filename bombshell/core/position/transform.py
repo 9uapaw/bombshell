@@ -1,6 +1,5 @@
 import math
 from math import pi, sin, tan
-from typing import Tuple
 
 from core.position.position import Position, Trajectory, Direction
 from etc.const import RAD_PER_TURN

@@ -23,11 +23,12 @@ from image.screen import Screen
 class GameLoop:
 
     def __init__(self, config: Config=None):
-        self.config = config
-        self.extractor = ImageExtractor((0, 0, 240, 360))
+        self.config = config if config else Config()
+        self.extractor = ImageExtractor(self.config.roi)
         self.waypoints = PositionStorage()
-        self.state = StateHandler(BasicController, CharacterBehavior({"100": {"lt": {1}}}, BasicController), self.waypoints)
-        self.screen = Screen((0, 40, 800, 640))
+        self.controller = BasicController
+        self.state = StateHandler(self.controller, CharacterBehavior({"100": {"lt": {1}}}, self.controller), self.waypoints)
+        self.screen = Screen(self.config.screen_res)
 
     def start(self, paths: Dict[str, str]):
         self._parse_waypoints(paths['waypoint'])
@@ -37,11 +38,11 @@ class GameLoop:
         try:
             for screen in self.screen.capture():
                 # self._show_window(screen)
-                delta = datetime.datetime.now() - time_before
+                # delta = datetime.datetime.now() - time_before
                 # print(self.state.character)
                 data = self.extractor.extract_data_from_screen(screen)
                 # print(delta.total_seconds() * 1000)
-                time_before = datetime.datetime.now()
+                # time_before = datetime.datetime.now()
                 if not data:
                     continue
                 self.state.update(data)

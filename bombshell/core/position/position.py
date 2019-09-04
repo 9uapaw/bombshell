@@ -50,7 +50,14 @@ class Trajectory:
         return x, y
 
     def calculate_turn(self, other: 'Trajectory'):
-        return self.calculate_angle_between(other), self.calculate_direction(other)
+        angle = self.calculate_angle_between(other)
+        direction = self.calculate_direction(other)
+
+        if angle > math.pi:
+            angle = 2 * math.pi - angle
+            direction = Direction.right if direction == Direction.left else Direction.left
+
+        return angle, direction
 
     def calculate_angle_between(self, other: 'Trajectory') -> float:
         return abs(self.angle - other.angle)

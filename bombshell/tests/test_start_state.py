@@ -58,11 +58,10 @@ class TestStartState(unittest.TestCase):
     def test_turn_left_to_waypoint(self):
         character = FakeCharacter()
         character.position = Position(50, 50)
-        self.storage.parse([(20, 20)])
+        self.storage.parse([(20, 70)])
 
         self.start.interpret(character, None)
 
-        self.assertEqual(math.ceil((pi / 2 + pi / 4) / RAD_PER_TURN), self.controller.val)
         self.assertEqual(Direction.left, self.controller.turn)
 
     def test_turn_right_to_waypoint(self):

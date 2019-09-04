@@ -49,6 +49,8 @@ class TestWaypoint(unittest.TestCase):
         v3 = calculate_trajectory(p1, a3)
         v4 = calculate_trajectory(p1, a4)
 
+        print(v1, v2, v3, v4)
+
     def test_calculate_angle(self):
         a = Position(2, -2)
         b = Position(1, -3)
