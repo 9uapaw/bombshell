@@ -1,5 +1,5 @@
 from game.character import Character
-from game.control import CharacterController
+from game.control.control import CharacterController
 from game.target import Target
 
 

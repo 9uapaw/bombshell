@@ -1,7 +1,8 @@
 import enum
 
 from core.data import ExtractedData
-from core.position.position import Position
+from game.position.position import Position
+from game.position.transform import normalize_facing
 
 
 class Resource(enum.Enum):
@@ -27,7 +28,7 @@ class Character:
         self.resource = data.player_resource
         self.position = Position(data.player_position[0], data.player_position[1])
         self.is_in_combat = data.combat
-        self.facing = data.facing
+        self.facing = normalize_facing(data.facing)
 
     def __repr__(self):
         return "<HP: {}, Position: {}, Resource: {} {}>".format(self.hp, self.position, self.resource, self.resource_type.name)

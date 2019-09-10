@@ -1,14 +1,12 @@
 import json
 import math
 import unittest
-from math import pi, isclose
-
-from sympy import Line
+from math import pi
 
 from core.data import ExtractedData, DistanceRange
 from core.game_loop import GameLoop
-from core.position.position import Position, Trajectory, Direction
-from core.position.transform import calculate_trajectory, normalize_facing
+from game.position.position import Position, Trajectory
+from game.position import calculate_trajectory, normalize_facing
 
 
 class FakeScreen:

@@ -1,12 +1,8 @@
-import math
 import unittest
-from math import pi
 
-from core.position.position import Position, Direction
-from core.position.waypoint import PositionStorage
-from etc.const import RAD_PER_TURN
+from game.position.position import Position, Direction
+from game.position.waypoint import PositionStorage
 from exception.core import PrerequisiteException
-from game.states.move import MoveState
 from game.states.start import StartState
 
 
@@ -72,6 +68,14 @@ class TestStartState(unittest.TestCase):
         self.start.interpret(character, None)
 
         self.assertEqual(Direction.right, self.controller.turn)
+
+    def test_point(self):
+        character = FakeCharacter()
+        character.position = Position(530.0566, -432.1322)
+        character.facing = 1.4452323
+        self.storage.parse([(529.1963, -434.5789)])
+
+        self.start.interpret(character, None)
 
 
 

@@ -1,7 +1,6 @@
 from typing import List, Tuple
 
-from core.data import ExtractedData
-from core.position.position import Position
+from game.position.position import Position
 
 
 class PositionStorage:

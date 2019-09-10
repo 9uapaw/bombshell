@@ -1,7 +1,7 @@
 import math
-from math import pi, sin, tan
+from math import pi
 
-from core.position.position import Position, Trajectory, Direction
+from game.position.position import Position, Trajectory
 from etc.const import RAD_PER_TURN
 
 
@@ -14,7 +14,7 @@ def calculate_trajectory(point: Position, facing: float) -> Trajectory:
 
 def normalize_facing(facing: float) -> float:
     if facing > 3 * pi / 2:
-        normalized = 2 * pi - facing
+        normalized = facing - 3 * pi / 2
     else:
         normalized = pi / 2 + facing
 

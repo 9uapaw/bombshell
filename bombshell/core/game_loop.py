@@ -10,11 +10,11 @@ from PIL import Image
 from cv2 import cv2
 
 from core.config import Config
-from core.position.waypoint import PositionStorage
+from game.position.waypoint import PositionStorage
 from exception.base import BombShellException
 from exception.core import CoreException
 from game.behavior import CharacterBehavior
-from game.control import BasicController
+from game.control.control import BasicController
 from game.state_handler import StateHandler
 from image.extractor import ImageExtractor
 from image.screen import Screen

@@ -2,8 +2,8 @@ import math
 import unittest
 from math import pi
 
-from core.position.position import Position
-from core.position.waypoint import PositionStorage
+from game.position.position import Position
+from game.position import PositionStorage
 from game.states.move import MoveState
 
 

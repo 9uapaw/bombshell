@@ -1,6 +1,7 @@
 import enum
 import math
 
+from attr import dataclass
 from sympy import Point, Line, Ellipse
 from sympy.vector import Vector, Point as VectorPoint
 from mpmath import degree, radians
@@ -9,6 +10,12 @@ from mpmath import degree, radians
 class Direction(enum.Enum):
     left = 0
     right = 1
+
+
+@dataclass
+class CharacterDirection:
+    position: 'Position'
+    facing: float
 
 
 class Position:
@@ -30,7 +37,7 @@ class Position:
         return other.point.x == self.point.x and other.point.y == self.point.y
 
     def __repr__(self):
-        return self.point.__repr__()
+        return "<{}, {}>".format(self.point.x.evalf(), self.point.y.evalf())
 
 
 class Trajectory:
@@ -73,11 +80,11 @@ class Trajectory:
                 angle = math.pi - angle + math.pi
         else:
             if line.p2.y <= line.p1.y:
-                angle = 3 * math.pi / 2 + angle
+                angle = 2 * math.pi - angle
 
         return angle
 
     def __repr__(self):
-        return self.vector.__repr__()
+        return "<{}, {}>".format(self.start_point, self.end_point)
 
 
