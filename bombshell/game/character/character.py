@@ -6,9 +6,19 @@ from game.position.transform import normalize_facing
 
 
 class Resource(enum.Enum):
-    mana = 0
-    energy = 1
-    rage = 2
+    MANA = 0
+    ENERGY = 1
+    RAGE = 2
+
+
+class LastAbilityExecution(enum.Enum):
+    SUCCESS = 0
+    OUT_OF_RANGE = 1
+    OUT_OF_LOS = 2
+    TOO_CLOSE = 3
+    NOT_BEHIND = 4
+    NOT_INFRONT = 5
+    NO_TARGET = 6
 
 
 class Character:
@@ -22,6 +32,7 @@ class Character:
         self.is_in_combat = False
         self.current_waypoint = 0
         self.facing = 0
+        self.last_ability = LastAbilityExecution.SUCCESS
 
     def update(self, data: ExtractedData):
         self.hp = data.player_health
@@ -29,6 +40,10 @@ class Character:
         self.position = Position(data.player_position[0], data.player_position[1])
         self.is_in_combat = data.combat
         self.facing = normalize_facing(data.facing)
+        self.last_ability = data.last_ability
+
+    def switch_moving(self):
+        self.is_moving = not self.is_moving
 
     def __repr__(self):
         return "<HP: {}, Position: {}, Resource: {} {}>".format(self.hp, self.position, self.resource, self.resource_type.name)

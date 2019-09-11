@@ -1,3 +1,4 @@
+import time
 import unittest
 
 from game.position.position import Position, Direction
@@ -76,6 +77,11 @@ class TestStartState(unittest.TestCase):
         self.storage.parse([(529.1963, -434.5789)])
 
         self.start.interpret(character, None)
+        time.sleep(2)
+        character.facing = 2.345232
+        self.storage.parse([(529.1963, -430.5789)])
+        self.start.interpret(character, None)
+        time.sleep(2)
 
 
 

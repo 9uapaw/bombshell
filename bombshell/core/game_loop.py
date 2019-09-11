@@ -46,8 +46,10 @@ class GameLoop:
                 if not data:
                     continue
                 self.state.update(data)
+
         except BombShellException as e:
             print(e, file=sys.stderr)
+            return
 
     def record_waypoints(self, paths: Dict[str, str]):
         # time.sleep(5)

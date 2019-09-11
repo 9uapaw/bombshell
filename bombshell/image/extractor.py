@@ -6,6 +6,7 @@ import pytesseract
 from core.data import ExtractedData, DistanceRange
 from etc.const import ADDON_DATA_POSITION
 from exception.core import RecoverableException, ExtractException
+from game.character.character import LastAbilityExecution
 from image.policies.extract_policy import ExtractPolicy
 from image.policies.recover import RecoverPolicy
 
@@ -67,5 +68,7 @@ class ImageExtractor:
                              combat=bool(extracted_values[ADDON_DATA_POSITION[4]][0]),
                              target_health=extracted_values[ADDON_DATA_POSITION[5]][0],
                              target_distance=DistanceRange(int(extracted_values.get(ADDON_DATA_POSITION[7], [-1])[0])),
-                             facing=extracted_values[ADDON_DATA_POSITION[6]][0])
+                             facing=extracted_values[ADDON_DATA_POSITION[6]][0],
+                             last_ability=LastAbilityExecution(int(extracted_values.get(ADDON_DATA_POSITION[8], [-1])[0])))
+
 

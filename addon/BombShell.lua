@@ -45,21 +45,22 @@ frame.facing:SetJustifyH("LEFT")
 frame.facing:SetTextColor(0, 0, 0, 1)
 frame.facing:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 24)
 
-frame.distance = frame:CreateFontString("Facing", "BACKGROUND", "GameFontNormal")
+frame.distance = frame:CreateFontString("Distance", "BACKGROUND", "GameFontNormal")
 frame.distance:SetPoint("CENTER", 0, -210)
 frame.distance:SetJustifyH("LEFT")
 frame.distance:SetTextColor(0, 0, 0, 1)
 frame.distance:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 24)
 
+frame.ability = frame:CreateFontString("Distance", "BACKGROUND", "GameFontNormal")
+frame.ability:SetPoint("CENTER", 0, -240)
+frame.ability:SetJustifyH("LEFT")
+frame.ability:SetTextColor(0, 0, 0, 1)
+frame.ability:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 24)
+
 frame:SetPoint("LEFT", 0, 200)
 
 frame:SetBackdrop(
     {
-        -- bgFile = "Interface/AddOns/BombShell/data/b",
-        -- edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
-        -- tile = true,
-        -- tileSize = 16,
-        -- edgeSize = 16,
         insets = {left = 4, right = 4, top = 4, bottom = 4},
         backdropColor = {r = 1, g = 1, b = 1, a = 0}
     }
@@ -76,12 +77,17 @@ frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:RegisterEvent("PLAYER_REGEN_DISABLED")
 frame:RegisterEvent("PLAYER_REGEN_ENABLED")
 frame:RegisterEvent("PLAYER_TARGET_CHANGED")
+frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 frame:SetScript(
     "OnEvent",
     function(...)
         if (event == "PLAYER_ENTERING_WORLD") then
             SetMapToCurrentZone()
             DEFAULT_CHAT_FRAME:AddMessage("ENTER WORLD")
+            frame.combat:SetText("COMBAT: 0")
+            frame.distance:SetText("TDIST: " .. 0)
+            frame.targetHealth:SetText("THP: " .. -1)
+            frame.ability:SetText("SPELL: " .. -1)
         elseif (event == "UNIT_HEALTH") then
             local health = UnitHealth("player")
             local targetHealth = UnitHealth("target")
@@ -95,6 +101,7 @@ frame:SetScript(
         elseif (event == "PLAYER_REGEN_DISABLED") then
             frame.combat:SetText("COMBAT: 1")
         elseif (event == "PLAYER_TARGET_CHANGED") then
+            local targetHealth = UnitHealth("target")
             local distance = 0
             if (CheckInteractDistance("target", 3)) then
                 distance = 1
@@ -102,7 +109,22 @@ frame:SetScript(
                 distance = 2
             end
             frame.distance:SetText("TDIST: " .. distance)
-        end
+            frame.targetHealth:SetText("THP: " .. targetHealth)
+        elseif (event == "COMBAT_LOG_EVENT_UNFILTERED") then
+           local timestamp, subevent, _ = CombatLogGetCurrentEventInfo()
+            if (subevent == "SPELL_FAILED_TOO_CLOSE") then
+                frame.ability:SetText("SPELL: " .. 3)
+            elseif (subevent == "SPELL_FAILED_LINE_OF_SIGHT") then
+                frame.ability:SetText("SPELL: " .. 2)
+            elseif (subevent == "SPELL_FAILED_OUT_OF_RANGE") then
+                frame.ability:SetText("SPELL: " .. 1)
+            elseif (subevent == "SPELL_FAILED_NOT_BEHIND") then
+                frame.ability:SetText("SPELL: " .. 4)
+            elseif (subevent == "SPELL_FAILED_UNIT_NOT_INFRONT") then
+                frame.ability:SetText("SPELL: " .. 5)
+            elseif (subevent == "SPELL_FAILED_BAD_IMPLICIT_TARGETS") then
+                frame.ability:SetText("SPELL: " .. 6)
+            end
     end
 )
 

@@ -1,4 +1,4 @@
-from game.character import Character
+from game.character.character import Character
 from game.control.control import CharacterController
 from game.target import Target
 
