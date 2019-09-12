@@ -1,7 +1,7 @@
 import time
 
 from etc.const import TURN_THRESHOLD, WAYPOINT_DIFFERENCE_THRESHOLD
-from game.character.character import Character
+from game.player.character import Character
 from game.control.control import CharacterController
 from game.position.position import Position, Trajectory, Direction, CharacterDirection
 from game.position.transform import calculate_trajectory, transform_turn
@@ -21,11 +21,10 @@ class PositionFollower:
         if character.position.is_close_to(self.waypoints.waypoints[character.current_waypoint],
                                           WAYPOINT_DIFFERENCE_THRESHOLD):
             print("Close to waypoint")
-            self.controller.stop()
-            character.is_moving = False
 
-            if character.current_waypoint == len(self.waypoints.waypoints):
+            if character.current_waypoint == len(self.waypoints.waypoints) - 1:
                 character.current_waypoint = 0
+                self.waypoints.reverse()
             else:
                 character.current_waypoint += 1
 

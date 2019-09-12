@@ -6,7 +6,7 @@ import pytesseract
 from core.data import ExtractedData, DistanceRange
 from etc.const import ADDON_DATA_POSITION
 from exception.core import RecoverableException, ExtractException
-from game.character.character import LastAbilityExecution
+from game.player.character import LastAbilityExecution
 from image.policies.extract_policy import ExtractPolicy
 from image.policies.recover import RecoverPolicy
 
@@ -40,7 +40,7 @@ class ImageExtractor:
         return screen.crop(self.screen_roi_range)
 
     def _extract_value(self, raw: List[str]) -> Dict[(str, List[float])]:
-        clean = ["".join(filter(lambda s: s in "0123456789.", d)) for d in raw if d.replace(' ', '')]
+        clean = ["".join(filter(lambda s: s in "0123456789.-", d)) for d in raw if d.replace(' ', '')]
         res = {}
         pos = 0
 

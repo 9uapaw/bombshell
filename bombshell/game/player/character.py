@@ -1,24 +1,9 @@
 import enum
 
 from core.data import ExtractedData
+from game.player.attributes import Resource, LastAbilityExecution
 from game.position.position import Position
 from game.position.transform import normalize_facing
-
-
-class Resource(enum.Enum):
-    MANA = 0
-    ENERGY = 1
-    RAGE = 2
-
-
-class LastAbilityExecution(enum.Enum):
-    SUCCESS = 0
-    OUT_OF_RANGE = 1
-    OUT_OF_LOS = 2
-    TOO_CLOSE = 3
-    NOT_BEHIND = 4
-    NOT_INFRONT = 5
-    NO_TARGET = 6
 
 
 class Character:

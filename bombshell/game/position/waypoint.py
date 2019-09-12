@@ -16,3 +16,6 @@ class PositionStorage:
 
     def peek(self, i: int):
         return self.waypoints[i]
+
+    def reverse(self):
+        self.waypoints.reverse()

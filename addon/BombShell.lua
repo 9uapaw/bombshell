@@ -57,6 +57,12 @@ frame.ability:SetJustifyH("LEFT")
 frame.ability:SetTextColor(0, 0, 0, 1)
 frame.ability:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 24)
 
+--frame.tuid = frame:CreateFontString("Target ID", "BACKGROUND", "GameFontNormal")
+--frame.tuid:SetPoint("CENTER", 0, -270)
+--frame.tuid:SetJustifyH("LEFT")
+--frame.tuid:SetTextColor(0, 0, 0, 1)
+--frame.tuid:SetFont("Interface\\AddOns\\BombShell\\data\\font\\default.ttf", 24)
+
 frame:SetPoint("LEFT", 0, 200)
 
 frame:SetBackdrop(
@@ -68,8 +74,8 @@ frame:SetBackdrop(
 frame.texture = frame:CreateTexture(nil, "BACKGROUND")
 frame.texture:SetAllPoints(true)
 frame.texture:SetTexture(1, 1, 1, 1)
-
 frame.text:SetText("HEALTH: " .. UnitHealth("player"))
+frame.mana:SetText("MANA: " .. UnitHealth("player"))
 
 frame:RegisterEvent("UNIT_HEALTH")
 frame:RegisterEvent("UNIT_MANA")
@@ -85,8 +91,9 @@ frame:SetScript(
             SetMapToCurrentZone()
             DEFAULT_CHAT_FRAME:AddMessage("ENTER WORLD")
             frame.combat:SetText("COMBAT: 0")
-            frame.distance:SetText("TDIST: " .. 0)
+            frame.distance:SetText("TDIST: " .. -1)
             frame.targetHealth:SetText("THP: " .. -1)
+--            frame.tuid:SetText("TID: " .. 0)
             frame.ability:SetText("SPELL: " .. -1)
         elseif (event == "UNIT_HEALTH") then
             local health = UnitHealth("player")
@@ -101,7 +108,12 @@ frame:SetScript(
         elseif (event == "PLAYER_REGEN_DISABLED") then
             frame.combat:SetText("COMBAT: 1")
         elseif (event == "PLAYER_TARGET_CHANGED") then
+            local tuid = UnitLevel("target")
             local targetHealth = UnitHealth("target")
+            local max_health = UnitHealthMax("target");
+            if (max_health == 0) then
+                targetHealth = -1
+            end
             local distance = 0
             if (CheckInteractDistance("target", 3)) then
                 distance = 1
@@ -110,8 +122,10 @@ frame:SetScript(
             end
             frame.distance:SetText("TDIST: " .. distance)
             frame.targetHealth:SetText("THP: " .. targetHealth)
+--            frame.tuid:SetText("TID: " .. tuid)
         elseif (event == "COMBAT_LOG_EVENT_UNFILTERED") then
            local timestamp, subevent, _ = CombatLogGetCurrentEventInfo()
+            DEFAULT_CHAT_FRAME:AddMessage("COMBAT LOG " .. subevent .. timestamp)
             if (subevent == "SPELL_FAILED_TOO_CLOSE") then
                 frame.ability:SetText("SPELL: " .. 3)
             elseif (subevent == "SPELL_FAILED_LINE_OF_SIGHT") then
@@ -125,6 +139,7 @@ frame:SetScript(
             elseif (subevent == "SPELL_FAILED_BAD_IMPLICIT_TARGETS") then
                 frame.ability:SetText("SPELL: " .. 6)
             end
+        end
     end
 )
 

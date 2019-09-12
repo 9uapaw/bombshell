@@ -6,7 +6,7 @@ from game.position.transform import transform_turn
 from game.position.waypoint import PositionStorage
 from etc.const import WAYPOINT_DIFFERENCE_THRESHOLD, TURN_THRESHOLD
 from game.behavior import CharacterBehavior
-from game.character.character import Character
+from game.player.character import Character
 from game.control.control import CharacterController
 from game.states.base import BaseState
 from game.target import Target

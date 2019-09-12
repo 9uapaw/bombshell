@@ -1,8 +1,7 @@
 import enum
 from dataclasses import dataclass
 from typing import Tuple
-
-from game.character.character import LastAbilityExecution
+from game.player.attributes import LastAbilityExecution
 
 
 class DistanceRange(enum.Enum):

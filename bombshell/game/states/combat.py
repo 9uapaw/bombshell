@@ -1,4 +1,4 @@
-from game.character import Character
+from game.player import Character
 from game.states.base import BaseState
 from game.target import Target
 

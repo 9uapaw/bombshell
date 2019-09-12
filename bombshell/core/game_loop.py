@@ -39,7 +39,7 @@ class GameLoop:
             for screen in self.screen.capture():
                 # self._show_window(screen)
                 # delta = datetime.datetime.now() - time_before
-                # print(self.state.character)
+                # print(self.state.player)
                 data = self.extractor.extract_data_from_screen(screen)
                 # print(delta.total_seconds() * 1000)
                 # time_before = datetime.datetime.now()
@@ -50,6 +50,8 @@ class GameLoop:
         except BombShellException as e:
             print(e, file=sys.stderr)
             return
+        except Exception as e:
+            print(e, file=sys.stderr)
 
     def record_waypoints(self, paths: Dict[str, str]):
         # time.sleep(5)
