@@ -1,7 +1,7 @@
 import abc
+from typing import Tuple
 
 import pyautogui
-
 
 class CharacterController(metaclass=abc.ABCMeta):
 
@@ -58,3 +58,7 @@ class BasicController(CharacterController):
     def turn_right(cls, key_presses: int):
         for i in range(0, key_presses):
             pyautogui.press('d')
+
+    @classmethod
+    def click_in_middle(cls, area: Tuple[Tuple[int, int],Tuple[int, int],Tuple[int, int],Tuple[int, int]]):
+        pyautogui.click((area[0][0]+area[1][0])/2, (area[0][1]+area[2][1])/2)
