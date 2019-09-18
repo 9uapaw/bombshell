@@ -12,7 +12,7 @@ from gui.general import BUTTON_SIZE
 class BehaviorStorage:
 
     def __init__(self):
-        self.behaviors = [] # type: List[dict]
+        self.behaviors = []  # type: List[dict]
 
     def extend(self, behaviors: list):
         self.behaviors.extend(behaviors)
@@ -133,13 +133,10 @@ def behavior_window_handler(select: list):
             behavior_tree.Update(tree)
 
             parents = selected.Values
-            disable = True
-            if parents:
-                disable = False
             parents.append(str(key.count))
-            selected.Update(values=parents, disabled=disable)
+            selected.Update(values=parents, disabled=True)
 
-            storage.insert(select, str(key.count), {k: v[0] for k, v in values.items()})
+            storage.insert(select, str(key.count), {k: v[0] for k, v in values.items() if v})
         elif event == 'Close_behavior':
             break
         elif event == 'unit':
