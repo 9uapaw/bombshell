@@ -1,6 +1,6 @@
 import time
 
-from game.behavior import CharacterBehavior
+from game.behavior.behavior import CharacterBehavior
 from game.control.control import CharacterController
 from game.player.character import Character
 from game.control.follow import PositionFollower
@@ -38,9 +38,8 @@ class GrindState(BaseState):
             self.controller.cast_spell('escape')
             self.controller.switch_target()
         else:
-            if character.hp < 50:
-                self.controller.cast_spell(3)
-            self.controller.cast_spell(1)
+            for action in self.behavior.interpret('grind', character, target):
+                action.execute(self.controller)
 
     def transition(self, character: Character, target: Target) -> 'BaseState' or None:
         pass

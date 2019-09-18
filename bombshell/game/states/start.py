@@ -1,11 +1,6 @@
-import math
-
-from matplotlib.lines import Line2D
-
-from game.behavior import CharacterBehavior
+from game.behavior.behavior import CharacterBehavior
 from game.control.control import CharacterController
 from game.control.follow import PositionFollower
-from game.position.position import Trajectory, Direction, CharacterDirection
 from etc.const import WAYPOINT_DIFFERENCE_THRESHOLD, TURN_THRESHOLD
 from exception.core import PrerequisiteException
 from game.player.character import Character

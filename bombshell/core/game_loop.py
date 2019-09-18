@@ -13,7 +13,7 @@ from core.config import Config
 from game.position.waypoint import PositionStorage
 from exception.base import BombShellException
 from exception.core import CoreException
-from game.behavior import CharacterBehavior
+from game.behavior.behavior import CharacterBehavior
 from game.control.control import BasicController
 from game.state_handler import StateHandler
 from image.extractor import ImageExtractor
@@ -22,19 +22,25 @@ from image.screen import Screen
 
 class GameLoop:
 
-    def __init__(self, config: Config=None):
-        self.config = config if config else Config()
+    def __init__(self, config: Config):
+        self.config = config
         self.extractor = ImageExtractor(self.config.roi)
         self.waypoints = PositionStorage()
         self.controller = BasicController
-        self.state = StateHandler(self.controller, CharacterBehavior({"100": {"lt": {1}}}, self.controller), self.waypoints)
+
+        self.behavior = CharacterBehavior()
+
+        self.state = None
         self.screen = Screen(self.config.screen_res)
 
-    def start(self, paths: Dict[str, str]):
+    def start(self, paths: {}):
+        self.state = StateHandler(self.controller, self.behavior, self.waypoints)
+
+        self.behavior.resolve_profile(self.config.behavior)
         self._parse_waypoints(paths['waypoint'])
 
         # time.sleep(5)
-        time_before = datetime.datetime.now()
+        # time_before = datetime.datetime.now()
         try:
             for screen in self.screen.capture():
                 # self._show_window(screen)
@@ -74,7 +80,7 @@ class GameLoop:
             cv2.destroyAllWindows()
             raise CoreException()
 
-    def _parse_waypoints(self, path: str) -> dict:
+    def _parse_waypoints(self, path: str):
         with open(path) as wp_file:
             wp = json.load(wp_file)
             self.waypoints.parse(wp['waypoints'])

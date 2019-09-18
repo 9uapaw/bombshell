@@ -1,6 +1,6 @@
 from core.data import ExtractedData
 from game.position.waypoint import PositionStorage
-from game.behavior import CharacterBehavior
+from game.behavior.behavior import CharacterBehavior
 from game.player.character import Character, Resource
 from game.control.control import CharacterController
 from game.states.base import BaseState

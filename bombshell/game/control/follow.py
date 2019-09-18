@@ -3,7 +3,7 @@ import time
 from etc.const import TURN_THRESHOLD, WAYPOINT_DIFFERENCE_THRESHOLD
 from game.player.character import Character
 from game.control.control import CharacterController
-from game.position.position import Position, Trajectory, Direction, CharacterDirection
+from game.position.position import Position, Trajectory, Direction
 from game.position.transform import calculate_trajectory, transform_turn
 import matplotlib.pyplot as plt
 

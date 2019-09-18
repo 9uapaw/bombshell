@@ -3,19 +3,11 @@ import math
 
 from attr import dataclass
 from sympy import Point, Line, Ellipse
-from sympy.vector import Vector, Point as VectorPoint
-from mpmath import degree, radians
 
 
 class Direction(enum.Enum):
     left = 0
     right = 1
-
-
-@dataclass
-class CharacterDirection:
-    position: 'Position'
-    facing: float
 
 
 class Position:

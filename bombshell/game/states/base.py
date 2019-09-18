@@ -1,5 +1,5 @@
 from game.position.waypoint import PositionStorage
-from game.behavior import CharacterBehavior
+from game.behavior.behavior import CharacterBehavior
 from game.player.character import Character
 from game.control.control import CharacterController
 from game.target import Target
