@@ -6,7 +6,7 @@ from core.config import GlobalConfig
 from core.game_loop import GameLoop
 from gui.general import general_layout, console, BUTTON_SIZE
 from gui.setup import setup_layout
-from gui.setup_widgets.behavior import behavior_window_handler, load_behavior
+from gui.setup_widgets.behavior import behavior_window_handler, load_behavior, save_behavior
 
 sg.SetOptions(button_color=sg.COLOR_SYSTEM_DEFAULT)
 # sg.ChangeLookAndFeel('GreenTan')
@@ -38,6 +38,8 @@ def run_window():
             behavior_window_handler('' if not values.get('selected', '') else values.get('selected', ''))
         elif event == 'load_behavior':
             load_behavior(values['behavior'])
+        elif event == 'save_behavior':
+            save_behavior(values['behavior_save'])
         elif event == 'Stop record':
             game_loop.screen.stop_capturing()
         elif event == 'Stop bot':

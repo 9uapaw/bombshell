@@ -1,4 +1,5 @@
 import json
+from typing import List
 
 import PySimpleGUIQt as sg
 from PySimpleGUIQt import TABLE_SELECT_MODE_BROWSE, TABLE_SELECT_MODE_EXTENDED
@@ -6,6 +7,18 @@ from PySimpleGUIQt import TABLE_SELECT_MODE_BROWSE, TABLE_SELECT_MODE_EXTENDED
 from core.config import GlobalConfig
 from game.behavior.map import UNIT, ATTRIBUTES, ACTIONS, OPERATORS
 from gui.general import BUTTON_SIZE
+
+
+class BehaviorStorage:
+
+    def __init__(self):
+        self.behaviors = [] # type: List[dict]
+
+    def extend(self, behaviors: list):
+        self.behaviors.extend(behaviors)
+
+    def insert(self, parents: List[str], key: str, behavior: dict):
+        self.behaviors.append({"parent": parents, "key": key, "behavior": behavior})
 
 
 class Counter:
@@ -18,6 +31,7 @@ class Counter:
 
 
 key = Counter()
+storage = BehaviorStorage()
 
 
 def create_frame(title: str, layout: list):
@@ -26,11 +40,11 @@ def create_frame(title: str, layout: list):
 
 LISTBOX_SIZE = (100, 100)
 
-selected = sg.Listbox(values=[0], key='selected', enable_events=True, disabled=True)
+selected = sg.Listbox(values=[], key='selected', enable_events=True, disabled=True)
 
 behavior_frame = [sg.Frame('Behavior profile', [
-    [sg.Text('Profile path: '), sg.InputText(key='save_behavior'),
-     sg.Button('Save profile', size=BUTTON_SIZE)],
+    [sg.Text('Profile path: '), sg.InputText(key='behavior_save'),
+     sg.Button('Save profile', size=BUTTON_SIZE, key='save_behavior')],
     [sg.Button('Load profile', size=BUTTON_SIZE, key='load_behavior', enable_events=True), sg.InputText(key='behavior'),
      sg.FileBrowse(key='behavior_browse', size=BUTTON_SIZE)],
     [sg.Button('Add', size=BUTTON_SIZE, key='add_behavior'),
@@ -69,17 +83,26 @@ def convert_text(key: str, behavior: dict) -> str:
                                                         behavior['action_value'])
 
 
-# def save_profile(path: str):
-#     if not path:
-#
+def save_behavior(path: str):
+    if not path:
+        GlobalConfig.config.behavior['grind'] = storage.behaviors
+    else:
+        with open(path, 'w') as f:
+            json.dump({'grind': storage.behaviors}, f)
+
+    print('Saved behavior')
 
 
 def load_behavior(path: str):
     with open(path) as f:
         profile = json.load(f)
         tree_data = sg.TreeData()
+        keys = []
 
         for behavior in profile['grind']:
+            keys.append(behavior['key'])
+            key.increment()
+
             for parent in behavior['parent']:
                 tree_data.Insert("" if parent == "0" else parent, behavior['key'],
                                  convert_text(behavior['key'], behavior['behavior']), behavior)
@@ -87,9 +110,11 @@ def load_behavior(path: str):
         behavior_tree.Update(tree_data)
 
         GlobalConfig.config.behavior = profile
+        storage.extend(profile['grind'])
+        selected.Update(keys)
 
 
-def behavior_window_handler(select: str):
+def behavior_window_handler(select: list):
     behavior_window = sg.Window("Add behavior", layout=[
         widgets
         , [sg.Button('Add', key='+_behavior'),
@@ -99,18 +124,22 @@ def behavior_window_handler(select: str):
         event, values = behavior_window.Read()
         if event == '+_behavior':
             key.increment()
+
             if select:
                 for i in select:
                     tree.Insert(i, str(key.count), convert_text(str(key.count), values), values)
             else:
                 tree.Insert(select, str(key.count), convert_text(str(key.count), values), values)
             behavior_tree.Update(tree)
+
             parents = selected.Values
             disable = True
             if parents:
                 disable = False
             parents.append(str(key.count))
             selected.Update(values=parents, disabled=disable)
+
+            storage.insert(select, str(key.count), {k: v[0] for k, v in values.items()})
         elif event == 'Close_behavior':
             break
         elif event == 'unit':
@@ -127,7 +156,7 @@ def behavior_window_handler(select: str):
 
                 widgets[4].Rows[0][0].Update(list(ACTIONS.keys()))
         elif event == 'actions':
-            if values.get('actions', [])[0] != 'do nothing':
+            if values.get('actions', [''])[0] != 'do nothing':
                 widgets[5].Rows[0][0].Update(disabled=False)
             else:
                 widgets[5].Rows[0][0].Update(disabled=True)
