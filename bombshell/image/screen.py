@@ -7,7 +7,7 @@ import mss
 class Screen:
 
         def __init__(self, screen_size: (int, int, int, int)):
-            self.screen_size = (0, 40, 800, 640)
+            self.screen_size = screen_size
             self.capturing = True
 
         def capture(self):

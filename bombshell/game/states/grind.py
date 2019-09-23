@@ -29,13 +29,13 @@ class GrindState(BaseState):
 
         if target.hp == 0:
             self.engaged = False
+            self.controller.interact_with_target()
 
         if self.last_pull and time.time() - self.last_pull > 5 and not character.is_in_combat:
             self.engaged = False
 
         if not character.is_in_combat and not self.engaged:
             self.waypoint_follower.move(character)
-            self.controller.cast_spell('escape')
             self.controller.switch_target()
         else:
             for action in self.behavior.interpret('grind', character, target):

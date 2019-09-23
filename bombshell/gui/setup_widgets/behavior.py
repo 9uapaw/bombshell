@@ -40,16 +40,16 @@ def create_frame(title: str, layout: list):
 
 LISTBOX_SIZE = (100, 100)
 
-selected = sg.Listbox(values=[], key='selected', enable_events=True, disabled=True)
+selected = sg.Listbox(values=[], key='selected', enable_events=True, disabled=True, size=(100, 70))
 
 behavior_frame = [sg.Frame('Behavior profile', [
     [sg.Text('Profile path: '), sg.InputText(key='behavior_save'),
      sg.Button('Save profile', size=BUTTON_SIZE, key='save_behavior')],
     [sg.Button('Load profile', size=BUTTON_SIZE, key='load_behavior', enable_events=True), sg.InputText(key='behavior'),
      sg.FileBrowse(key='behavior_browse', size=BUTTON_SIZE)],
+    [sg.Text('Parents: '), selected],
     [sg.Button('Add', size=BUTTON_SIZE, key='add_behavior'),
      sg.Button('Remove', size=BUTTON_SIZE, key='remove_behavior')],
-    [sg.Text('Parents: '), selected]
 ])]
 
 tree = sg.TreeData()
@@ -124,19 +124,20 @@ def behavior_window_handler(select: list):
         event, values = behavior_window.Read()
         if event == '+_behavior':
             key.increment()
+            new_values = {k: v[0] if not isinstance(v, str) else v for k, v in values.items() if v}
 
             if select:
                 for i in select:
-                    tree.Insert(i, str(key.count), convert_text(str(key.count), values), values)
+                    tree.Insert(i, str(key.count), convert_text(str(key.count), new_values), values)
             else:
-                tree.Insert(select, str(key.count), convert_text(str(key.count), values), values)
+                tree.Insert(select, str(key.count), convert_text(str(key.count), new_values), values)
             behavior_tree.Update(tree)
 
             parents = selected.Values
             parents.append(str(key.count))
-            selected.Update(values=parents, disabled=True)
+            selected.Update(values=parents, disabled=False)
 
-            storage.insert(select, str(key.count), {k: v[0] for k, v in values.items() if v})
+            storage.insert(select, str(key.count), new_values)
         elif event == 'Close_behavior':
             break
         elif event == 'unit':

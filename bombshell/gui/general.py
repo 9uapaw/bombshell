@@ -1,6 +1,6 @@
 import PySimpleGUIQt as sg
 
-BUTTON_SIZE = (80, 20)
+BUTTON_SIZE = (100, 30)
 
 waypoint_frame = [sg.Frame('Waypoint', [
     [sg.Text('Waypoint path: ', pad=(20, 20)), sg.InputText(key='save_waypoint'),

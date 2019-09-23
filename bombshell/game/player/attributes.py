@@ -16,3 +16,8 @@ class LastAbilityExecution(enum.Enum):
     NOT_BEHIND = 4
     NOT_INFRONT = 5
     NO_TARGET = 6
+
+
+class CastingState(enum.Enum):
+    IDLE = 0
+    CASTING = 1

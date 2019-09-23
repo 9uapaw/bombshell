@@ -7,7 +7,6 @@
   <Frame name="BombShellMainFrame">
     <Scripts>
       <OnLoad>
-        ShowFrame();
       </OnLoad>
     </Scripts>
   </Frame>

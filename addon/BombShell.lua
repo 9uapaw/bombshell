@@ -1,14 +1,40 @@
-local frame = CreateFrame("Frame", "MainFrame", UIParent)
+frame = CreateFrame("Frame", "MainFrame", UIParent)
 frame:ClearAllPoints()
 frame:SetHeight(600)
 frame:SetWidth(320)
 
+function replace_char(pos, str, r)
+    return str:sub(1, pos-1) .. r .. str:sub(pos+1)
+end
+
+function SetPlayerState(attr, val)
+    local current = frame.playerState:GetText()
+
+    if (not current) then
+        current = string.rep("0", table.getn(PLAYER_STATE))
+    end
+
+    frame.playerState:SetText(replace_char(PLAYER_STATE[attr], current,val))
+    end
+
+function SetTargetState(attr, val)
+    local current = frame.targetState:GetText()
+
+    if (not current) then
+        current = string.rep("0", table.getn(TARGET_STATE))
+    end
+
+    frame.targetState:SetText(replace_char(TARGET_STATE[attr], current, val))
+end
+
 PARENT = "GameFontNormal"
 FONT = "Interface\\AddOns\\BombShell\\data\\font\\default.ttf"
-FONT_SIZE = 24
+FONT_SIZE = 50
 START = 30
 LINE_SPACE = 30
-DATA = {"text", "mana", "posx", "posy", "targetHealth", "combat", "facing", "distance", "ability", "casting" }
+DATA = {"text", "mana", "posx", "posy", "facing", "playerState", "targetHealth", "targetState" }
+PLAYER_STATE = {combat=1, casting=2}
+TARGET_STATE = {distance=1}
 
 for k, v in ipairs(DATA) do
     local t = frame:CreateFontString(v, "BACKGROUND", PARENT)
@@ -27,8 +53,8 @@ function GetPlayerHealth()
 end
 
 function GetPlayerMana()
-    local max = UnitManaMax("player")
-    local perc = floor(UnitMana("player") / max * 100)
+    local max = UnitPowerMax("player")
+    local perc = floor(UnitPower("player") / max * 100)
 
     return perc
 end
@@ -73,26 +99,31 @@ function GetSpellState()
 end
 
 function GetPlayerCastingState()
-    local spell, _, _, _, _, endTime = UnitCastingInfo("player")
-    local ret = -1
+    local spell, _, _, _, _, endTime = CastingInfo()
+    local ret = 0
     if spell then
-        ret = endTime
+        ret = 1
     end
 
     return ret
 end
 
-function GetPlayerFacing()
-    local p = Minimap
-    local m = ({p:GetChildren()})[9]
-    return m:GetFacing()
+function GetFacing()
+    return GetPlayerFacing()
 end
 
 function GetTruePosition()
-    local posX, posY = GetPlayerMapPosition("player")
-    local w = WorldMapButton:GetWidth()
-    local h = WorldMapButton:GetHeight()
-    return posX * w, posY * h
+    local mapID = C_Map.GetBestMapForUnit("player")
+
+	if mapID then
+		local mapPos = C_Map.GetPlayerMapPosition(mapID, "player")
+        if mapPos then
+            local x, y = mapPos:GetXY()
+            return x * 100, y * 100
+        end
+		end
+
+    return -1, -1
 end
 
 frame:SetPoint("LEFT", 0, 200)
@@ -105,8 +136,9 @@ frame:SetBackdrop(
 )
 frame.texture = frame:CreateTexture(nil, "BACKGROUND")
 frame.texture:SetAllPoints(true)
-frame.texture:SetTexture(1, 1, 1, 1)
+frame.texture:SetColorTexture(1, 1, 1, 1)
 
+DEFAULT_CHAT_FRAME:AddMessage("ENTER WORLD")
 frame:RegisterEvent("UNIT_HEALTH")
 frame:RegisterEvent("UNIT_MANA")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -117,17 +149,15 @@ frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
 frame:SetScript(
     "OnEvent",
-    function(...)
+    function(self, event, ...)
         if (event == "PLAYER_ENTERING_WORLD") then
-            SetMapToCurrentZone()
             DEFAULT_CHAT_FRAME:AddMessage("ENTER WORLD")
             frame.text:SetText("" .. GetPlayerHealth())
             frame.mana:SetText("" .. GetPlayerMana())
-            frame.combat:SetText("0")
-            frame.distance:SetText("" .. -1)
+            SetPlayerState("combat", "0")
+            SetTargetState("distance", "0")
             frame.targetHealth:SetText("" .. -1)
 --            frame.tuid:SetText("TID: " .. 0)
-            frame.ability:SetText("" .. -1)
         elseif (event == "UNIT_HEALTH") then
             local health = GetPlayerHealth()
             local targetHealth = GetTargetHealth()
@@ -137,18 +167,18 @@ frame:SetScript(
             local mana = GetPlayerMana()
             frame.mana:SetText("" .. mana)
         elseif (event == "PLAYER_REGEN_ENABLED") then
-            frame.combat:SetText("0")
+            SetPlayerState("combat", "0")
         elseif (event == "PLAYER_REGEN_DISABLED") then
-            frame.combat:SetText("1")
+            SetPlayerState("combat", "1")
         elseif (event == "PLAYER_TARGET_CHANGED") then
             local tuid = UnitLevel("target")
             local targetHealth = GetTargetHealth()
             local distance = GetTargetDistance()
-            frame.distance:SetText("" .. distance)
+            SetTargetState("distance", distance)
             frame.targetHealth:SetText("" .. targetHealth)
 --            frame.tuid:SetText("TID: " .. tuid)
         elseif (event == "COMBAT_LOG_EVENT_UNFILTERED") then
-            frame.ability:SetText("" .. GetSpellState())
+            --frame.ability:SetText("" .. GetSpellState())
         end
     end
 )
@@ -160,12 +190,10 @@ frame:SetScript(
         frame.posx:SetText("" .. string.sub(posX, 0, 8))
         frame.posy:SetText("" .. string.sub(posY, 0, 8))
 
-        frame.facing:SetText("" .. string.sub(GetPlayerFacing(), 0, 8))
+        frame.facing:SetText("" .. string.sub(GetFacing(), 0, 8))
 
-        frame.casting:SetText("" .. GetPlayerCastingState())
+        SetPlayerState("casting", GetPlayerCastingState())
     end
 )
 
-function ShowFrame()
-    frame:Show()
-end
+frame:Show()

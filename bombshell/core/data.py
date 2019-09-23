@@ -1,7 +1,7 @@
 import enum
 from dataclasses import dataclass
 from typing import Tuple
-from game.player.attributes import LastAbilityExecution
+from game.player.attributes import LastAbilityExecution, CastingState
 
 
 class DistanceRange(enum.Enum):
@@ -20,4 +20,5 @@ class ExtractedData:
     target_distance: DistanceRange
     combat: bool
     facing: float
-    last_ability: LastAbilityExecution
+    casting: CastingState
+

@@ -29,8 +29,16 @@ class CharacterController(metaclass=abc.ABCMeta):
     def switch_target(cls):
         raise NotImplementedError()
 
+    @classmethod
+    def interact_with_target(cls):
+        raise NotImplementedError()
+
 
 class BasicController(CharacterController):
+
+    @classmethod
+    def interact_with_target(cls):
+        pyautogui.press('t')
 
     @classmethod
     def move_forward(cls):
