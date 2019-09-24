@@ -1,8 +1,8 @@
 import math
 from math import pi
 
+from core.config import GlobalConfig
 from game.position.position import Position, Trajectory
-from etc.const import RAD_PER_TURN
 
 
 def calculate_trajectory(point: Position, facing: float) -> Trajectory:
@@ -22,6 +22,6 @@ def normalize_facing(facing: float) -> float:
 
 
 def transform_turn(angle: float):
-    return math.ceil(angle / RAD_PER_TURN)
+    return math.ceil(angle / GlobalConfig.config.movement.rad_per_turn)
 
 

@@ -55,6 +55,7 @@ class GameLoop:
 
         except BombShellException as e:
             print(e, file=sys.stderr)
+            self.screen.stop_capturing()
             return
         except Exception as e:
             print(e, file=sys.stderr)

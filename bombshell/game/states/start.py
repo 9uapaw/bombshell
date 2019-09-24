@@ -1,7 +1,7 @@
+from core.config import GlobalConfig
 from game.behavior.behavior import CharacterBehavior
 from game.control.control import CharacterController
 from game.control.follow import PositionFollower
-from etc.const import WAYPOINT_DIFFERENCE_THRESHOLD, TURN_THRESHOLD
 from exception.core import PrerequisiteException
 from game.player.character import Character
 from game.position.waypoint import PositionStorage
@@ -21,7 +21,7 @@ class StartState(BaseState):
 
     def transition(self, character: Character, target: Target) -> 'BaseState' or None:
         if character.position.is_close_to(self.waypoints.peek(character.current_waypoint),
-                                          WAYPOINT_DIFFERENCE_THRESHOLD):
+                                          GlobalConfig.config.movement.waypoint_difference_threshold):
             return GrindState(self.controller, self.behavior, self.waypoints)
         else:
             raise PrerequisiteException('Waypoint is {} yards away'.format(

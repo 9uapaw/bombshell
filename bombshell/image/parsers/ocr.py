@@ -15,7 +15,8 @@ class OcrParser(BaseParser):
         'facing',
         ['combat', 'casting'],
         'target_health',
-        ['distance']
+        ['distance'],
+        'target_guid'
     ]
 
     def parse(self, raw: str) -> ExtractedData:
@@ -23,18 +24,20 @@ class OcrParser(BaseParser):
         clean_data = self._extract_value(raw)
 
         return ExtractedData(
-            player_health=clean_data[self.ADDON_DATA_POSITION[0]],
-            player_resource=clean_data[self.ADDON_DATA_POSITION[1]],
-            player_position=(clean_data[self.ADDON_DATA_POSITION[2]], clean_data[self.ADDON_DATA_POSITION[3]]),
-            facing=clean_data[self.ADDON_DATA_POSITION[4]],
-            combat=clean_data[self.ADDON_DATA_POSITION[5][0]],
+            player_health=int(clean_data[self.ADDON_DATA_POSITION[0]]),
+            player_resource=int(clean_data[self.ADDON_DATA_POSITION[1]]),
+            player_position=(float(clean_data[self.ADDON_DATA_POSITION[2]]), float(clean_data[self.ADDON_DATA_POSITION[3]])),
+            facing=float(clean_data[self.ADDON_DATA_POSITION[4]]),
+            combat=bool(clean_data[self.ADDON_DATA_POSITION[5][0]]),
             casting=CastingState(clean_data[self.ADDON_DATA_POSITION[5][1]]),
-            target_health=clean_data[self.ADDON_DATA_POSITION[6]],
-            target_distance=DistanceRange(clean_data[self.ADDON_DATA_POSITION[7][0]])
+            target_health=int(clean_data[self.ADDON_DATA_POSITION[6]]),
+            target_distance=DistanceRange(clean_data[self.ADDON_DATA_POSITION[7][0]]),
+            target_id=int(str(clean_data[self.ADDON_DATA_POSITION[8]])[:5], 16),
+            target_guid=int(str(clean_data[self.ADDON_DATA_POSITION[8]]), 16),
         )
 
     def _extract_value(self, raw: List[str]) -> Dict[(str, List[float])]:
-        clean = ["".join(filter(lambda s: s in "0123456789.-", d)) for d in raw if d.replace(' ', '')]
+        clean = [v for v in raw if v]
         res = {}
         pos = 0
 
@@ -50,7 +53,7 @@ class OcrParser(BaseParser):
                         local_pos += 1
                     pos += 1
                 else:
-                    val = float(s)
+                    val = s
                     res[self.ADDON_DATA_POSITION[pos]] = val
                     pos += 1
             except Exception as e:

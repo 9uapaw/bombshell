@@ -3,9 +3,21 @@ frame:ClearAllPoints()
 frame:SetHeight(600)
 frame:SetWidth(320)
 
+-- HELPER FUNCTIONS --
+
+function split(s, delimiter)
+    result = {};
+    for match in (s..delimiter):gmatch("(.-)"..delimiter) do
+        table.insert(result, match);
+    end
+    return result;
+end
+
 function replace_char(pos, str, r)
     return str:sub(1, pos-1) .. r .. str:sub(pos+1)
 end
+
+-- END OF HELPER FUNCTIONS --
 
 function SetPlayerState(attr, val)
     local current = frame.playerState:GetText()
@@ -27,12 +39,23 @@ function SetTargetState(attr, val)
     frame.targetState:SetText(replace_char(TARGET_STATE[attr], current, val))
 end
 
+function SetTargetGuid()
+    local guid = UnitGUID("target")
+    local target = GetTargetHealth()
+    if not guid or target == -1 then
+        guid = "-1"
+    end
+    guid = split(guid, "-")
+
+    frame.targetId:SetText(guid[6] .. guid[7])
+end
+
 PARENT = "GameFontNormal"
 FONT = "Interface\\AddOns\\BombShell\\data\\font\\default.ttf"
-FONT_SIZE = 50
+FONT_SIZE = 30
 START = 30
 LINE_SPACE = 30
-DATA = {"text", "mana", "posx", "posy", "facing", "playerState", "targetHealth", "targetState" }
+DATA = {"text", "mana", "posx", "posy", "facing", "playerState", "targetHealth", "targetState", "targetId" }
 PLAYER_STATE = {combat=1, casting=2}
 TARGET_STATE = {distance=1}
 
@@ -99,7 +122,7 @@ function GetSpellState()
 end
 
 function GetPlayerCastingState()
-    local spell, _, _, _, _, endTime = CastingInfo()
+    local spell, _, _, _, _, endTime = UnitCastingInfo("player")
     local ret = 0
     if spell then
         ret = 1
@@ -157,7 +180,7 @@ frame:SetScript(
             SetPlayerState("combat", "0")
             SetTargetState("distance", "0")
             frame.targetHealth:SetText("" .. -1)
---            frame.tuid:SetText("TID: " .. 0)
+            frame.targetId:SetText("-1")
         elseif (event == "UNIT_HEALTH") then
             local health = GetPlayerHealth()
             local targetHealth = GetTargetHealth()
@@ -176,7 +199,11 @@ frame:SetScript(
             local distance = GetTargetDistance()
             SetTargetState("distance", distance)
             frame.targetHealth:SetText("" .. targetHealth)
---            frame.tuid:SetText("TID: " .. tuid)
+            if targetHealth == -1 then
+                frame.targetId:SetText("-1")
+            else
+                SetTargetGuid()
+            end
         elseif (event == "COMBAT_LOG_EVENT_UNFILTERED") then
             --frame.ability:SetText("" .. GetSpellState())
         end
@@ -193,6 +220,7 @@ frame:SetScript(
         frame.facing:SetText("" .. string.sub(GetFacing(), 0, 8))
 
         SetPlayerState("casting", GetPlayerCastingState())
+        SetTargetState("distance", GetTargetDistance())
     end
 )
 

@@ -3,6 +3,7 @@ from typing import Tuple
 
 import pyautogui
 
+
 class CharacterController(metaclass=abc.ABCMeta):
 
     @classmethod

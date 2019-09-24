@@ -1,9 +1,9 @@
 import time
 
-from etc.const import TURN_THRESHOLD, WAYPOINT_DIFFERENCE_THRESHOLD
+from core.config import GlobalConfig
 from game.player.character import Character
 from game.control.control import CharacterController
-from game.position.position import Position, Trajectory, Direction
+from game.position.position import Trajectory, Direction
 from game.position.transform import calculate_trajectory, transform_turn
 import matplotlib.pyplot as plt
 
@@ -19,7 +19,7 @@ class PositionFollower:
     def move(self, character: Character):
         print("Following waypoint {} out of {}. Character is currently moving: {}".format(character.current_waypoint, len(self.waypoints.waypoints) - 1, character.is_moving))
         if character.position.is_close_to(self.waypoints.waypoints[character.current_waypoint],
-                                          WAYPOINT_DIFFERENCE_THRESHOLD):
+                                          GlobalConfig.config.movement.waypoint_difference_threshold):
             print("Close to waypoint")
 
             if character.current_waypoint == len(self.waypoints.waypoints) - 1:
@@ -41,7 +41,7 @@ class PositionFollower:
         angle_difference, direction = current_trajectory.calculate_turn(waypoint_trajectory)
         # self._show_on_plot(current_trajectory, waypoint_trajectory)
 
-        if angle_difference <= TURN_THRESHOLD:
+        if angle_difference <= GlobalConfig.config.movement.turn_threshold:
             return None
 
         if character.is_moving:

@@ -13,12 +13,14 @@ class DistanceRange(enum.Enum):
 
 @dataclass
 class ExtractedData:
-    player_health: float
-    player_resource: float
+    player_health: int
+    player_resource: int
     player_position: Tuple[float, float]
-    target_health: float
+    target_health: int
     target_distance: DistanceRange
     combat: bool
     facing: float
     casting: CastingState
+    target_id: int
+    target_guid: int
 
