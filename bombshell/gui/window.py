@@ -22,7 +22,9 @@ def run_window():
 
     while True:
         event, values = window.Read()
-        if event == 'Record':
+        print(str(event))
+        if event == 'Record waypoint':
+            print("Record waypoints clicked on window")
             if not game_loop or not game_loop.screen.capturing:
                 game_loop = GameLoop(GlobalConfig.config)
                 record = threading.Thread(target=game_loop.record_waypoints, args=(paths, ))

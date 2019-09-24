@@ -62,6 +62,7 @@ class GameLoop:
 
     def record_waypoints(self, paths: Dict[str, str]):
         # time.sleep(5)
+        print("Record waypoints called")
         waypoints = {'type': 'circle', 'waypoints': []}
         for screen in self.screen.capture():
             data = self.extractor.extract_data_from_screen(screen)

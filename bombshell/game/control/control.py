@@ -1,4 +1,5 @@
 import abc
+import time
 from typing import Tuple
 
 import pyautogui
@@ -19,11 +20,11 @@ class CharacterController(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
     @classmethod
-    def turn_left(cls, key_presses: int):
+    def turn_left(cls, press_time: float):
         raise NotImplementedError()
 
     @classmethod
-    def turn_right(cls, key_presses: int):
+    def turn_right(cls, press_time: float):
         raise NotImplementedError()
 
     @classmethod
@@ -43,11 +44,13 @@ class BasicController(CharacterController):
 
     @classmethod
     def move_forward(cls):
-        pyautogui.press('.')
+        pyautogui.keyDown('w')
+        # pyautogui.press('.')
 
     @classmethod
     def stop(cls):
-        pyautogui.press('.')
+        pyautogui.keyUp('w')
+        # pyautogui.press('.')
 
     @classmethod
     def cast_spell(cls, key: int):
@@ -58,15 +61,27 @@ class BasicController(CharacterController):
     def switch_target(cls):
         pyautogui.press('tab')
 
-    @classmethod
-    def turn_left(cls, key_presses: int):
-        for i in range(0, key_presses):
-            pyautogui.press('a')
+    # @classmethod
+    # def turn_left(cls, key_presses: int):
+    #     for i in range(0, key_presses):
+    #         pyautogui.press('a')
+    #
+    # @classmethod
+    # def turn_right(cls, key_presses: int):
+    #     for i in range(0, key_presses):
+    #         pyautogui.press('d')
 
     @classmethod
-    def turn_right(cls, key_presses: int):
-        for i in range(0, key_presses):
-            pyautogui.press('d')
+    def turn_left(cls, press_time: float):
+        pyautogui.keyDown('a')
+        time.sleep(press_time)
+        pyautogui.keyUp('a')
+
+    @classmethod
+    def turn_right(cls, press_time: float):
+        pyautogui.keyDown('d')
+        time.sleep(press_time)
+        pyautogui.keyUp('d')
 
     @classmethod
     def click_in_middle(cls, area: Tuple[Tuple[int, int],Tuple[int, int],Tuple[int, int],Tuple[int, int]]):

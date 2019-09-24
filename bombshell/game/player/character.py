@@ -25,7 +25,7 @@ class Character:
         self.position = Position(data.player_position[0], data.player_position[1])
         self.is_in_combat = data.combat
         self.facing = normalize_facing(data.facing)
-        self.last_ability = data.last_ability
+        # self.last_ability = data.last_ability
 
     def switch_moving(self):
         self.is_moving = not self.is_moving

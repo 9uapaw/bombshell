@@ -4,7 +4,6 @@ from math import pi
 from core.config import GlobalConfig
 from game.position.position import Position, Trajectory
 
-
 def calculate_trajectory(point: Position, facing: float) -> Trajectory:
     projected_x = point.point.x + 1 * math.cos(facing)
     projected_y = point.point.y + 1 * math.sin(facing)
@@ -21,7 +20,10 @@ def normalize_facing(facing: float) -> float:
     return normalized
 
 
-def transform_turn(angle: float):
-    return math.ceil(angle / GlobalConfig.config.movement.rad_per_turn)
+def transform_turn(angle_difference: float):
+    timespan = abs(angle_difference) / pi
+    print('Transforming angle {} into {} seconds of keypress'.format(angle_difference, timespan))
+    return timespan
+    # return math.ceil(angle_difference / GlobalConfig.config.movement.rad_per_turn)
 
 
