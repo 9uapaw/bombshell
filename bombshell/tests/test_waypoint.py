@@ -3,10 +3,10 @@ import math
 import unittest
 from math import pi
 
+from core.config import GlobalConfig
 from core.data import ExtractedData, DistanceRange
 from core.game_loop import GameLoop
 from game.position.position import Position, Trajectory
-from game.position import calculate_trajectory, normalize_facing
 
 
 class FakeScreen:
@@ -18,7 +18,7 @@ class FakeScreen:
 class TestWaypoint(unittest.TestCase):
 
     def setUp(self):
-        self.game_loop = GameLoop()
+        self.game_loop = GameLoop(GlobalConfig.config)
         self.game_loop.screen = FakeScreen()
 
     def test_record_waypoint(self):
@@ -64,3 +64,9 @@ class TestWaypoint(unittest.TestCase):
         self.assertTrue(math.isclose(normalize_facing(a1), pi / 2 + a1))
         self.assertTrue(math.isclose(normalize_facing(a2), 2 * pi - a2))
         self.assertTrue(math.isclose(normalize_facing(a3), pi / 2 + a3))
+
+    def test_position_close_to(self):
+        p = Position(441.1396, -337.4077)
+        p2 = Position(438.636, -340.0971)
+
+        print(p.is_close_to(p2, 0.01))

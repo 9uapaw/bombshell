@@ -10,7 +10,7 @@ from game.target import Target
 class BehaviorTree:
 
     def __init__(self):
-        self._tree = {}  # type: Dict[int, List[BehaviorNode]]
+        self._tree = {}  # type: Dict[str, List[BehaviorNode]]
 
     def add(self, node: BehaviorNode):
         for p in node.parent:
@@ -20,12 +20,12 @@ class BehaviorTree:
                 self._tree[p] = [node]
 
     def traverse(self, character: Character, target: Target) -> Iterable[BehaviorAction]:
-        if 0 not in self._tree:
-            return
+        if '' not in self._tree:
+            return []
 
-        yield self._traverse([0], character, target)
+        return self._traverse([''], character, target)
 
-    def _traverse(self, parent_indexes: List[int], character: Character, target: Target) -> Iterable[BehaviorAction]:
+    def _traverse(self, parent_indexes: List[str], character: Character, target: Target) -> Iterable[BehaviorAction]:
         for parent_index in parent_indexes:
             for node in self._tree[parent_index]:
                 if node.check(character, target):

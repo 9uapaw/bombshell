@@ -1,0 +1,5 @@
+{
+  "waypoint":
+    "waypoints/valley.json",
+  "behavior": "behaviors/base.json"
+}

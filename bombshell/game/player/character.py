@@ -1,7 +1,7 @@
 import enum
 
 from core.data import ExtractedData
-from game.player.attributes import Resource, LastAbilityExecution
+from game.player.attributes import Resource, LastAbilityExecution, CastingState
 from game.position.position import Position
 from game.position.transform import normalize_facing
 
@@ -17,7 +17,7 @@ class Character:
         self.is_in_combat = False
         self.current_waypoint = 0
         self.facing = 0
-        self.last_ability = LastAbilityExecution.SUCCESS
+        self.casting = CastingState.IDLE
 
     def update(self, data: ExtractedData):
         self.hp = data.player_health
@@ -26,6 +26,7 @@ class Character:
         self.is_in_combat = data.combat
         self.facing = normalize_facing(data.facing)
         # self.last_ability = data.last_ability
+        self.casting = data.casting
 
     def switch_moving(self):
         self.is_moving = not self.is_moving

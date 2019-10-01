@@ -1,3 +1,5 @@
+import time
+
 from game.control.control import CharacterController
 
 
@@ -14,6 +16,8 @@ class CastAction(BehaviorAction):
 
     def execute(self, controller: CharacterController):
         controller.cast_spell(self.behavior['action_value'])
+        if self.behavior.get('action_duration', 0):
+            time.sleep(float(self.behavior['action_duration']))
 
 
 class NullAction(BehaviorAction):

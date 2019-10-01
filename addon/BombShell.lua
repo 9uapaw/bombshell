@@ -52,9 +52,9 @@ end
 
 PARENT = "GameFontNormal"
 FONT = "Interface\\AddOns\\BombShell\\data\\font\\default.ttf"
-FONT_SIZE = 30
-START = 30
-LINE_SPACE = 30
+FONT_SIZE = 32
+START = 80
+LINE_SPACE = 40
 DATA = {"text", "mana", "posx", "posy", "facing", "playerState", "targetHealth", "targetState", "targetId" }
 PLAYER_STATE = {combat=1, casting=2}
 TARGET_STATE = {distance=1}
@@ -137,12 +137,15 @@ end
 
 function GetTruePosition()
     local mapID = C_Map.GetBestMapForUnit("player")
+    local map = WorldMapFrame.ScrollContainer
+    local width = map:GetWidth()
+    local height = map:GetHeight()
 
 	if mapID then
 		local mapPos = C_Map.GetPlayerMapPosition(mapID, "player")
         if mapPos then
             local x, y = mapPos:GetXY()
-            return x * 100, y * 100
+            return x * width, y * height
         end
 		end
 

@@ -18,12 +18,14 @@ class GrindState(BaseState):
         self.last_pull = None
 
     def interpret(self, character: Character, target: Target):
-        if target.hp > 0 and not self.engaged and target.distance.value > 0:
+        if target.hp > 0 and not self.engaged:
             if character.is_moving:
                 self.controller.stop()
                 character.switch_moving()
 
-            self.controller.cast_spell(2)
+            for action in self.behavior.interpret('pull', character, target):
+                action.execute(self.controller)
+
             self.engaged = True
             self.last_pull = time.time()
 
@@ -35,6 +37,8 @@ class GrindState(BaseState):
             self.engaged = False
 
         if not character.is_in_combat and not self.engaged:
+            for action in self.behavior.interpret('non_combat', character, target):
+                action.execute(self.controller)
             self.waypoint_follower.move(character)
             self.controller.switch_target()
         else:

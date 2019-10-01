@@ -7,6 +7,7 @@ from game.player.character import Character
 from game.position.waypoint import PositionStorage
 from game.states.base import BaseState
 from game.states.grind import GrindState
+from game.states.move import MoveState
 from game.target import Target
 
 
@@ -17,6 +18,9 @@ class StartState(BaseState):
         self.waypoint_follower = PositionFollower(controller, self.waypoints)
 
     def interpret(self, character: Character, target: Target):
+        closes_waypoint_index = self.waypoints.waypoints.index(min(self.waypoints.waypoints, key=character.position.calculate_distance_from))
+        character.current_waypoint = closes_waypoint_index
+
         self.waypoint_follower.turn(character)
 
     def transition(self, character: Character, target: Target) -> 'BaseState' or None:

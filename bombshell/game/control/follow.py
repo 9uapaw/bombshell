@@ -1,6 +1,7 @@
 import time
 
 from core.config import GlobalConfig
+from core.logger import Logger
 from game.player.character import Character
 from game.control.control import CharacterController
 from game.position.position import Trajectory, Direction
@@ -17,10 +18,10 @@ class PositionFollower:
         self.waypoints = waypoints
 
     def move(self, character: Character):
-        print("Following waypoint {} out of {}. Character is currently moving: {}".format(character.current_waypoint, len(self.waypoints.waypoints) - 1, character.is_moving))
+        Logger.debug("Following waypoint {} out of {}. Character is currently moving: {}".format(character.current_waypoint, len(self.waypoints.waypoints) - 1, character.is_moving))
         if character.position.is_close_to(self.waypoints.waypoints[character.current_waypoint],
                                           GlobalConfig.config.movement.waypoint_difference_threshold):
-            print("Close to waypoint")
+            Logger.debug("Close to waypoint")
 
             if character.current_waypoint == len(self.waypoints.waypoints) - 1:
                 character.current_waypoint = 0
@@ -30,7 +31,7 @@ class PositionFollower:
 
         if not self.turn(character):
             if not character.is_moving:
-                print('Moving')
+                Logger.debug('Moving')
                 self.controller.move_forward()
                 character.switch_moving()
 
@@ -48,8 +49,8 @@ class PositionFollower:
             self.controller.stop()
             character.switch_moving()
 
-        print('Current angle: {}'.format(character.facing))
-        print('Waypoint: {} - {} rad on the {}'.format(waypoint_trajectory.end_point, angle_difference, direction.name))
+        Logger.debug('Current angle: {}'.format(character.facing))
+        Logger.debug('Waypoint: {} - {} rad on the {}'.format(waypoint_trajectory.end_point, angle_difference, direction.name))
 
         if direction == Direction.left:
             self.controller.turn_left(transform_turn(angle_difference))

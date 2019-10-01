@@ -12,6 +12,7 @@ class PositionStorage:
         self.waypoints.append(Position(waypoint[0], waypoint[1]))
 
     def parse(self, points: List[Tuple[float, float]]):
+        self.waypoints = []
         self.waypoints.extend([Position(x, y) for x, y in points])
 
     def peek(self, i: int):

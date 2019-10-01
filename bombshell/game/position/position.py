@@ -2,7 +2,7 @@ import enum
 import math
 
 from attr import dataclass
-from sympy import Point, Line, Ellipse
+from sympy import Point, Line, Ellipse, Circle
 
 
 class Direction(enum.Enum):
@@ -16,9 +16,15 @@ class Position:
         self.point = Point(x, y)
 
     def is_close_to(self, other: 'Position', threshold: float):
-        hradius = self.point.x * threshold if self.point.x else threshold
-        vradius = self.point.y * threshold if self.point.y else threshold
-        area = Ellipse(self.point, hradius, vradius)
+        x_diff = self.point.x * threshold if self.point.x else threshold
+        y_diff = self.point.y * threshold if self.point.y else threshold
+        x_point = self.point.x + x_diff
+        y_point = self.point.y + y_diff
+        new_pos = Position(x_point, y_point)
+
+        radius = self.calculate_distance_from(new_pos)
+
+        area = Circle(self.point, radius)
 
         return area.encloses_point(other.point)
 

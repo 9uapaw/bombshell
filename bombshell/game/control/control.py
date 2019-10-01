@@ -3,6 +3,10 @@ import time
 from typing import Tuple
 
 import pyautogui
+import pynput
+from pynput.keyboard import Controller
+
+from core.logger import Logger
 
 
 class CharacterController(metaclass=abc.ABCMeta):
@@ -44,18 +48,17 @@ class BasicController(CharacterController):
 
     @classmethod
     def move_forward(cls):
-        pyautogui.keyDown('w')
-        # pyautogui.press('.')
+        # pyautogui.keyDown('w')
+        pyautogui.press('.')
 
     @classmethod
     def stop(cls):
-        pyautogui.keyUp('w')
-        # pyautogui.press('.')
+        # pyautogui.keyUp('w')
+        pyautogui.press('[')
 
     @classmethod
     def cast_spell(cls, key: int):
         pyautogui.press(str(key))
-        print('Casted spell {}'.format(key))
 
     @classmethod
     def switch_target(cls):
@@ -73,14 +76,20 @@ class BasicController(CharacterController):
 
     @classmethod
     def turn_left(cls, press_time: float):
+        Logger.debug("Sleep time: {}".format(press_time))
+        now = time.time()
         pyautogui.keyDown('a')
-        time.sleep(press_time)
+        while time.time() - now <= press_time:
+            pass
         pyautogui.keyUp('a')
 
     @classmethod
     def turn_right(cls, press_time: float):
+        Logger.debug("Sleep time: {}".format(press_time))
+        now = time.time()
         pyautogui.keyDown('d')
-        time.sleep(press_time)
+        while time.time() - now <= press_time:
+            pass
         pyautogui.keyUp('d')
 
     @classmethod

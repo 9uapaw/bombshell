@@ -22,4 +22,4 @@ class CharacterBehavior:
             self.behavior_trees[behavior_type] = tree
 
     def interpret(self, behavior_type: str, character: Character, target: Target) -> Iterable[BehaviorAction]:
-        yield self.behavior_trees[behavior_type].traverse(character, target)
+        return self.behavior_trees[behavior_type].traverse(character, target)

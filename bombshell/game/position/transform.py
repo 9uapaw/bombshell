@@ -22,7 +22,6 @@ def normalize_facing(facing: float) -> float:
 
 def transform_turn(angle_difference: float):
     timespan = abs(angle_difference) / pi
-    print('Transforming angle {} into {} seconds of keypress'.format(angle_difference, timespan))
     return timespan
     # return math.ceil(angle_difference / GlobalConfig.config.movement.rad_per_turn)
 

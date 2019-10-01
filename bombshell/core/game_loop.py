@@ -2,6 +2,7 @@ import datetime
 import json
 import sys
 import time
+import traceback
 from typing import Dict
 
 import numpy as np
@@ -10,6 +11,7 @@ from PIL import Image
 from cv2 import cv2
 
 from core.config import Config
+from core.logger import Logger
 from game.position.waypoint import PositionStorage
 from exception.base import BombShellException
 from exception.core import CoreException
@@ -33,37 +35,36 @@ class GameLoop:
         self.state = None
         self.screen = Screen(self.config.screen_res)
 
-    def start(self, paths: {}):
+    def start(self):
         self.state = StateHandler(self.controller, self.behavior, self.waypoints)
 
         self.behavior.resolve_profile(self.config.behavior)
-        self._parse_waypoints(paths['waypoint'])
+        self._parse_waypoints()
 
-        # time.sleep(5)
-        # time_before = datetime.datetime.now()
+        time_before = datetime.datetime.now()
         try:
             for screen in self.screen.capture():
                 # self._show_window(screen)
-                # delta = datetime.datetime.now() - time_before
-                # print(self.state.player)
+                delta = datetime.datetime.now() - time_before
                 data = self.extractor.extract_data_from_screen(screen)
-                # print(delta.total_seconds() * 1000)
-                # time_before = datetime.datetime.now()
+                Logger.debug("Elapsed time after extraction: {}".format(delta.total_seconds() * 1000))
+                time_before = datetime.datetime.now()
                 if not data:
                     continue
                 self.state.update(data)
 
         except BombShellException as e:
-            print(e, file=sys.stderr)
+            Logger.error("{}".format(e), output=True)
             self.screen.stop_capturing()
             return
         except Exception as e:
-            print(e, file=sys.stderr)
+            Logger.error(traceback.format_exc(), output=True)
+            self.screen.stop_capturing()
+        finally:
+            self.extractor.end()
 
     def record_waypoints(self, paths: Dict[str, str]):
-        # time.sleep(5)
-        print("Record waypoints called")
-        waypoints = {'type': 'circle', 'waypoints': []}
+        waypoints = {'format': paths['wp_format'], 'waypoints': []}
         for screen in self.screen.capture():
             data = self.extractor.extract_data_from_screen(screen)
             print('Recording position: ', data.player_position)
@@ -72,7 +73,9 @@ class GameLoop:
 
         print('Saving file to: ', paths.get('waypoint', 'NO PATH'))
         with open(paths['waypoint'], 'w') as wp:
-            json.dump(waypoints, wp)
+            file = json.load(wp)
+            file[paths['wp_type']] = waypoints
+            json.dump(file, wp)
 
     def _show_window(self, screen: Image):
         roi = screen.crop((0, 0, 240, 360))
@@ -82,8 +85,7 @@ class GameLoop:
             cv2.destroyAllWindows()
             raise CoreException()
 
-    def _parse_waypoints(self, path: str):
-        with open(path) as wp_file:
-            wp = json.load(wp_file)
-            self.waypoints.parse(wp['waypoints'])
+    def _parse_waypoints(self):
+        wp = self.config.waypoint
+        self.waypoints.parse(wp['grind']['waypoints'])
 

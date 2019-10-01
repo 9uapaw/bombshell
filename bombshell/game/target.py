@@ -14,7 +14,11 @@ class Target:
         self.hp = 0
         self.state = TargetState.idle
         self.distance = DistanceRange.out_of_range
+        self.npc_id = -1
+        self.uid = -1
 
     def update(self, data: ExtractedData):
         self.hp = data.target_health
         self.distance = data.target_distance
+        self.npc_id = data.target_id
+        self.uid = data.target_guid
