@@ -3,6 +3,7 @@ import json
 import sys
 import time
 import traceback
+from pathlib import Path
 from typing import Dict
 
 import numpy as np
@@ -41,14 +42,13 @@ class GameLoop:
         self.behavior.resolve_profile(self.config.behavior)
         self._parse_waypoints()
 
-        time_before = datetime.datetime.now()
         try:
             for screen in self.screen.capture():
                 # self._show_window(screen)
-                delta = datetime.datetime.now() - time_before
+                time_before = time.time()
                 data = self.extractor.extract_data_from_screen(screen)
-                Logger.debug("Elapsed time after extraction: {}".format(delta.total_seconds() * 1000))
-                time_before = datetime.datetime.now()
+                delta = time.time() - time_before
+                Logger.debug("Elapsed time after extraction: {}".format(delta))
                 if not data:
                     continue
                 self.state.update(data)
@@ -72,10 +72,18 @@ class GameLoop:
             time.sleep(2)
 
         print('Saving file to: ', paths.get('waypoint', 'NO PATH'))
-        with open(paths['waypoint'], 'w') as wp:
-            file = json.load(wp)
-            file[paths['wp_type']] = waypoints
-            json.dump(file, wp)
+        file = Path(paths['waypoint'])
+
+        if file.is_file():
+            with open(paths['waypoint'], 'w') as wp:
+                file = json.load(wp)
+                file[paths['wp_type']] = waypoints
+                json.dump(file, wp)
+        else:
+            with open(paths['waypoint'], 'w+') as wp:
+                file = {}
+                file[paths['wp_type']] = waypoints
+                json.dump(file, wp)
 
     def _show_window(self, screen: Image):
         roi = screen.crop((0, 0, 240, 360))
