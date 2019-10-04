@@ -24,7 +24,6 @@ class Screen:
         def capture(self):
             if sys.platform == 'win32':
                 while self.capturing:
-                    print(self.screen_size)
                     clrBytes = mss_real_shotter.CaptureScreen()
                     yield (Image.open((io.BytesIO(bytearray(clrBytes))))).crop(self.screen_size)
             else:

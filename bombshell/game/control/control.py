@@ -39,6 +39,14 @@ class CharacterController(metaclass=abc.ABCMeta):
     def interact_with_target(cls):
         raise NotImplementedError()
 
+    @classmethod
+    def right_click(cls):
+        raise NotImplementedError()
+
+    @classmethod
+    def move_mouse(cls, x: int, y: int):
+        raise NotImplementedError()
+
 
 class BasicController(CharacterController):
 
@@ -48,13 +56,13 @@ class BasicController(CharacterController):
 
     @classmethod
     def move_forward(cls):
-        # pyautogui.keyDown('w')
-        pyautogui.press('.')
+        pyautogui.keyDown('w')
+        # pyautogui.press('.')
 
     @classmethod
     def stop(cls):
-        # pyautogui.keyUp('w')
-        pyautogui.press('[')
+        pyautogui.keyUp('w')
+        # pyautogui.press('[')
 
     @classmethod
     def cast_spell(cls, key: int):
@@ -95,3 +103,11 @@ class BasicController(CharacterController):
     @classmethod
     def click_in_middle(cls, area: Tuple[Tuple[int, int],Tuple[int, int],Tuple[int, int],Tuple[int, int]]):
         pyautogui.click((area[0][0]+area[1][0])/2, (area[0][1]+area[2][1])/2)
+
+    @classmethod
+    def right_click(cls):
+        pyautogui.click(button='right')
+
+    @classmethod
+    def move_mouse(cls, x: int, y: int):
+        pyautogui.moveTo(x, y)

@@ -27,7 +27,7 @@ class Config:
     waypoint: dict
     keyboard: KeyboardLayout = KeyboardLayout()
     movement: MovementMagicNumbers = MovementMagicNumbers()
-    roi: Tuple[int, int, int, int] = (0, 0, 240, 360)
+    roi: Tuple[int, int, int, int] = (0, 0, 320, 420)
     screen_res: Tuple[int, int, int, int] = (0, 40, 800, 640)
 
 

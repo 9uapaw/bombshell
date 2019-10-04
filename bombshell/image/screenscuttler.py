@@ -12,7 +12,7 @@ class ScreenScuttler:
     height_scale = 52.6666667
 
     def try_find_in_screen(self, template: PilImage, screenshot: PilImage, threshold: int = 50) -> Tuple[
-        Tuple[int, int], Tuple[int, int], Tuple[int, int], Tuple[int, int]]:
+        Tuple[int, int], Tuple[int, int], Tuple[int, int], Tuple[int, int]] or None:
         template_cvf = cv2.cvtColor(numpy.array(template), cv2.COLOR_RGB2GRAY)
         screenshot_cvf = cv2.cvtColor(numpy.array(screenshot), cv2.COLOR_RGB2GRAY)
 
@@ -89,7 +89,7 @@ class ScreenScuttler:
         return self.find_in_screen(accept_btn_image, screenshot)
 
     def find_loot_icon(self, screenshot: PilImage) -> Tuple[
-        Tuple[int, int], Tuple[int, int], Tuple[int, int], Tuple[int, int]]:
+        Tuple[int, int], Tuple[int, int], Tuple[int, int], Tuple[int, int]] or None:
 
         currdir = os.path.dirname(__file__)
         loot_icon_image = PilImage.open(os.path.join(currdir, '../assets/image/loot_icon.png'))

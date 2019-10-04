@@ -26,19 +26,21 @@ def run_window():
     Logger.info("Loading global config file: global.json")
     GlobalConfig.load_from_file('global.json')
     global_conf = load_from_file('global.json')
-    load_behavior(global_conf['behavior'])
+    # load_behavior(global_conf['behavior'])
     load_waypoints(global_conf['waypoint'])
 
     while True:
         event, values = window.Read()
         if event == 'Record waypoint':
             if not game_loop or not game_loop.screen.capturing:
+                Logger.info("Recording waypoint now.")
                 game_loop = GameLoop(GlobalConfig.config)
                 record = threading.Thread(target=game_loop.record_waypoints, args=(paths,))
                 Logger.info("Saving position {}".format(values['save_waypoint']))
                 paths['waypoint'] = values['save_waypoint']
                 paths['wp_type'] = values.get('waypoint_meta', 'grind')
                 paths['wp_format'] = values.get('waypoint_format', 'circle')
+                Logger.info("Starting recording.")
                 record.start()
         elif event == 'Start bot':
             if not game_loop or not game_loop.screen.capturing:
@@ -61,6 +63,7 @@ def run_window():
             save_behavior(values['behavior_save'])
         elif event == 'Stop record':
             if game_loop:
+                Logger.info("Stopping recording")
                 game_loop.screen.stop_capturing()
         elif event == 'Stop bot':
             if game_loop:

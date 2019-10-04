@@ -7,6 +7,7 @@ from game.control.follow import PositionFollower
 from game.position.waypoint import PositionStorage
 from game.states.base import BaseState
 from game.target import Target
+from loot import LootState
 
 
 class GrindState(BaseState):
@@ -39,11 +40,12 @@ class GrindState(BaseState):
         if not character.is_in_combat and not self.engaged:
             for action in self.behavior.interpret('non_combat', character, target):
                 action.execute(self.controller)
+            self.transition() # EZT IDE BELERAKTAM MAJD SZEDD KI HA NEM KELL
             self.waypoint_follower.move(character)
             self.controller.switch_target()
         else:
             for action in self.behavior.interpret('grind', character, target):
                 action.execute(self.controller)
 
-    def transition(self, character: Character, target: Target) -> 'BaseState' or None:
-        pass
+    def transition(self, character: Character, target: Target) -> BaseState or None:
+        return LootState(controller=self.controller, waypoints=self.waypoints, behavior=self.behavior)
