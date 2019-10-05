@@ -1,39 +1,53 @@
-from config import Config
+from typing import Tuple
+
+from core.config import Config
+from core.logger import Logger
 from game.behavior.behavior import CharacterBehavior
 from game.control.control import CharacterController
 from game.player.character import Character
 from game.position.waypoint import PositionStorage
 from game.states.base import BaseState
 from game.target import Target
-from grind import GrindState
-from screen import Screen
-from screenscuttler import ScreenScuttler
+import game.states.grind
+from image.screen import Screen
+from image.screenscuttler import ScreenScuttler
 
 
 class LootState(BaseState):
 
-    def __init__(self, controller: CharacterController, behavior: CharacterBehavior, config: Config, waypoints: PositionStorage = None):
+    def __init__(self, controller: CharacterController, behavior: CharacterBehavior, waypoints: PositionStorage = None):
         super().__init__(controller, behavior, waypoints)
         self.engaged = False
-        self.config = config
-        self.screen = Screen(self.config.screen_res)
+        self.screen_res: Tuple[int, int, int, int] = (0, 40, 800, 640)
+        self.screen = Screen(self.screen_res)
         self.scuttler = ScreenScuttler()
         self.waypoint = waypoints
         self.finished_looting = False
 
-    def check_through_screen(self, current_screen):
-        iter_x = int((self.config.screen_res[2] - self.config.screen_res[0]) / 20) + 1
-        iter_y = int((self.config.screen_res[3] - self.config.screen_res[1]) / 15) + 1
-        base_x = self.config.screen_res[0]
-        base_y = self.config.screen_res[1]
+    def check_through_screen(self, gen):
+        Logger.debug("Entered loot state - Checking through screen")
+        max_step_x = 20
+        max_step_y = 15
+        iter_x = int((self.screen_res[2] - self.screen_res[0]) / max_step_x) + 1
+        iter_y = int((self.screen_res[3] - self.screen_res[1]) / max_step_y) + 1
+        base_x = self.screen_res[0]
+        base_y = self.screen_res[1]
+
+        safe_zone = 3
+        max_step_x -= safe_zone
+        max_step_y -= safe_zone
+
+        Logger.debug("Checking through screen: x-stepsize: {} y-stepsize: {}".format(iter_x, iter_y))
 
         found = False
 
-        for i in range(0, iter_x):
+        for i in range(safe_zone, max_step_x):
             x = base_x + iter_x * i
-            for j in range(0, iter_y):
+            for j in range(safe_zone, max_step_y):
                 y = base_y + iter_y * j
+                Logger.debug("Current x: {} current y: {}".format(x, y))
                 self.controller.move_mouse(x, y)
+                current_screen = next(gen)
                 found = self.scuttler.find_loot_icon(current_screen)
                 if found:
                     self.controller.right_click()
@@ -43,10 +57,10 @@ class LootState(BaseState):
 
     def interpret(self, character: Character, target: Target):
         while not self.finished_looting:
-            current_screen = self.screen.capture()
-            self.check_through_screen(current_screen)
+            gen = self.screen.capture()
+            self.check_through_screen(gen)
 
     def transition(self, character: Character, target: Target) -> BaseState or None:
         if self.finished_looting:
-            return GrindState(controller=self.controller, behavior=self.behavior, waypoints=self.waypoints)
+            return game.states.grind.GrindState(controller=self.controller, behavior=self.behavior, waypoints=self.waypoints)
 

@@ -68,6 +68,7 @@ def run_window():
         elif event == 'Stop bot':
             if game_loop:
                 game_loop.screen.stop_capturing()
+                Logger.info("Stopped bot")
         elif event == 'Close':
             return
 
