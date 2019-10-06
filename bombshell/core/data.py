@@ -4,7 +4,7 @@ from typing import Tuple
 from game.player.attributes import LastAbilityExecution, CastingState
 
 
-class DistanceRange(enum.Enum):
+class DistanceRange(enum.IntEnum):
     unknown = -1
     out_of_range = 0
     melee = 1
@@ -23,4 +23,5 @@ class ExtractedData:
     casting: CastingState
     target_id: int
     target_guid: int
+    last_ability: LastAbilityExecution
 

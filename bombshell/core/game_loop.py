@@ -41,6 +41,7 @@ class GameLoop:
 
         self.behavior.resolve_profile(self.config.behavior)
         self._parse_waypoints()
+        time.sleep(3)
 
         try:
             for screen in self.screen.capture():

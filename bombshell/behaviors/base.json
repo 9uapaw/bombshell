@@ -1,0 +1,33 @@
+{
+  "grind": [
+    {
+      "parent": [""],
+      "key": "1",
+      "behavior": {
+        "unit": "Character",
+        "attrs": "resource",
+        "ops": "GREATER EQUALS",
+        "attr_value": "10",
+        "actions": "cast",
+        "action_value": "1",
+        "action_duration": "3"
+      }
+    }
+  ],
+  "pull": [
+    {
+      "parent": [""],
+      "key": "1",
+      "behavior": {
+        "unit": "Target",
+        "attrs": "distance",
+        "ops": "EQUALS",
+        "attr_value": "25 yard",
+        "actions": "cast",
+        "action_value": "1",
+        "action_duration": "2.5"
+      }
+    }
+  ],
+  "non_combat": []
+}

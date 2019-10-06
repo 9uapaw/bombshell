@@ -7,6 +7,7 @@ import pynput
 from pynput.keyboard import Controller
 
 from core.logger import Logger
+from game.position.position import Direction
 
 
 class CharacterController(metaclass=abc.ABCMeta):
@@ -40,6 +41,14 @@ class CharacterController(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
     @classmethod
+    def switch_to_previous_target(cls):
+        raise NotImplementedError()
+
+    @classmethod
+    def turn(cls, direction: Direction, press_time: float):
+        raise NotImplementedError()
+
+    @classmethod
     def right_click(cls):
         raise NotImplementedError()
 
@@ -52,39 +61,31 @@ class BasicController(CharacterController):
 
     @classmethod
     def interact_with_target(cls):
-        pyautogui.press('t')
+        pyautogui.keyDown('t')
+        pyautogui.keyUp('t')
 
     @classmethod
     def move_forward(cls):
-        pyautogui.keyDown('w')
-        # pyautogui.press('.')
+        # pyautogui.keyDown('w')
+        pyautogui.press('.')
 
     @classmethod
     def stop(cls):
-        pyautogui.keyUp('w')
-        # pyautogui.press('[')
+        # pyautogui.keyUp('w')
+        pyautogui.press('[')
 
     @classmethod
     def cast_spell(cls, key: int):
-        pyautogui.press(str(key))
+        pyautogui.keyDown(str(key))
+        pyautogui.keyUp(str(key))
 
     @classmethod
     def switch_target(cls):
-        pyautogui.press('tab')
-
-    # @classmethod
-    # def turn_left(cls, key_presses: int):
-    #     for i in range(0, key_presses):
-    #         pyautogui.press('a')
-    #
-    # @classmethod
-    # def turn_right(cls, key_presses: int):
-    #     for i in range(0, key_presses):
-    #         pyautogui.press('d')
+        pyautogui.keyDown('tab')
+        pyautogui.keyUp('tab')
 
     @classmethod
     def turn_left(cls, press_time: float):
-        Logger.debug("Sleep time: {}".format(press_time))
         now = time.time()
         pyautogui.keyDown('a')
         while time.time() - now <= press_time:
@@ -93,12 +94,22 @@ class BasicController(CharacterController):
 
     @classmethod
     def turn_right(cls, press_time: float):
-        Logger.debug("Sleep time: {}".format(press_time))
         now = time.time()
         pyautogui.keyDown('d')
         while time.time() - now <= press_time:
             pass
         pyautogui.keyUp('d')
+
+    @classmethod
+    def switch_to_previous_target(cls):
+        pyautogui.press("g")
+
+    @classmethod
+    def turn(cls, direction: Direction, press_time: float):
+        if direction == Direction.left:
+            cls.turn_left(press_time)
+        else:
+            cls.turn_right(press_time)
 
     @classmethod
     def click_in_middle(cls, area: Tuple[Tuple[int, int],Tuple[int, int],Tuple[int, int],Tuple[int, int]]):

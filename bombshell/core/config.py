@@ -7,11 +7,23 @@ from core.util import load_from_file
 
 
 @dataclass
+class GrindPolicies:
+    search_threshold: int = 5
+
+
+@dataclass
+class CombatMagicNumbers:
+    wait_after_pull: int = 5
+    targeting_frequency = 2
+
+
+@dataclass
 class MovementMagicNumbers:
     rad_per_turn: float = 0.0534
     turn_threshold: float = 0.2
     waypoint_difference_threshold = 0.01
     rad_per_sec: float = pi
+    turn_on_search: Tuple[float, float] = (1, pi)
 
 
 @dataclass
@@ -25,9 +37,14 @@ class KeyboardLayout:
 class Config:
     behavior: dict
     waypoint: dict
+
     keyboard: KeyboardLayout = KeyboardLayout()
+
     movement: MovementMagicNumbers = MovementMagicNumbers()
-    roi: Tuple[int, int, int, int] = (0, 0, 320, 420)
+    combat: CombatMagicNumbers = CombatMagicNumbers()
+    grind_policy: GrindPolicies = GrindPolicies()
+
+    roi: Tuple[int, int, int, int] = (0, 0, 240, 360)
     screen_res: Tuple[int, int, int, int] = (0, 40, 800, 640)
 
 

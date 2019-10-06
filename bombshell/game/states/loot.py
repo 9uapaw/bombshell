@@ -24,6 +24,15 @@ class LootState(BaseState):
         self.waypoint = waypoints
         self.finished_looting = False
 
+    def interpret(self, character: Character, target: Target):
+        while not self.finished_looting:
+            gen = self.screen.capture()
+            self.check_through_screen(gen)
+
+    def transition(self, character: Character, target: Target) -> BaseState or None:
+        if self.finished_looting:
+            return game.states.grind.GrindState(controller=self.controller, behavior=self.behavior, waypoints=self.waypoints)
+
     def check_through_screen(self, gen):
         Logger.debug("Entered loot state - Checking through screen")
         max_step_x = 20
@@ -54,13 +63,4 @@ class LootState(BaseState):
 
         if not found:
             self.finished_looting = True
-
-    def interpret(self, character: Character, target: Target):
-        while not self.finished_looting:
-            gen = self.screen.capture()
-            self.check_through_screen(gen)
-
-    def transition(self, character: Character, target: Target) -> BaseState or None:
-        if self.finished_looting:
-            return game.states.grind.GrindState(controller=self.controller, behavior=self.behavior, waypoints=self.waypoints)
 

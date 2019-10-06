@@ -8,7 +8,7 @@ from game.position.transform import normalize_facing
 
 class Character:
 
-    def __init__(self, resource_type: Resource):
+    def __init__(self, resource_type: Resource = Resource.MANA):
         self.hp = 0
         self.resource = 0
         self.position = Position(0, 0)
@@ -18,6 +18,7 @@ class Character:
         self.current_waypoint = 0
         self.facing = 0
         self.casting = CastingState.IDLE
+        self.last_ability = LastAbilityExecution.SUCCESS
 
     def update(self, data: ExtractedData):
         self.hp = data.player_health
@@ -25,7 +26,7 @@ class Character:
         self.position = Position(data.player_position[0], data.player_position[1])
         self.is_in_combat = data.combat
         self.facing = normalize_facing(data.facing)
-        # self.last_ability = data.last_ability
+        self.last_ability = data.last_ability
         self.casting = data.casting
 
     def switch_moving(self):

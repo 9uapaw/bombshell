@@ -8,7 +8,7 @@ from PIL import Image
 from core.data import ExtractedData, DistanceRange
 from core.game_loop import GameLoop
 from etc.const import RAD_PER_TURN
-from game.control import CharacterController
+from game.control.control import CharacterController
 
 RUN_SPEED = 1
 

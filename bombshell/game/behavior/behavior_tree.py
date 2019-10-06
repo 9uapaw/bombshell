@@ -1,5 +1,6 @@
 from typing import Dict, Tuple, List, Iterable
 
+from core.logger import Logger
 from game.behavior.action import BehaviorAction
 from game.behavior.entry import BehaviorNode
 from game.control.control import CharacterController

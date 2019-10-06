@@ -1,9 +1,13 @@
 import io
+import time
+
 from PIL import ImageGrab, Image
 import numpy
 import sys
 import mss
 import os
+
+from core.logger import Logger
 
 path_to_dll = (str(os.path.dirname(os.path.dirname(__file__))) + "/assets/libraries/mss_real_shotter.dll").replace("\\","/")
 if sys.platform == 'win32':
@@ -31,7 +35,6 @@ class Screen:
                     while self.capturing:
                         screen = image.grab(self.screen_size)
                         img = Image.fromarray(numpy.array(screen))
-                        img.format = 'PNG'
                         yield img
 
         def stop_capturing(self):

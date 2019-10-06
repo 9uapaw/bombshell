@@ -3,7 +3,7 @@ from typing import List, Dict
 from core.data import ExtractedData, DistanceRange
 from core.logger import Logger
 from exception.core import RecoverableException
-from game.player.attributes import CastingState
+from game.player.attributes import CastingState, LastAbilityExecution
 from image.parsers.base import BaseParser
 
 
@@ -15,7 +15,7 @@ class OcrParser(BaseParser):
         'x',
         'y',
         'facing',
-        ['combat', 'casting'],
+        ['combat', 'casting', 'last_ability'],
         'target_health',
         ['distance'],
         'target_guid'
@@ -33,6 +33,7 @@ class OcrParser(BaseParser):
             facing=float(clean_data[self.ADDON_DATA_POSITION[4]]),
             combat=bool(clean_data[self.ADDON_DATA_POSITION[5][0]]),
             casting=CastingState(clean_data[self.ADDON_DATA_POSITION[5][1]]),
+            last_ability=LastAbilityExecution(clean_data[self.ADDON_DATA_POSITION[5][2]]),
             target_health=int(clean_data[self.ADDON_DATA_POSITION[6]]),
             target_distance=DistanceRange(clean_data[self.ADDON_DATA_POSITION[7][0]]),
             target_id=int(str(clean_data[self.ADDON_DATA_POSITION[8]])[:5], 16) if len(clean_data[self.ADDON_DATA_POSITION[8]]) > 2 else int(clean_data[self.ADDON_DATA_POSITION[8]]),

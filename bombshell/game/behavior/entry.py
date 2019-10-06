@@ -1,6 +1,7 @@
 import operator
 import time
 
+from core.logger import Logger
 from etc.const import GREATER, GREATER_EQUALS, LESS, LESS_EQUALS, EQUALS, NOT_EQUALS, VOID
 from game.behavior.action import BehaviorAction, CastAction, NullAction
 from game.behavior.map import OPERATORS, ATTRIBUTES, VALUE_MAP
@@ -43,4 +44,7 @@ class BehaviorNode(BehaviorEntry):
         self._last_tick = time.time()
         comparable_value = VALUE_MAP[self.behavior['attrs']](self.behavior['attr_value'])
 
-        return OPERATORS[self.behavior['attrs']][self.behavior['ops']](attr, comparable_value)
+        res = OPERATORS[self.behavior['attrs']][self.behavior['ops']](attr, comparable_value)
+        Logger.debug("Attribute: {} {} {} = {}".format(attr, self.behavior['ops'], comparable_value, res))
+
+        return res

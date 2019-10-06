@@ -1,0 +1,28 @@
+import locale
+
+from PIL import Image
+# from pytesseract import pytesseract
+locale.setlocale(locale.LC_ALL, 'C')
+from tesserocr import PyTessBaseAPI
+import tesserocr
+
+
+class OcrWrapper:
+
+    _OPTIONS = ('tessedit_char_whitelist', '0123456789ABCDEF.-')
+
+    def __init__(self):
+        self._ocr = PyTessBaseAPI()
+        self._ocr.SetVariable(self._OPTIONS[0], self._OPTIONS[1])
+        pass
+
+    def image_to_string(self, image: Image) -> str:
+        # raw_data = pytesseract.image_to_string(image, config='--psm 11 --oem 3 ' + self._OPTIONS)
+        image.format = 'PNG'
+        self._ocr.SetImage(image)
+        raw_data = self._ocr.GetUTF8Text()
+        # raw_data = tesserocr.image_to_text(image)
+        return raw_data
+
+    def end(self):
+        self._ocr.End()

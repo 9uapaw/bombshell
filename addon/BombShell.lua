@@ -5,6 +5,10 @@ frame:SetWidth(320)
 
 -- HELPER FUNCTIONS --
 
+function starts_with(str, start)
+   return str:sub(1, #start) == start
+end
+
 function split(s, delimiter)
     result = {};
     for match in (s..delimiter):gmatch("(.-)"..delimiter) do
@@ -56,7 +60,7 @@ FONT_SIZE = 32
 START = 80
 LINE_SPACE = 40
 DATA = {"text", "mana", "posx", "posy", "facing", "playerState", "targetHealth", "targetState", "targetId" }
-PLAYER_STATE = {combat=1, casting=2}
+PLAYER_STATE = {combat=1, casting=2, last_ability=3}
 TARGET_STATE = {distance=1}
 
 for k, v in ipairs(DATA) do
@@ -104,21 +108,26 @@ function GetTargetDistance()
 end
 
 function GetSpellState()
-    local timestamp, subevent, _ = CombatLogGetCurrentEventInfo()
-            DEFAULT_CHAT_FRAME:AddMessage("COMBAT LOG " .. subevent .. timestamp)
-            if (subevent == "SPELL_FAILED_TOO_CLOSE") then
-                return 3
-            elseif (subevent == "SPELL_FAILED_LINE_OF_SIGHT") then
-                return 2
-            elseif (subevent == "SPELL_FAILED_OUT_OF_RANGE") then
-                return 1
-            elseif (subevent == "SPELL_FAILED_NOT_BEHIND") then
-                return 4
-            elseif (subevent == "SPELL_FAILED_UNIT_NOT_INFRONT") then
-                return 5
-            elseif (subevent == "SPELL_FAILED_BAD_IMPLICIT_TARGETS") then
-                return 6
-            end
+    local info = {CombatLogGetCurrentEventInfo()}
+            --DEFAULT_CHAT_FRAME:AddMessage("COMBAT LOG " .. info[2] .. " " .. info[15])
+    if (info[2] == 'SPELL_CAST_FAILED' and starts_with(info[4], 'Player')) then
+        if (info[15] == "SPELL_FAILED_TOO_CLOSE") then
+            return 3
+        elseif (info[15] == "Target not in line of sight") then
+            return 2
+        elseif (info[15] == "Out of range") then
+            return 1
+        elseif (info[15] == "SPELL_FAILED_NOT_BEHIND") then
+            return 4
+        elseif (info[15] == "Target needs to be in front of you.") then
+            return 5
+        elseif (info[15] == "SPELL_FAILED_BAD_IMPLICIT_TARGETS") then
+            return 6
+        end
+
+    end
+
+    return 0
 end
 
 function GetPlayerCastingState()
@@ -181,6 +190,7 @@ frame:SetScript(
             frame.text:SetText("" .. GetPlayerHealth())
             frame.mana:SetText("" .. GetPlayerMana())
             SetPlayerState("combat", "0")
+            SetPlayerState("last_ability", "0")
             SetTargetState("distance", "0")
             frame.targetHealth:SetText("" .. -1)
             frame.targetId:SetText("-1")
@@ -208,7 +218,7 @@ frame:SetScript(
                 SetTargetGuid()
             end
         elseif (event == "COMBAT_LOG_EVENT_UNFILTERED") then
-            --frame.ability:SetText("" .. GetSpellState())
+            SetPlayerState("last_ability",  GetSpellState())
         end
     end
 )

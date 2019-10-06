@@ -1,3 +1,4 @@
+import enum
 from typing import Tuple
 import cv2
 import os
@@ -6,6 +7,19 @@ import numpy
 
 # methods = ['cv2.TM_CCOEFF', 'cv2.TM_CCOEFF_NORMED', 'cv2.TM_CCORR',
 #             'cv2.TM_CCORR_NORMED', 'cv2.TM_SQDIFF', 'cv2.TM_SQDIFF_NORMED']
+from attr import dataclass
+
+
+class ScreenObjects(enum.Enum):
+    ACCEPT_BUTTON = '../assets/image/accept_button.png'
+    RELEASE_BUTTON = '../assets/image/release_button.png'
+    LOOT_ICON = '../assets/image/loot_icon.png'
+
+
+@dataclass
+class RectangleScreen:
+    top_left: Tuple[int, int]
+
 
 class ScreenScuttler:
     width_scale = 9.0112359
@@ -74,23 +88,7 @@ class ScreenScuttler:
 
         return ret
 
-    def find_accept_button(self, screenshot: PilImage) -> Tuple[
-        Tuple[int, int], Tuple[int, int], Tuple[int, int], Tuple[int, int]]:
-
+    def find(self, screenshot: PilImage, object: ScreenObjects):
         currdir = os.path.dirname(__file__)
-        accept_btn_image = PilImage.open(os.path.join(currdir, '../assets/image/accept_button.png'))
+        accept_btn_image = PilImage.open(os.path.join(currdir, object.value))
         return self.find_in_screen(accept_btn_image, screenshot)
-
-    def find_release_button(self, screenshot: PilImage) -> Tuple[
-        Tuple[int, int], Tuple[int, int], Tuple[int, int], Tuple[int, int]]:
-
-        currdir = os.path.dirname(__file__)
-        accept_btn_image = PilImage.open(os.path.join(currdir, '../assets/image/release_button.png'))
-        return self.find_in_screen(accept_btn_image, screenshot)
-
-    def find_loot_icon(self, screenshot: PilImage) -> Tuple[
-        Tuple[int, int], Tuple[int, int], Tuple[int, int], Tuple[int, int]] or None:
-
-        currdir = os.path.dirname(__file__)
-        loot_icon_image = PilImage.open(os.path.join(currdir, '../assets/image/loot_icon.png'))
-        return self.try_find_in_screen(loot_icon_image, screenshot, 70)

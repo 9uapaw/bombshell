@@ -54,12 +54,12 @@ for behavior_type in BEHAVIOR_TYPES:
     behavior_entry['storage'] = BehaviorStorage()
     tree = sg.TreeData()
     behavior_tree = sg.Tree(data=tree,
-                            headings=["st"],
+                            headings=["st", "gg"],
                             auto_size_columns=True,
                             num_rows=10,
                             col0_width=100,
                             key='tree_' + behavior_type,
-                            size=(300, 100),
+                            size=(400, 120),
                             select_mode=TABLE_SELECT_MODE_EXTENDED,
                             change_submits=True,
 
