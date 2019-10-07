@@ -38,7 +38,7 @@ class ScreenScuttler:
         res = cv2.matchTemplate(screenshot_cvf, template_cvf, method)
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
 
-        if (max_val*100) <= threshold:
+        if (max_val * 100) <= threshold:
             return None
 
         if method in [cv2.TM_SQDIFF, cv2.TM_SQDIFF_NORMED]:
@@ -49,7 +49,8 @@ class ScreenScuttler:
 
         cv2.rectangle(screenshot_cvf, top_left, bottom_right, 255, 2)
 
-        ret = ((top_left[0], top_left[1]), (bottom_right[0], top_left[1]), (bottom_right[0], bottom_right[1]),(top_left[0], bottom_right[1]))
+        ret = ((top_left[0], top_left[1]), (bottom_right[0], top_left[1]), (bottom_right[0], bottom_right[1]),
+               (top_left[0], bottom_right[1]))
 
         print("DEBUG: Found coordinates: {}".format(ret))
 
@@ -92,3 +93,13 @@ class ScreenScuttler:
         currdir = os.path.dirname(__file__)
         accept_btn_image = PilImage.open(os.path.join(currdir, object.value))
         return self.find_in_screen(accept_btn_image, screenshot)
+
+    def try_find(self, screenshot: PilImage, object: ScreenObjects) -> Tuple[
+                                                                                                       Tuple[int, int],
+                                                                                                       Tuple[int, int],
+                                                                                                       Tuple[int, int],
+                                                                                                       Tuple[
+                                                                                                           int, int]] or None:
+        currdir = os.path.dirname(__file__)
+        accept_btn_image = PilImage.open(os.path.join(currdir, object))
+        return self.try_find_in_screen(accept_btn_image, screenshot, 70)

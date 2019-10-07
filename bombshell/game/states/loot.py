@@ -10,7 +10,7 @@ from game.states.base import BaseState
 from game.target import Target
 import game.states.grind
 from image.screen import Screen
-from image.screenscuttler import ScreenScuttler
+from image.screenscuttler import ScreenScuttler, ScreenObjects
 
 
 class LootState(BaseState):
@@ -50,16 +50,19 @@ class LootState(BaseState):
 
         found = False
 
-        for i in range(safe_zone, max_step_x):
-            x = base_x + iter_x * i
-            for j in range(safe_zone, max_step_y):
-                y = base_y + iter_y * j
-                Logger.debug("Current x: {} current y: {}".format(x, y))
-                self.controller.move_mouse(x, y)
-                current_screen = next(gen)
-                found = self.scuttler.find_loot_icon(current_screen)
-                if found:
-                    self.controller.right_click()
+        while True:
+            for i in range(safe_zone, max_step_x):
+                x = base_x + iter_x * i
+                for j in range(safe_zone*2, max_step_y): # start from more downwards
+                    y = base_y + iter_y * j
+                    Logger.debug("Current x: {} current y: {}".format(x, y))
+                    self.controller.move_mouse(x, y)
+                    current_screen = next(gen)
+                    found = self.scuttler.try_find(current_screen, ScreenObjects.LOOT_ICON.value)
+                    if found:
+                        self.controller.right_click()
+            if not found:
+                break
 
         if not found:
             self.finished_looting = True
