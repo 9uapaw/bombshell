@@ -1,4 +1,5 @@
 import locale
+import sys
 
 from PIL import Image
 # from pytesseract import pytesseract
@@ -12,7 +13,11 @@ class OcrWrapper:
     _OPTIONS = ('tessedit_char_whitelist', '0123456789ABCDEF.-')
 
     def __init__(self):
-        self._ocr = PyTessBaseAPI()
+        if sys.platform == 'win32':
+            self._ocr = PyTessBaseAPI(path="C:\\Program Files\\Tesseract-OCR\\tessdata")
+        else:
+            self._ocr = PyTessBaseAPI()
+
         self._ocr.SetVariable(self._OPTIONS[0], self._OPTIONS[1])
         pass
 

@@ -49,6 +49,10 @@ class CharacterController(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
     @classmethod
+    def click_in_middle(cls, area: Tuple[Tuple[int, int], Tuple[int, int], Tuple[int, int], Tuple[int, int]]):
+        raise NotImplementedError()
+
+    @classmethod
     def right_click(cls):
         raise NotImplementedError()
 
