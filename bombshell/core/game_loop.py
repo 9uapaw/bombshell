@@ -68,22 +68,26 @@ class GameLoop:
         waypoints = {'format': paths['wp_format'], 'waypoints': []}
         for screen in self.screen.capture():
             data = self.extractor.extract_data_from_screen(screen)
-            print('Recording position: ', data.player_position)
+            Logger.info('Recording position: ' + str(data.player_position), True)
             waypoints['waypoints'].append(data.player_position)
             time.sleep(2)
 
-        print('Saving file to: ', paths.get('waypoint', 'NO PATH'))
+        Logger.info('Saving file to: {}'.format(paths.get('waypoint', 'NO PATH')), True)
         file = Path(paths['waypoint'])
 
         if file.is_file():
-            with open(paths['waypoint'], 'w') as wp:
+            with open(paths['waypoint'], 'r+') as wp:
                 file = json.load(wp)
-                file[paths['wp_type']] = waypoints
+                if paths['wp_type'] in file:
+                    file[paths['wp_type']].append(waypoints)
+                else:
+                    file[paths['wp_type']] = [waypoints]
+                wp.seek(0)
                 json.dump(file, wp)
         else:
             with open(paths['waypoint'], 'w+') as wp:
-                file = {}
-                file[paths['wp_type']] = waypoints
+                file = {paths['wp_type']: []}
+                file[paths['wp_type']].append(waypoints)
                 json.dump(file, wp)
 
     def _show_window(self, screen: Image):
@@ -96,5 +100,5 @@ class GameLoop:
 
     def _parse_waypoints(self):
         wp = self.config.waypoint
-        self.waypoints.parse(wp['grind']['waypoints'])
+        self.waypoints.parse(wp['grind'][0]['waypoints'])
 

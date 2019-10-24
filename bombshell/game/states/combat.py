@@ -1,12 +1,41 @@
-from game.player import Character
+import time
+
+from PIL import Image
+
+from core.config import GlobalConfig
+from core.logger import Logger
+from game.behavior.behavior import CharacterBehavior
+from game.control.control import CharacterController
+from game.player.attributes import LastAbilityExecution
+from game.player.character import Character
+from game.control.follow import PositionFollower
+from game.position.waypoint import PositionStorage
 from game.states.base import BaseState
+from game.states.dead import DeadState
+import game.states.grind
+from game.states.loot import LootState
+from game.states.policies.cast_failure import CastFailurePolicy
 from game.target import Target
+import game.states.loot
 
 
 class CombatState(BaseState):
 
-    def interpret(self, character: Character, target: Target):
-        pass
+    def __init__(self, controller: CharacterController, behavior: CharacterBehavior, waypoints: PositionStorage = None, previous_state: BaseState = None):
+        super().__init__(controller, behavior, waypoints)
+        Logger.debug("COMBAT State")
+        self._transition_to_grind = False
+        self._previous_grind_state = previous_state
 
-    def transition(self, character: Character, target: Target) -> 'BaseState' or None:
-        pass
+    def interpret(self, character: Character, target: Target, screen: Image):
+        if not character.is_in_combat:
+            self._transition_to_grind = True
+
+        for action in self.behavior.interpret('grind', character, target):
+            action.execute(self.controller)
+
+    def transition(self, character: Character, target: Target, screen: Image) -> 'BaseState' or None:
+        if self._transition_to_grind:
+            return game.states.grind.GrindState(self.controller, self.behavior, self.waypoints, self._previous_grind_state)
+
+

@@ -60,6 +60,10 @@ class CharacterController(metaclass=abc.ABCMeta):
     def move_mouse(cls, x: int, y: int):
         raise NotImplementedError()
 
+    @classmethod
+    def click_in_middle(cls, area: Tuple[Tuple[int, int], Tuple[int, int], Tuple[int, int], Tuple[int, int]]):
+        raise NotImplementedError()
+
 
 class BasicController(CharacterController):
 

@@ -1,44 +1,51 @@
-from typing import Tuple
+from PIL import Image
 
-from core.config import Config
-from core.logger import Logger
-from follow import PositionFollower
+from core.config import GlobalConfig
 from game.behavior.behavior import CharacterBehavior
 from game.control.control import CharacterController
+from game.control.follow import PositionFollower
+
 from game.player.character import Character
+from game.position.position import Position
+from game.position.transform import find_best_waypoint_route
 from game.position.waypoint import PositionStorage
 from game.states.base import BaseState
-from game.target import Target
 import game.states.grind
-from image.screen import Screen
+from game.target import Target
 from image.screenscuttler import ScreenScuttler, ScreenObjects
 
 
 class DeadState(BaseState):
 
-    def __init__(self, controller: CharacterController, behavior: CharacterBehavior, waypoints: PositionStorage = None):
+    def __init__(self, controller: CharacterController, behavior: CharacterBehavior, waypoints: PositionStorage = None, previous_state: BaseState = None):
         super().__init__(controller, behavior, waypoints)
-        Logger.debug('Dead state')
-        self.waypoint_follower = PositionFollower(self.controller, self.waypoints)
-        self.screen_res: Tuple[int, int, int, int] = (0, 40, 800, 640)
-        self.screen = Screen(self.screen_res)
         self.scuttler = ScreenScuttler()
-        # hogy adjuk be neki a dead waypointot?
-        self.waypoint = waypoints
-        self.final_wp = False
-        self.alive = False
+        self.movement = PositionFollower(self.controller, self.waypoints)
+        self._released = False
+        self._close_to_corpse = False
+        self._state = previous_state
+        self._parsed = False
 
-    def interpret(self, character: Character, target: Target):
-        self.waypoint_follower.move(character)
-        if len(self.waypoints.waypoints) - 1 == character.current_waypoint:
-            # ez így nyilván nem jó de hasonló logika kéne
-            self.final_wp = True
+        closest_waypoint_route = find_best_waypoint_route([wp['waypoints'] for wp in GlobalConfig.config.waypoint['ghost']], previous_state.transition_data['corpse_position'])
+        self.waypoints.parse(GlobalConfig.config.waypoint['ghost'][closest_waypoint_route])
 
-        if self.alive and self.final_wp:
-            accept_btn = self.scuttler.find_in_screen(ScreenObjects.ACCEPT_BUTTON)
-            self.controller.click_in_middle(accept_btn)
+    def interpret(self, character: Character, target: Target, screen: Image):
+        if not self._released:
+            release_button = self.scuttler.find(screen, ScreenObjects.RELEASE_BUTTON)
+            if release_button:
+                self.controller.click_in_middle(release_button)
+                self._released = True
+        else:
+            accept_button = self.scuttler.find(screen, ScreenObjects.ACCEPT_BUTTON)
+            if accept_button:
+                self.controller.click_in_middle(accept_button)
+                self._close_to_corpse = True
+            else:
+                self.movement.move(character)
 
-    def transition(self, character: Character, target: Target) -> BaseState or None:
-        if self.final_wp and self.final_wp:
-            return LAST_STATE jön ide
+        pass
+
+    def transition(self, character: Character, target: Target, screen: Image) -> 'BaseState' or None:
+        if self._close_to_corpse:
+            return game.states.grind.GrindState(self.controller, self.behavior, self.waypoints)
 

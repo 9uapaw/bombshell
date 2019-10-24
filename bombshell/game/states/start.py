@@ -1,3 +1,5 @@
+from PIL import Image
+
 from core.config import GlobalConfig
 from game.behavior.behavior import CharacterBehavior
 from game.control.control import CharacterController
@@ -17,13 +19,13 @@ class StartState(BaseState):
         super().__init__(controller, behavior, waypoints)
         self.waypoint_follower = PositionFollower(controller, self.waypoints)
 
-    def interpret(self, character: Character, target: Target):
+    def interpret(self, character: Character, target: Target, screen: Image):
         closes_waypoint_index = self.waypoints.waypoints.index(min(self.waypoints.waypoints, key=character.position.calculate_distance_from))
         character.current_waypoint = closes_waypoint_index
 
         self.waypoint_follower.turn(character)
 
-    def transition(self, character: Character, target: Target) -> 'BaseState' or None:
+    def transition(self, character: Character, target: Target, screen: Image) -> 'BaseState' or None:
         if character.position.is_close_to(self.waypoints.peek(character.current_waypoint),
                                           GlobalConfig.config.movement.waypoint_difference_threshold):
             return GrindState(self.controller, self.behavior, self.waypoints)

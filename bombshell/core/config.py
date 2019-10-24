@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from math import pi
-from typing import Tuple
+from typing import Tuple, Dict, List
 
 from core.logger import Logger
 from core.util import load_from_file
@@ -36,7 +36,7 @@ class KeyboardLayout:
 @dataclass
 class Config:
     behavior: dict
-    waypoint: dict
+    waypoint: Dict[str, any]
 
     keyboard: KeyboardLayout = KeyboardLayout()
 

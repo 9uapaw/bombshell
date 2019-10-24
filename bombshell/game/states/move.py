@@ -1,5 +1,7 @@
 from typing import List
 
+from PIL import Image
+
 from game.behavior.behavior import CharacterBehavior
 from game.control.follow import PositionFollower
 from game.position.waypoint import PositionStorage
@@ -15,8 +17,8 @@ class MoveState(BaseState):
         super().__init__(controller, behavior, waypoints)
         self.waypoint_follower = PositionFollower(self.controller, self.waypoints)
 
-    def interpret(self, character: Character, target: Target):
+    def interpret(self, character: Character, target: Target, screen: Image):
         self.waypoint_follower.move(character)
 
-    def transition(self, character: Character, target: Target) -> BaseState or None:
+    def transition(self, character: Character, target: Target, screen: Image) -> BaseState or None:
         pass
