@@ -21,15 +21,15 @@ class DeadState(BaseState):
         super().__init__(controller, behavior, waypoints)
         self.scuttler = ScreenScuttler()
         self.movement = PositionFollower(self.controller, self.waypoints)
+
         self._released = False
         self._close_to_corpse = False
         self._state = previous_state
-        self._parsed = False
 
         closest_waypoint_route = find_best_waypoint_route([wp['waypoints'] for wp in GlobalConfig.config.waypoint['ghost']], previous_state.transition_data['corpse_position'])
         self.waypoints.parse(GlobalConfig.config.waypoint['ghost'][closest_waypoint_route])
 
-    def interpret(self, character: Character, target: Target, screen: Image):
+    def interpret(self, character: Character, target: Target, screen: Image = None):
         if not self._released:
             release_button = self.scuttler.find(screen, ScreenObjects.RELEASE_BUTTON)
             if release_button:

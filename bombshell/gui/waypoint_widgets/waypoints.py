@@ -32,10 +32,12 @@ waypoint_layout_list = [waypoint_frame, waypoint_selector_frame, waypoint_loaded
 
 def load_waypoints(path: str):
 
-    def _format(wps: dict):
+    def _format(waypoints: list):
         str = ""
-        for k, v in wps.items():
-            str += "{}: {}\n".format(k, "\n".join(["({}, {})".format(x, y) for x, y in v]) if isinstance(v, list) else v)
+        for wps in waypoints:
+            for k, v in wps.items():
+                str += "{}: {}\n".format(k, "\n".join(["({}, {})".format(x, y) for x, y in v]) if isinstance(v, list) else v)
+            str += "--------------\n"
 
         return str
 

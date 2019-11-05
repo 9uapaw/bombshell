@@ -17,8 +17,8 @@ class MoveState(BaseState):
         super().__init__(controller, behavior, waypoints)
         self.waypoint_follower = PositionFollower(self.controller, self.waypoints)
 
-    def interpret(self, character: Character, target: Target, screen: Image):
+    def interpret(self, character: Character, target: Target, screen: Image = None):
         self.waypoint_follower.move(character)
 
-    def transition(self, character: Character, target: Target, screen: Image) -> BaseState or None:
+    def transition(self, character: Character, target: Target, screen: Image = None) -> BaseState or None:
         pass

@@ -26,6 +26,7 @@ class OcrParser(BaseParser):
         Logger.debug("Extracting raw data: {}".format(raw))
         clean_data = self._extract_value(raw)
 
+
         return ExtractedData(
             player_health=int(clean_data[self.ADDON_DATA_POSITION[0]]),
             player_resource=int(clean_data[self.ADDON_DATA_POSITION[1]]),

@@ -81,6 +81,7 @@ for behavior_type in BEHAVIOR_TYPES:
 
 behavior_layout = [[behavior_frame], [sg.TabGroup([behavior_tree_tabs], key='behavior_tab', enable_events=True)]]
 
+
 def convert_text(key: str, behavior: dict) -> str:
     return "[{}]: <if {}'s {} is {} than {} then {} {}>".format(key, behavior['unit'], behavior['attrs'],
                                                                 behavior['ops'],

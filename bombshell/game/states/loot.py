@@ -1,5 +1,7 @@
 from typing import Tuple
 
+from PIL import Image
+
 from core.config import Config
 from core.logger import Logger
 from game.behavior.behavior import CharacterBehavior
@@ -24,16 +26,16 @@ class LootState(BaseState):
         self.waypoint = waypoints
         self.finished_looting = False
 
-    def interpret(self, character: Character, target: Target):
+    def interpret(self, character: Character, target: Target, screen: Image = None):
         while not self.finished_looting:
             gen = self.screen.capture()
-            self.check_through_screen(gen)
+            self._check_through_screen(gen)
 
-    def transition(self, character: Character, target: Target) -> BaseState or None:
+    def transition(self, character: Character, target: Target, screen: Image = None) -> BaseState or None:
         if self.finished_looting:
-            return game.states.grind.GrindState(controller=self.controller, behavior=self.behavior, waypoints=self.waypoints)
+            return game.states.grind.GrindState(controller=self.controller, behavior=self.behavior, waypoints=self.waypoints, previous_state=self)
 
-    def check_through_screen(self, gen):
+    def _check_through_screen(self, gen):
         Logger.debug("Entered loot state - Checking through screen")
         max_step_x = 20
         max_step_y = 15

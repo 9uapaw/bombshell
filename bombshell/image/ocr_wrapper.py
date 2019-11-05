@@ -22,11 +22,9 @@ class OcrWrapper:
         pass
 
     def image_to_string(self, image: Image) -> str:
-        # raw_data = pytesseract.image_to_string(image, config='--psm 11 --oem 3 ' + self._OPTIONS)
         image.format = 'PNG'
         self._ocr.SetImage(image)
         raw_data = self._ocr.GetUTF8Text()
-        # raw_data = tesserocr.image_to_text(image)
         return raw_data
 
     def end(self):

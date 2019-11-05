@@ -24,7 +24,6 @@ class GrindState(BaseState):
 
     def __init__(self, controller: CharacterController, behavior: CharacterBehavior, waypoints: PositionStorage = None, previous_state: BaseState = None):
         super().__init__(controller, behavior, waypoints)
-        Logger.debug("GRIND State")
         self.persistent_state['farming'] = previous_state.persistent_state.get('farming', False)
 
         self.waypoint_follower = PositionFollower(self.controller, self.waypoints)
@@ -35,7 +34,7 @@ class GrindState(BaseState):
         self._is_pulling = False
         self._is_attacking = False
 
-    def interpret(self, character: Character, target: Target, screen: Image):
+    def interpret(self, character: Character, target: Target, screen: Image = None):
         if character.hp == 0:
             self.persistent_state['corpse_position'] = character.position
             character.current_waypoint = 0
@@ -48,6 +47,7 @@ class GrindState(BaseState):
         if self.persistent_state['farming'] and not character.is_in_combat:
             self.persistent_state['farming'] = False
             self._looting_is_available = True
+            return
 
         if not character.is_in_combat:
             for action in self.behavior.interpret('non_combat', character, target):

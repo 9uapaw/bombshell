@@ -1,3 +1,5 @@
+from PIL import Image
+
 from core.data import ExtractedData
 from game.position.waypoint import PositionStorage
 from game.behavior.behavior import CharacterBehavior
@@ -17,11 +19,12 @@ class StateHandler:
         self.state = StartState(self.controller, self.behavior, waypoints)  # type: BaseState
         self.target = Target()
 
-    def update(self, data: ExtractedData):
+    def update(self, data: ExtractedData, screen: Image):
         self.character.update(data)
         self.target.update(data)
-        self.state.interpret(self.character, self.target)
 
-        transition = self.state.transition(self.character, self.target)
+        self.state.interpret(self.character, self.target, screen)
+
+        transition = self.state.transition(self.character, self.target, screen)
         if transition:
             self.state = transition

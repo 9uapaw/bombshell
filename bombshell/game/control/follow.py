@@ -19,7 +19,6 @@ class PositionFollower:
 
     def move(self, character: Character):
         Logger.debug("Following waypoint {} out of {}. Character is currently moving: {}".format(character.current_waypoint, len(self.waypoints.waypoints) - 1, character.is_moving))
-        before = time.time()
         if character.position.is_close_to(self.waypoints.waypoints[character.current_waypoint],
                                           GlobalConfig.config.movement.waypoint_difference_threshold):
             Logger.debug("Close to waypoint")
@@ -30,17 +29,11 @@ class PositionFollower:
             else:
                 character.current_waypoint += 1
 
-        after = time.time()
-        Logger.debug("Close to waypoint time: {}".format(after - before))
-        before = time.time()
         if not self.turn(character):
             if not character.is_moving:
                 Logger.debug('Moving')
                 self.controller.move_forward()
                 character.switch_moving()
-        after = time.time()
-        Logger.debug("Turning time: {}".format(after - before))
-
 
     def turn(self, character: Character) -> (float, Direction) or None:
         current_trajectory = calculate_trajectory(character.position, character.facing)
@@ -59,14 +52,11 @@ class PositionFollower:
         Logger.debug('Current angle: {}'.format(character.facing))
         Logger.debug('Waypoint: {} - {} rad on the {}'.format(waypoint_trajectory.end_point, angle_difference, direction.name))
 
-        before = time.time()
         if direction == Direction.left:
             self.controller.turn_left(transform_turn(angle_difference))
         else:
             self.controller.turn_right(transform_turn(angle_difference))
 
-        after = time.time()
-        Logger.debug("After turn time {}".format(after - before))
         return angle_difference, direction
 
     def _show_on_plot(self, current_trajectory: Trajectory, waypoint_trajectory: Trajectory):

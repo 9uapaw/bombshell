@@ -52,7 +52,7 @@ class GameLoop:
                 Logger.debug("Elapsed time after extraction: {}".format(delta))
                 if not data:
                     continue
-                self.state.update(data)
+                self.state.update(data, screen)
 
         except BombShellException as e:
             Logger.error("{}".format(e), output=True)
