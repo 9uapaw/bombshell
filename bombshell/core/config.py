@@ -65,3 +65,8 @@ class GlobalConfig:
         except Exception as e:
             Logger.warning("Unable to load global config: 'global.json'", True)
 
+
+    @classmethod
+    def load_from_data(cls, data: dict):
+        for attr, value in data.items():
+            setattr(cls.config, attr, value)
