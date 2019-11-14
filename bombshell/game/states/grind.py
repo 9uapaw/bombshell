@@ -4,7 +4,7 @@ from PIL import Image
 
 from core.config import GlobalConfig
 from core.logger import Logger
-from game.behavior.behavior import CharacterBehavior
+from game.behavior.character_behavior import CharacterBehavior
 from game.control.control import CharacterController
 from game.player.attributes import LastAbilityExecution
 from game.player.character import Character
@@ -28,25 +28,19 @@ class GrindState(BaseState):
 
         self.waypoint_follower = PositionFollower(self.controller, self.waypoints)
 
-        self._looting_is_available = False
         self._cast_failure_policy = CastFailurePolicy(self.controller)
         self._last_target_switch = time.time()
-        self._is_pulling = False
-        self._is_attacking = False
+        self._next_state = None
 
     def interpret(self, character: Character, target: Target, screen: Image = None):
         if character.hp == 0:
             self.persistent_state['corpse_position'] = character.position
             character.current_waypoint = 0
+            self._next_state = DeadState(self.controller, self.behavior, self.waypoints, self)
             return
 
         if target.hp > 0:
-            self._is_pulling = True
-            return
-
-        if self.persistent_state['farming'] and not character.is_in_combat:
-            self.persistent_state['farming'] = False
-            self._looting_is_available = True
+            self._next_state = PullState(self.controller, self.behavior, self.waypoints, self)
             return
 
         if not character.is_in_combat:
@@ -57,17 +51,9 @@ class GrindState(BaseState):
                 self.controller.switch_target()
                 self._last_target_switch = time.time()
         else:
-            self.persistent_state['farming'] = True
-            self._is_attacking = True
+            self._next_state = CombatState(self.controller, self.behavior, self.waypoints, self)
 
-    def transition(self, character: Character, target: Target, screen: Image) -> 'BaseState' or None:
-        if self.persistent_state.get('corpse_position', None):
-            return DeadState(self.controller, self.behavior, self.waypoints, self)
-        if self._looting_is_available:
-            return LootState(self.controller, self.behavior, self.waypoints)
-        if self._is_attacking:
-            return CombatState(self.controller, self.behavior, self.waypoints, self)
-        if self._is_pulling:
-            return PullState(self.controller, self.behavior, self.waypoints, self)
+    def transition(self, character: Character, target: Target, screen: Image = None) -> 'BaseState' or None:
+        return self._next_state
 
 

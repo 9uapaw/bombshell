@@ -2,7 +2,7 @@ from typing import Dict, Tuple, List, Iterable
 
 from core.logger import Logger
 from game.behavior.action import BehaviorAction
-from game.behavior.entry import BehaviorNode
+from game.behavior.entry import CharacterNode, BehaviorEntry
 from game.control.control import CharacterController
 from game.player.character import Character
 from game.target import Target
@@ -11,9 +11,9 @@ from game.target import Target
 class BehaviorTree:
 
     def __init__(self):
-        self._tree = {}  # type: Dict[str, List[BehaviorNode]]
+        self._tree = {}  # type: Dict[str, List[BehaviorEntry]]
 
-    def add(self, node: BehaviorNode):
+    def add(self, node: BehaviorEntry):
         for p in node.parent:
             if p in self._tree:
                 self._tree[p].append(node)

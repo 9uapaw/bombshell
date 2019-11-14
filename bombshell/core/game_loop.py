@@ -1,5 +1,6 @@
 import datetime
 import json
+import signal
 import sys
 import time
 import traceback
@@ -16,7 +17,7 @@ from core.logger import Logger
 from game.position.waypoint import PositionStorage
 from exception.base import BombShellException
 from exception.core import CoreException
-from game.behavior.behavior import CharacterBehavior
+from game.behavior.character_behavior import CharacterBehavior
 from game.control.control import BasicController
 from game.state_handler import StateHandler
 from image.extractor import ImageExtractor
@@ -66,14 +67,18 @@ class GameLoop:
 
     def record_waypoints(self, paths: Dict[str, str]):
         waypoints = {'format': paths['wp_format'], 'waypoints': []}
+
+        signal.signal(signal.SIGINT, lambda *args: self.screen.stop_capturing())
+        signal.signal(signal.SIGTERM, lambda *args: self.screen.stop_capturing())
+
         try:
             for screen in self.screen.capture():
                 data = self.extractor.extract_data_from_screen(screen)
-                Logger.info('Recording position: ' + str(data.player_position), True)
+                Logger.info('Recording position: ' + str(data.player_position))
                 waypoints['waypoints'].append(data.player_position)
                 time.sleep(2)
 
-            Logger.info('Saving file to: {}'.format(paths.get('waypoint', 'NO PATH')), True)
+            Logger.info('Saving file to: {}'.format(paths.get('waypoint', 'NO PATH')))
         finally:
             file = Path(paths['waypoint'])
             if file.is_file():

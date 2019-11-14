@@ -5,7 +5,7 @@ from PIL import Image
 import game.states.grind
 from core.config import GlobalConfig
 from core.logger import Logger
-from game.behavior.behavior import CharacterBehavior
+from game.behavior.character_behavior import CharacterBehavior
 from game.control.control import CharacterController
 from game.player.character import Character
 from game.position.waypoint import PositionStorage
@@ -37,7 +37,7 @@ class PullState(BaseState):
                     self.controller.stop()
                     character.switch_moving()
 
-                action._engaged = True
+                self._engaged = True
                 self._last_pull = time.time()
                 action.execute(self.controller)
 

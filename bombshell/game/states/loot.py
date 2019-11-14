@@ -4,7 +4,7 @@ from PIL import Image
 
 from core.config import Config
 from core.logger import Logger
-from game.behavior.behavior import CharacterBehavior
+from game.behavior.character_behavior import CharacterBehavior
 from game.control.control import CharacterController
 from game.player.character import Character
 from game.position.waypoint import PositionStorage

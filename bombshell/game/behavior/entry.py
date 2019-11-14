@@ -23,7 +23,7 @@ class BehaviorEntry:
         raise NotImplementedError()
 
 
-class BehaviorNode(BehaviorEntry):
+class CharacterNode(BehaviorEntry):
 
     def __init__(self, index: int, parent: [int], behavior: dict):
         super().__init__(index, parent, behavior)

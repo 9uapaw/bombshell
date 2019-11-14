@@ -1,8 +1,22 @@
 {
   "grind": [
     {
-      "parent": [""],
+      "parent": [
+        ""
+      ],
       "key": "1",
+      "behavior": {
+        "unit": "Target",
+        "attrs": "health",
+        "ops": "GREATER",
+        "attr_value": "0",
+        "actions": "void",
+        "description": "Target is alive"
+      }
+    },
+    {
+      "parent": ["1"],
+      "key": "2",
       "behavior": {
         "unit": "Character",
         "attrs": "resource",
@@ -10,7 +24,8 @@
         "attr_value": "10",
         "actions": "cast",
         "action_value": "1",
-        "action_duration": "3"
+        "action_duration": "3",
+        "description": "Casting Shadow bolt"
       }
     }
   ],

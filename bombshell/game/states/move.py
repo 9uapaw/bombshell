@@ -2,7 +2,7 @@ from typing import List
 
 from PIL import Image
 
-from game.behavior.behavior import CharacterBehavior
+from game.behavior.character_behavior import CharacterBehavior
 from game.control.follow import PositionFollower
 from game.position.waypoint import PositionStorage
 from game.player.character import Character

@@ -2,7 +2,7 @@ from typing import Dict, Tuple, Iterable
 
 from game.behavior.action import BehaviorAction
 from game.behavior.behavior_tree import BehaviorTree
-from game.behavior.entry import BehaviorNode
+from game.behavior.entry import CharacterNode
 from game.player.character import Character
 from game.control.control import CharacterController
 from game.target import Target
@@ -17,7 +17,7 @@ class CharacterBehavior:
         for behavior_type, nodes in behavior.items():
             tree = BehaviorTree()
             for n in nodes:
-                node = BehaviorNode(n['key'], n['parent'], n['behavior'])
+                node = CharacterNode(n['key'], n['parent'], n['behavior'])
                 tree.add(node)
             self.behavior_trees[behavior_type] = tree
 

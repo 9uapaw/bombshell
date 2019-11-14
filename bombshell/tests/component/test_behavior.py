@@ -1,7 +1,7 @@
 import time
 import unittest
 
-from game.behavior.behavior import CharacterBehavior
+from game.behavior.character_behavior import CharacterBehavior
 from game.player.character import Character
 from game.target import Target
 from tests.component.test_waypoint_following import FakeController

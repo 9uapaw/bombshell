@@ -31,6 +31,8 @@ def start(config: str):
 def main(debug: bool):
     if debug:
         logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    else:
+        logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 
 main.add_command(start)

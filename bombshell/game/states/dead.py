@@ -1,7 +1,7 @@
 from PIL import Image
 
 from core.config import GlobalConfig
-from game.behavior.behavior import CharacterBehavior
+from game.behavior.character_behavior import CharacterBehavior
 from game.control.control import CharacterController
 from game.control.follow import PositionFollower
 

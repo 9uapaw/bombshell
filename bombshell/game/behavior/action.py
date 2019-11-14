@@ -1,5 +1,6 @@
 import time
 
+from core.logger import Logger
 from core.util import spin
 from game.control.control import CharacterController
 
@@ -16,6 +17,9 @@ class BehaviorAction:
 class CastAction(BehaviorAction):
 
     def execute(self, controller: CharacterController):
+        if self.behavior.get('description', ''):
+            Logger.info(self.behavior['description'])
+
         controller.cast_spell(self.behavior['action_value'])
         if self.behavior.get('action_duration', 0):
             spin(float(self.behavior['action_duration']))
@@ -24,4 +28,5 @@ class CastAction(BehaviorAction):
 class NullAction(BehaviorAction):
 
     def execute(self, controller: CharacterController):
-        pass
+        if self.behavior.get('description', ''):
+            Logger.info(self.behavior['description'])
