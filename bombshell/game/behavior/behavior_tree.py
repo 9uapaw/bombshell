@@ -28,9 +28,9 @@ class BehaviorTree:
 
     def _traverse(self, parent_indexes: List[str], character: Character, target: Target) -> Iterable[BehaviorAction]:
         for parent_index in parent_indexes:
-            for node in self._tree[parent_index]:
+            for node in self._tree.get(parent_index, []):
                 if node.check(character, target):
                     yield node.get_action()
-                    self._traverse(node.parent, character, target)
+                    yield from self._traverse([node.index], character, target)
 
 

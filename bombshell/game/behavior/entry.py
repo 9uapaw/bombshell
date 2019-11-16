@@ -1,5 +1,6 @@
 import operator
 import time
+from typing import List
 
 from core.logger import Logger
 from etc.const import GREATER, GREATER_EQUALS, LESS, LESS_EQUALS, EQUALS, NOT_EQUALS, VOID
@@ -11,7 +12,7 @@ from game.target import Target
 
 class BehaviorEntry:
 
-    def __init__(self, index: int, parent: [int], behavior: dict):
+    def __init__(self, index: str, parent: List[str], behavior: dict):
         self.behavior = behavior
         self.index = index
         self.parent = parent
@@ -25,7 +26,7 @@ class BehaviorEntry:
 
 class CharacterNode(BehaviorEntry):
 
-    def __init__(self, index: int, parent: [int], behavior: dict):
+    def __init__(self, index: str, parent: List[str], behavior: dict):
         super().__init__(index, parent, behavior)
         self._last_tick = 0
 

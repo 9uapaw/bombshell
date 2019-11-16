@@ -11,6 +11,7 @@ from game.player.character import Character
 from game.position.waypoint import PositionStorage
 from game.states.base import BaseState
 from game.states.combat import CombatState
+from game.states.policies.cast_failure import CastFailurePolicy
 from game.target import Target
 
 
@@ -20,25 +21,25 @@ class PullState(BaseState):
         super().__init__(controller, behavior, waypoints)
         self._previous_grind_state = previous_state
         self._engaged = False
-        self._last_pull = None
+        self._last_pull = time.time()
         self._next_state = None
+        self._cast_failure = CastFailurePolicy(self.controller)
 
     def interpret(self, character: Character, target: Target, screen: Image = None):
-        if self._engaged and self._last_pull and time.time() - self._last_pull > GlobalConfig.config.combat.wait_after_pull and not character.is_in_combat:
+        if time.time() - self._last_pull > GlobalConfig.config.combat.wait_after_pull and not character.is_in_combat:
             Logger.info("Pull was unsuccessful, transitioning back to GrindState")
             self._next_state = game.states.grind.GrindState(self.controller, self.behavior, self.waypoints, self._previous_grind_state)
             return
 
-        if not self._engaged:
-            for action in self.behavior.interpret('pull', character, target):
+        self._cast_failure.interpret(character, target)
 
-                if character.is_moving:
-                    self.controller.stop()
-                    character.switch_moving()
+        for action in self.behavior.interpret('pull', character, target):
+            self._last_pull = time.time()
+            if character.is_moving:
+                self.controller.stop()
+                character.switch_moving()
 
-                self._engaged = True
-                self._last_pull = time.time()
-                action.execute(self.controller)
+            action.execute(self.controller)
 
         if character.is_in_combat:
             self._next_state = CombatState(self.controller, self.behavior, self.waypoints, self._previous_grind_state)

@@ -12,7 +12,7 @@ class CastFailurePolicy:
 
     def __init__(self, controller: CharacterController):
         self.controller = controller
-        self._rolled_direction = Direction.right
+        self._rolled_direction = Direction(random.randint(0, 1))
         self._turns = 0
 
     def interpret(self, character: Character, target: Target):
@@ -20,6 +20,5 @@ class CastFailurePolicy:
             self._turns = 0
         elif character.last_ability == LastAbilityExecution.NOT_INFRONT:
             if self._turns >= GlobalConfig.config.grind_policy.search_threshold:
-                self._rolled_direction = Direction(random.randint(0, 1))
                 self.controller.turn(self._rolled_direction, random.randrange(*GlobalConfig.config.movement.turn_on_search))
                 self._turns += 1

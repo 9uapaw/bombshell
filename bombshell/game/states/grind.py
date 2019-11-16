@@ -3,6 +3,7 @@ import time
 from PIL import Image
 
 from core.config import GlobalConfig
+from core.data import DistanceRange
 from core.logger import Logger
 from game.behavior.character_behavior import CharacterBehavior
 from game.control.control import CharacterController
@@ -42,7 +43,7 @@ class GrindState(BaseState):
         if character.is_in_combat:
             self._next_state = CombatState(self.controller, self.behavior, self.waypoints, self)
 
-        if target.hp > 0:
+        if target.hp > 0 and (target.distance == DistanceRange.cast or target.distance == DistanceRange.melee):
             self._next_state = PullState(self.controller, self.behavior, self.waypoints, self)
             return
 
