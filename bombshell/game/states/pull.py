@@ -21,13 +21,12 @@ class PullState(BaseState):
         self._previous_grind_state = previous_state
         self._engaged = False
         self._last_pull = None
-        self._transition_to_grind = False
-        self._transition_to_combat = False
+        self._next_state = None
 
     def interpret(self, character: Character, target: Target, screen: Image = None):
         if self._engaged and self._last_pull and time.time() - self._last_pull > GlobalConfig.config.combat.wait_after_pull and not character.is_in_combat:
-            self._engaged = False
-            self._transition_to_grind = True
+            Logger.info("Pull was unsuccessful, transitioning back to GrindState")
+            self._next_state = game.states.grind.GrindState(self.controller, self.behavior, self.waypoints, self._previous_grind_state)
             return
 
         if not self._engaged:
@@ -42,10 +41,7 @@ class PullState(BaseState):
                 action.execute(self.controller)
 
         if character.is_in_combat:
-            self._transition_to_combat = True
+            self._next_state = CombatState(self.controller, self.behavior, self.waypoints, self._previous_grind_state)
 
     def transition(self, character: Character, target: Target, screen: Image = None) -> 'BaseState' or None:
-        if self._transition_to_grind:
-            return game.states.grind.GrindState(self.controller, self.behavior, self.waypoints, self._previous_grind_state)
-        if self._transition_to_combat:
-            return CombatState(self.controller, self.behavior, self.waypoints, self._previous_grind_state)
+        return self._next_state

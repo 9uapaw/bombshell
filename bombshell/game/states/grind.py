@@ -39,6 +39,9 @@ class GrindState(BaseState):
             self._next_state = DeadState(self.controller, self.behavior, self.waypoints, self)
             return
 
+        if character.is_in_combat:
+            self._next_state = CombatState(self.controller, self.behavior, self.waypoints, self)
+
         if target.hp > 0:
             self._next_state = PullState(self.controller, self.behavior, self.waypoints, self)
             return
@@ -50,8 +53,6 @@ class GrindState(BaseState):
             if time.time() - self._last_target_switch > GlobalConfig.config.combat.targeting_frequency:
                 self.controller.switch_target()
                 self._last_target_switch = time.time()
-        else:
-            self._next_state = CombatState(self.controller, self.behavior, self.waypoints, self)
 
     def transition(self, character: Character, target: Target, screen: Image = None) -> 'BaseState' or None:
         return self._next_state

@@ -38,6 +38,7 @@ class DeadState(BaseState):
         else:
             accept_button = self.scuttler.find(screen, ScreenObjects.ACCEPT_BUTTON)
             if accept_button:
+                self.controller.stop()
                 self.controller.click_in_middle(accept_button)
                 self._close_to_corpse = True
             else:

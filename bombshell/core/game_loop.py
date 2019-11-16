@@ -56,11 +56,11 @@ class GameLoop:
                 self.state.update(data, screen)
 
         except BombShellException as e:
-            Logger.error("{}".format(e), output=True)
+            Logger.error("{}".format(e))
             self.screen.stop_capturing()
             return
         except Exception as e:
-            Logger.error(traceback.format_exc(), output=True)
+            Logger.error(traceback.format_exc())
             self.screen.stop_capturing()
         finally:
             self.extractor.end()

@@ -31,15 +31,18 @@ class CombatState(BaseState):
 
     def interpret(self, character: Character, target: Target, screen: Image = None):
         if not character.is_in_combat and self._engaged_in_combat:
-            self._next_state = PullState(self.controller, self.behavior, self.waypoints, self)
+            self._next_state = LootState(self.controller, self.behavior, self.waypoints, self)
+            return
+
         if not character.is_in_combat and not self._engaged_in_combat:
             self._next_state = game.states.grind.GrindState(self.controller, self.behavior, self.waypoints, self._previous_grind_state)
+            return
 
         for action in self.behavior.interpret('grind', character, target):
             action.execute(self.controller)
             self._engaged_in_combat = True
 
-    def transition(self, character: Character, target: Target, screen: Image) -> 'BaseState' or None:
+    def transition(self, character: Character, target: Target, screen: Image = None) -> 'BaseState' or None:
         return self._next_state
 
 

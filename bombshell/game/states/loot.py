@@ -17,7 +17,7 @@ from image.screenscuttler import ScreenScuttler, ScreenObjects
 
 class LootState(BaseState):
 
-    def __init__(self, controller: CharacterController, behavior: CharacterBehavior, waypoints: PositionStorage = None):
+    def __init__(self, controller: CharacterController, behavior: CharacterBehavior, waypoints: PositionStorage = None, previous_state: BaseState = None):
         super().__init__(controller, behavior, waypoints)
         self.engaged = False
         self.screen_res: Tuple[int, int, int, int] = (0, 40, 800, 640)
