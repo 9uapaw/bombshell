@@ -1,15 +1,18 @@
 import time
-from typing import Tuple
+from typing import Tuple, Type
 
 from PIL import Image
 
 from core.config import Config
+from core.frame import Frame
 from core.logger import Logger
 from game.behavior.character_behavior import CharacterBehavior
 from game.control.control import CharacterController
 from game.player.character import Character
 from game.position.waypoint import PositionStorage
 from game.states.base import BaseState
+from game.states.combat.attack import AttackState
+from game.states.move import MoveState
 from game.target import Target
 import game.states.grind
 from image.screen import Screen
@@ -27,10 +30,10 @@ class SimpleLootState(BaseState):
         self.waypoint = waypoints
         self.finished_looting = False
 
-    def interpret(self, character: Character, target: Target, screen: Image = None):
+    def interpret(self, frame: Frame):
         self.controller.switch_to_previous_target()
         self.controller.interact_with_target()
         time.sleep(2)
 
-    def transition(self, character: Character, target: Target, screen: Image = None) -> BaseState or None:
-        return game.states.grind.GrindState(controller=self.controller, behavior=self.behavior, waypoints=self.waypoints, previous_state=self)
+    def transition(self, frame: Frame) -> Type[BaseState] or None:
+        return AttackState

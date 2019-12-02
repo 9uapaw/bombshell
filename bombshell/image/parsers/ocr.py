@@ -2,7 +2,7 @@ from typing import List, Dict
 
 from core.data import ExtractedData, DistanceRange
 from core.logger import Logger
-from exception.core import RecoverableException
+from exception.core import RecoverableException, ExtractException
 from game.player.attributes import CastingState, LastAbilityExecution
 from image.parsers.base import BaseParser
 
@@ -15,7 +15,7 @@ class OcrParser(BaseParser):
         'x',
         'y',
         'facing',
-        ['combat', 'casting', 'last_ability'],
+        ['combat', 'casting', 'last_ability', 'inventory', 'has_pet'],
         'target_health',
         ['distance'],
         'target_guid'
@@ -26,8 +26,8 @@ class OcrParser(BaseParser):
         Logger.debug("Extracting raw data: {}".format(raw))
         clean_data = self._extract_value(raw)
 
-
-        return ExtractedData(
+        try:
+            data = ExtractedData(
             player_health=int(clean_data[self.ADDON_DATA_POSITION[0]]),
             player_resource=int(clean_data[self.ADDON_DATA_POSITION[1]]),
             player_position=(float(clean_data[self.ADDON_DATA_POSITION[2]]), -float(clean_data[self.ADDON_DATA_POSITION[3]])),
@@ -39,7 +39,13 @@ class OcrParser(BaseParser):
             target_distance=DistanceRange(clean_data[self.ADDON_DATA_POSITION[7][0]]),
             target_id=int(str(clean_data[self.ADDON_DATA_POSITION[8]])[:5], 16) if len(clean_data[self.ADDON_DATA_POSITION[8]]) > 2 else int(clean_data[self.ADDON_DATA_POSITION[8]]),
             target_guid=int(str(clean_data[self.ADDON_DATA_POSITION[8]]), 16) if len(clean_data[self.ADDON_DATA_POSITION[8]]) > 2 else int(clean_data[self.ADDON_DATA_POSITION[8]]),
-        )
+                is_inventory_full=bool(clean_data[self.ADDON_DATA_POSITION[5][3]]),
+                player_has_pet=bool(clean_data[self.ADDON_DATA_POSITION[5][4]])
+            )
+
+            return data
+        except Exception as e:
+            raise ExtractException(clean_data)
 
     def _extract_value(self, raw: List[str]) -> Dict[(str, List[float])]:
         clean = [v for v in raw if v]

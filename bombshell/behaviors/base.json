@@ -15,8 +15,42 @@
       }
     },
     {
-      "parent": ["1"],
+      "parent": [
+        "1"
+      ],
       "key": "2",
+      "behavior": {
+        "unit": "Tick",
+        "attrs": "second",
+        "ops": "GREATER EQUALS",
+        "attr_value": "10",
+        "actions": "cast",
+        "action_value": "4",
+        "action_duration": "2",
+        "description": "Casting Immolate"
+      }
+    },
+    {
+      "parent": [
+        "1"
+      ],
+      "key": "3",
+      "behavior": {
+        "unit": "Character",
+        "attrs": "resource",
+        "ops": "GREATER EQUALS",
+        "attr_value": "10",
+        "actions": "cast",
+        "action_value": "2",
+        "action_duration": "3",
+        "description": "Casting Shadow bolt"
+      }
+    },
+    {
+      "parent": [
+        "1"
+      ],
+      "key": "4",
       "behavior": {
         "unit": "Character",
         "attrs": "resource",
@@ -24,14 +58,16 @@
         "attr_value": "10",
         "actions": "cast",
         "action_value": "1",
-        "action_duration": "3",
-        "description": "Casting Shadow bolt"
+        "action_duration": "0.1",
+        "description": "Autoattack"
       }
     }
   ],
   "pull": [
     {
-      "parent": [""],
+      "parent": [
+        ""
+      ],
       "key": "1",
       "behavior": {
         "unit": "Target",
@@ -39,10 +75,92 @@
         "ops": "EQUALS",
         "attr_value": "25 yard",
         "actions": "cast",
-        "action_value": "1",
-        "action_duration": "2.5"
+        "action_value": "2",
+        "action_duration": "2.5",
+        "description": "Pulling with Shadow Bolt"
+      }
+    },
+    {
+      "parent": [
+        ""
+      ],
+      "key": "2",
+      "behavior": {
+        "unit": "Target",
+        "attrs": "health",
+        "ops": "GREATER EQUALS",
+        "attr_value": "70",
+        "actions": "cast",
+        "action_value": "6",
+        "action_duration": "3",
+        "description": "Pulling with Corruption"
+      }
+    },
+    {
+      "parent": [
+        ""
+      ],
+      "key": "3",
+      "behavior": {
+        "unit": "Target",
+        "attrs": "distance",
+        "ops": "EQUALS",
+        "attr_value": "8 yard",
+        "actions": "cast",
+        "action_value": "2",
+        "action_duration": "2.5",
+        "description": "Pulling with Shadow Bolt"
       }
     }
   ],
-  "non_combat": []
+  "non_combat": [
+    {
+      "parent": [
+        ""
+      ],
+      "key": "1",
+      "behavior": {
+        "unit": "Character",
+        "attrs": "health",
+        "ops": "LESS EQUALS",
+        "attr_value": "40",
+        "actions": "cast",
+        "action_value": "7",
+        "action_duration": "20",
+        "description": "Eating and/or waiting"
+      }
+    },
+    {
+      "parent": [
+        ""
+      ],
+      "key": "2",
+      "behavior": {
+        "unit": "Tick",
+        "attrs": "second",
+        "ops": "GREATER EQUALS",
+        "attr_value": "1800",
+        "actions": "cast",
+        "action_value": "3",
+        "action_duration": "1",
+        "description": "Buff DemonSkin"
+      }
+    },
+    {
+      "parent": [
+        ""
+      ],
+      "key": "3",
+      "behavior": {
+        "unit": "Character",
+        "attrs": "has pet",
+        "ops": "EQUALS",
+        "attr_value": "False",
+        "actions": "cast",
+        "action_value": "5",
+        "action_duration": "11",
+        "description": "Summoning Imp"
+      }
+    }
+  ]
 }

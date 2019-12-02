@@ -60,7 +60,7 @@ FONT_SIZE = 32
 START = 80
 LINE_SPACE = 40
 DATA = {"text", "mana", "posx", "posy", "facing", "playerState", "targetHealth", "targetState", "targetId" }
-PLAYER_STATE = {combat=1, casting=2, last_ability=3}
+PLAYER_STATE = {combat=1, casting=2, last_ability=3, inventory=4, hasPet=5}
 TARGET_STATE = {distance=1}
 
 for k, v in ipairs(DATA) do
@@ -109,7 +109,7 @@ end
 
 function GetSpellState()
     local info = {CombatLogGetCurrentEventInfo()}
-            --DEFAULT_CHAT_FRAME:AddMessage("COMBAT LOG " .. info[2] .. " " .. info[15])
+            --DEFAULT_CHAT_FRAME:AddMessage("COMBAT LOG " .. info[2] .. " " .. info[4] .. " " ..info[15] )
     if (info[2] == 'SPELL_CAST_FAILED' and starts_with(info[4], 'Player')) then
         if (info[15] == "SPELL_FAILED_TOO_CLOSE") then
             return 3
@@ -119,7 +119,7 @@ function GetSpellState()
             return 1
         elseif (info[15] == "SPELL_FAILED_NOT_BEHIND") then
             return 4
-        elseif (info[15] == "Target needs to be in front of you.") then
+        elseif (info[15] == "Target needs to be in front of you") then
             return 5
         elseif (info[15] == "SPELL_FAILED_BAD_IMPLICIT_TARGETS") then
             return 6
@@ -131,7 +131,7 @@ function GetSpellState()
 end
 
 function GetPlayerCastingState()
-    local spell, _, _, _, _, endTime = UnitCastingInfo("player")
+    local spell, _, _, _, _, endTime = CastingInfo()
     local ret = 0
     if spell then
         ret = 1
@@ -140,8 +140,37 @@ function GetPlayerCastingState()
     return ret
 end
 
+function IsPetExist()
+    local petSpells, _ = HasPetSpells()
+
+    if petSpells == nil then
+        return 0
+    end
+
+    return 1
+
+end
+
 function GetFacing()
     return GetPlayerFacing()
+end
+
+function IsInventoryFull()
+    local freeSlots = 0
+    for bagId=0,4 do
+        numSlots, bagType = GetContainerNumFreeSlots(bagId)
+        if bagType == 0 then
+            freeSlots = freeSlots + numSlots
+        end
+    end
+
+    local isFull = 0
+
+    if freeSlots == 0 then
+        isFull = 1
+    end
+
+    return isFull
 end
 
 function GetTruePosition()
@@ -175,12 +204,14 @@ frame.texture:SetColorTexture(1, 1, 1, 1)
 
 DEFAULT_CHAT_FRAME:AddMessage("ENTER WORLD")
 frame:RegisterEvent("UNIT_HEALTH")
-frame:RegisterEvent("UNIT_MANA")
+frame:RegisterEvent("UNIT_POWER_UPDATE")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:RegisterEvent("PLAYER_REGEN_DISABLED")
 frame:RegisterEvent("PLAYER_REGEN_ENABLED")
 frame:RegisterEvent("PLAYER_TARGET_CHANGED")
 frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+frame:RegisterEvent("LOOT_CLOSED")
+frame:RegisterEvent("UNIT_PET")
 
 frame:SetScript(
     "OnEvent",
@@ -192,6 +223,8 @@ frame:SetScript(
             SetPlayerState("combat", "0")
             SetPlayerState("last_ability", "0")
             SetTargetState("distance", "0")
+            SetPlayerState("inventory",  IsInventoryFull())
+            SetPlayerState("hasPet",  IsPetExist())
             frame.targetHealth:SetText("" .. -1)
             frame.targetId:SetText("-1")
         elseif (event == "UNIT_HEALTH") then
@@ -199,7 +232,7 @@ frame:SetScript(
             local targetHealth = GetTargetHealth()
             frame.text:SetText("" .. health)
             frame.targetHealth:SetText("" .. targetHealth)
-        elseif (event == "UNIT_MANA") then
+        elseif (event == "UNIT_POWER_UPDATE") then
             local mana = GetPlayerMana()
             frame.mana:SetText("" .. mana)
         elseif (event == "PLAYER_REGEN_ENABLED") then
@@ -219,6 +252,10 @@ frame:SetScript(
             end
         elseif (event == "COMBAT_LOG_EVENT_UNFILTERED") then
             SetPlayerState("last_ability",  GetSpellState())
+        elseif (event == "LOOT_CLOSED") then
+            SetPlayerState("inventory",  IsInventoryFull())
+        elseif (event == "UNIT_PET") then
+            SetPlayerState("hasPet",  IsPetExist())
         end
     end
 )
@@ -227,13 +264,14 @@ frame:SetScript(
     "OnUpdate",
     function(self, event)
         local posX, posY = GetTruePosition()
+        local distance = GetTargetDistance()
         frame.posx:SetText("" .. string.sub(posX, 0, 8))
         frame.posy:SetText("" .. string.sub(posY, 0, 8))
 
         frame.facing:SetText("" .. string.sub(GetFacing(), 0, 8))
 
         SetPlayerState("casting", GetPlayerCastingState())
-        SetTargetState("distance", GetTargetDistance())
+        SetTargetState("distance", distance)
     end
 )
 

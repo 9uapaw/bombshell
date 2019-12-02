@@ -1,6 +1,7 @@
 from PIL import Image
 
 from core.data import ExtractedData
+from core.frame import Frame
 from game.position.waypoint import PositionStorage
 from game.behavior.character_behavior import CharacterBehavior
 from game.player.character import Character, Resource
@@ -22,9 +23,10 @@ class StateHandler:
     def update(self, data: ExtractedData, screen: Image):
         self.character.update(data)
         self.target.update(data)
+        frame = Frame(self.character, self.target, screen)
 
-        self.state.interpret(self.character, self.target, screen)
+        self.state.interpret(frame)
 
-        transition = self.state.transition(self.character, self.target, screen)
+        transition = self.state.transition(frame)
         if transition:
             self.state = transition

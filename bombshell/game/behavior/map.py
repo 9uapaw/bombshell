@@ -12,7 +12,8 @@ ATTRIBUTES = {
     'Character': {
         'health': 'hp',
         'resource': 'resource',
-        'is in combat': 'is_in_combat'
+        'is in combat': 'is_in_combat',
+        'has pet': 'has_pet'
     },
     'Target': {
         'health': 'hp',
@@ -36,6 +37,7 @@ _CONTINOUS = {
 
 OPERATORS = {
     "is in combat": _DISCRETE,
+    "has pet": _DISCRETE,
     "health": _CONTINOUS,
     "resource": _CONTINOUS,
     "distance": _DISCRETE,
@@ -49,6 +51,7 @@ _TIME_VALUES = list(map(str, [1, 2, 2.5, 3, 5, 10, 50, 100, 500, 1000, 1800, 360
 VALUE_MAP = {
     "distance": lambda d: _DISTANCE_VALUES[d],
     "is in combat": lambda c: {"True": True, "False": False}[c],
+    "has pet": lambda c: {"True": True, "False": False}[c],
     "health": int,
     "resource": int,
     "second": float

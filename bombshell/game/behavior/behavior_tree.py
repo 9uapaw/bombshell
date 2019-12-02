@@ -1,4 +1,4 @@
-from typing import Dict, Tuple, List, Iterable
+from typing import Dict, Tuple, List, Iterable, Generator
 
 from core.logger import Logger
 from game.behavior.action import BehaviorAction
@@ -20,17 +20,22 @@ class BehaviorTree:
             else:
                 self._tree[p] = [node]
 
-    def traverse(self, character: Character, target: Target) -> Iterable[BehaviorAction]:
+    def traverse(self) -> Generator[BehaviorAction, Tuple[Character, Target], None]:
         if '' not in self._tree:
-            return []
+            yield []
 
-        return self._traverse([''], character, target)
+        yield from self._traverse([''])
 
-    def _traverse(self, parent_indexes: List[str], character: Character, target: Target) -> Iterable[BehaviorAction]:
+    def _traverse(self, parent_indexes: List[str]) -> Generator[BehaviorAction, Tuple[Character, Target], None]:
         for parent_index in parent_indexes:
             for node in self._tree.get(parent_index, []):
-                if node.check(character, target):
-                    yield node.get_action()
-                    yield from self._traverse([node.index], character, target)
+                res = yield
+                if res:
+                    character, target = res
+                    if node.check(character, target):
+                        yield node.get_action()
+                        yield from self._traverse([node.index])
+                else:
+                    print('no')
 
 

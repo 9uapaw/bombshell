@@ -1,4 +1,4 @@
-from typing import Dict, Tuple, Iterable
+from typing import Dict, Tuple, Iterable, Generator
 
 from game.behavior.action import BehaviorAction
 from game.behavior.behavior_tree import BehaviorTree
@@ -21,5 +21,5 @@ class CharacterBehavior:
                 tree.add(node)
             self.behavior_trees[behavior_type] = tree
 
-    def interpret(self, behavior_type: str, character: Character, target: Target) -> Iterable[BehaviorAction]:
-        return self.behavior_trees[behavior_type].traverse(character, target)
+    def interpret(self, behavior_type: str) -> Generator[BehaviorAction, Tuple[Character, Target], None]:
+        return self.behavior_trees[behavior_type].traverse()

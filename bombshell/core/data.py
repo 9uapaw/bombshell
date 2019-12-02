@@ -24,4 +24,6 @@ class ExtractedData:
     target_id: int
     target_guid: int
     last_ability: LastAbilityExecution
+    is_inventory_full: bool
+    player_has_pet: bool
 

@@ -1,6 +1,7 @@
 from PIL import Image
 
 from core.config import GlobalConfig
+from core.frame import Frame
 from game.behavior.character_behavior import CharacterBehavior
 from game.control.control import CharacterController
 from game.control.follow import PositionFollower
@@ -17,7 +18,8 @@ from image.screenscuttler import ScreenScuttler, ScreenObjects
 
 class DeadState(BaseState):
 
-    def __init__(self, controller: CharacterController, behavior: CharacterBehavior, waypoints: PositionStorage = None, previous_state: BaseState = None):
+    def __init__(self, controller: CharacterController, behavior: CharacterBehavior, waypoints: PositionStorage = None,
+                 previous_state: BaseState = None):
         super().__init__(controller, behavior, waypoints)
         self.scuttler = ScreenScuttler()
         self.movement = PositionFollower(self.controller, self.waypoints)
@@ -26,27 +28,28 @@ class DeadState(BaseState):
         self._close_to_corpse = False
         self._state = previous_state
 
-        closest_waypoint_route = find_best_waypoint_route([wp['waypoints'] for wp in GlobalConfig.config.waypoint['ghost']], previous_state.transition_data['corpse_position'])
-        self.waypoints.parse(GlobalConfig.config.waypoint['ghost'][closest_waypoint_route])
+        closest_waypoint_route = find_best_waypoint_route(
+            [[Position(w[0], w[1]) for w in wp['waypoints']] for wp in GlobalConfig.config.waypoint['ghost']],
+            previous_state.persistent_state['last_position'])
+        self.waypoints.parse(GlobalConfig.config.waypoint['ghost'][closest_waypoint_route]['waypoints'])
 
-    def interpret(self, character: Character, target: Target, screen: Image = None):
+    def interpret(self, frame: Frame):
         if not self._released:
-            release_button = self.scuttler.find(screen, ScreenObjects.RELEASE_BUTTON)
+            release_button = self.scuttler.find(frame.screen, ScreenObjects.RELEASE_BUTTON)
             if release_button:
                 self.controller.click_in_middle(release_button)
                 self._released = True
         else:
-            accept_button = self.scuttler.find(screen, ScreenObjects.ACCEPT_BUTTON)
+            accept_button = self.scuttler.find(frame.screen, ScreenObjects.ACCEPT_BUTTON)
             if accept_button:
                 self.controller.stop()
                 self.controller.click_in_middle(accept_button)
                 self._close_to_corpse = True
             else:
-                self.movement.move(character)
+                self.movement.move(frame.character)
 
         pass
 
     def transition(self, character: Character, target: Target, screen: Image) -> 'BaseState' or None:
         if self._close_to_corpse:
             return game.states.grind.GrindState(self.controller, self.behavior, self.waypoints)
-

@@ -33,7 +33,7 @@ class PositionFollower:
             if not character.is_moving:
                 Logger.debug('Moving')
                 self.controller.move_forward()
-                character.switch_moving()
+                character.is_moving = True
 
     def turn(self, character: Character) -> (float, Direction) or None:
         current_trajectory = calculate_trajectory(character.position, character.facing)

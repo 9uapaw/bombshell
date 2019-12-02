@@ -19,6 +19,8 @@ class Character:
         self.facing = 0
         self.casting = CastingState.IDLE
         self.last_ability = LastAbilityExecution.SUCCESS
+        self.is_inventory_full = False
+        self.has_pet = False
 
     def update(self, data: ExtractedData):
         self.hp = data.player_health
@@ -28,6 +30,8 @@ class Character:
         self.facing = normalize_facing(data.facing)
         self.last_ability = data.last_ability
         self.casting = data.casting
+        self.is_inventory_full = data.is_inventory_full
+        self.has_pet = data.player_has_pet
 
     def switch_moving(self):
         self.is_moving = not self.is_moving

@@ -29,8 +29,8 @@ class ImageExtractor:
         try:
             data = self.parser.parse(raw_data)
             Logger.debug("Parsed data: {}".format(data))
-        except ExtractException as e:
-            extracted_values = self.policy.rollback(e.partial)
+        # except ExtractException as e:
+        #     extracted_values = self.policy.rollback(e.partial)
         except RecoverableException as e:
             Logger.error("Error parsing data. Recovering...")
             return

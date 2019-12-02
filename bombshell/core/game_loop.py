@@ -16,7 +16,7 @@ from core.config import Config
 from core.logger import Logger
 from game.position.waypoint import PositionStorage
 from exception.base import BombShellException
-from exception.core import CoreException
+from exception.core import CoreException, ExtractException
 from game.behavior.character_behavior import CharacterBehavior
 from game.control.control import BasicController
 from game.state_handler import StateHandler
@@ -48,11 +48,14 @@ class GameLoop:
             for screen in self.screen.capture():
                 # self._show_window(screen)
                 time_before = time.time()
-                data = self.extractor.extract_data_from_screen(screen)
+                try:
+                    data = self.extractor.extract_data_from_screen(screen)
+                except ExtractException as e:
+                    Logger.error("Error while extracting data from addon. Data extracted: {}", e.partial)
+                    continue
+
                 delta = time.time() - time_before
                 Logger.debug("Elapsed time after extraction: {}".format(delta))
-                if not data:
-                    continue
                 self.state.update(data, screen)
 
         except BombShellException as e:
