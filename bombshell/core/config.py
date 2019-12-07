@@ -34,9 +34,19 @@ class KeyboardLayout:
 
 
 @dataclass
+class CoreConfig:
+    extract_error_threshold = 3
+    recoverable_error_threshold = 3
+
+    difference_between_two_waypoints = 2
+
+
+@dataclass
 class Config:
     behavior: dict
     waypoint: Dict[str, any]
+
+    core: CoreConfig = CoreConfig()
 
     keyboard: KeyboardLayout = KeyboardLayout()
 
@@ -50,7 +60,7 @@ class Config:
 
 class GlobalConfig:
     """
-    Used to represent the globally accessible magic constants.
+    Used to represent the globally accessible constant values.
     DO NOT ALTER THESE VALUES AFTER STARTING THREAD! IT IS A SINGLETON!
     """
 

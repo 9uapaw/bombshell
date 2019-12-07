@@ -18,3 +18,8 @@ NOT_EQUALS = "NOT EQUALS"
 VOID = 'void'
 CAST = 'cast'
 
+
+#LUA API COMMANDS
+RELEASE_SPIRIT = '/run RepopMe()'
+ACCEPT_REZ = "/run AcceptResurrection()"
+

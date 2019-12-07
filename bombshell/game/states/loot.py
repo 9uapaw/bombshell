@@ -9,20 +9,21 @@ from game.behavior.character_behavior import CharacterBehavior
 from game.control.control import CharacterController
 from game.player.character import Character
 from game.position.waypoint import PositionStorage
-from game.states.base import BaseState
+from game.states.base import BaseState, TransitionType
 from game.target import Target
 import game.states.grind
-from image.screen import Screen
+from image.screeninterceptor import ScreenInterceptor
 from image.screenscuttler import ScreenScuttler, ScreenObjects
 
 
 class LootState(BaseState):
 
-    def __init__(self, controller: CharacterController, behavior: CharacterBehavior, waypoints: PositionStorage = None, previous_state: BaseState = None):
-        super().__init__(controller, behavior, waypoints)
+    def __init__(self, controller: CharacterController, behavior: CharacterBehavior, waypoints: PositionStorage = None,
+                 transition_state: BaseState = None, transition: TransitionType = TransitionType.SAME_LEVEL):
+        super().__init__(controller, behavior, waypoints, transition_state, transition)
         self.engaged = False
         self.screen_res: Tuple[int, int, int, int] = (0, 40, 800, 640)
-        self.screen = Screen(self.screen_res)
+        self.screen = ScreenInterceptor(self.screen_res)
         self.scuttler = ScreenScuttler()
         self.waypoint = waypoints
         self.finished_looting = False
@@ -34,7 +35,8 @@ class LootState(BaseState):
 
     def transition(self, frame: Frame) -> BaseState or None:
         if self.finished_looting:
-            return game.states.grind.GrindState(controller=self.controller, behavior=self.behavior, waypoints=self.waypoints, previous_state=self)
+            return game.states.grind.GrindState(controller=self.controller, behavior=self.behavior,
+                                                waypoints=self.waypoints, transition_state=self)
 
     def _check_through_screen(self, gen):
         Logger.debug("Entered loot state - Checking through screen")

@@ -6,22 +6,23 @@ from game.control.control import CharacterController
 from game.control.follow import PositionFollower
 from exception.core import PrerequisiteException
 from game.position.waypoint import PositionStorage
-from game.states.base import BaseState
+from game.states.base import BaseState, TransitionType
 from game.states.grind import GrindState
 import game.states.dead
 
 
 class StartState(BaseState):
 
-    def __init__(self, controller: CharacterController, behavior: CharacterBehavior, waypoints: PositionStorage = None):
-        super().__init__(controller, behavior, waypoints)
+    def __init__(self, controller: CharacterController, behavior: CharacterBehavior, waypoints: PositionStorage = None,
+                 transition_state: 'BaseState' = None, transition: TransitionType = TransitionType.SAME_LEVEL):
+        super().__init__(controller, behavior, waypoints, transition_state, transition)
         self.waypoint_follower = PositionFollower(controller, self.waypoints)
         self._next_state = None
 
     def interpret(self, frame: Frame):
         if frame.character.hp == 0:
             self.persistent_state['last_position'] = frame.character.position
-            self._next_state = game.states.dead.DeadState(self.controller, self.behavior, self.waypoints, self)
+            self._next_state = game.states.dead.DeadState(self.controller, self.behavior, self.waypoints)
 
             return
 
@@ -36,7 +37,7 @@ class StartState(BaseState):
 
         if frame.character.position.is_close_to(self.waypoints.peek(frame.character.current_waypoint),
                                           GlobalConfig.config.movement.waypoint_difference_threshold):
-            return GrindState(self.controller, self.behavior, self.waypoints, self)
+            return GrindState(self.controller, self.behavior, self.waypoints)
         else:
             raise PrerequisiteException('Waypoint is {} yards away'.format(
                 frame.character.position.calculate_distance_from(self.waypoints.waypoints[frame.character.current_waypoint])))

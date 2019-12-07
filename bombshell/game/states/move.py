@@ -8,14 +8,15 @@ from game.control.follow import PositionFollower
 from game.position.waypoint import PositionStorage
 from game.player.character import Character
 from game.control.control import CharacterController
-from game.states.base import BaseState
+from game.states.base import BaseState, TransitionType
 from game.target import Target
 
 
 class MoveState(BaseState):
 
-    def __init__(self, controller: CharacterController, behavior: CharacterBehavior, waypoints: PositionStorage = None, previous_state: 'BaseState' = None):
-        super().__init__(controller, behavior, waypoints)
+    def __init__(self, controller: CharacterController, behavior: CharacterBehavior, waypoints: PositionStorage = None,
+                 transition_state: 'BaseState' = None, transition: TransitionType = TransitionType.SAME_LEVEL):
+        super().__init__(controller, behavior, waypoints, transition_state, transition)
         self.waypoint_follower = PositionFollower(self.controller, self.waypoints)
 
     def interpret(self, frame: Frame):

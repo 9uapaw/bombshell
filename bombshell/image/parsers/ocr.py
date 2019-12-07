@@ -24,9 +24,9 @@ class OcrParser(BaseParser):
     def parse(self, raw: str) -> ExtractedData:
         raw = [r for r in raw.split('\n')]
         Logger.debug("Extracting raw data: {}".format(raw))
-        clean_data = self._extract_value(raw)
 
         try:
+            clean_data = self._extract_value(raw)
             data = ExtractedData(
             player_health=int(clean_data[self.ADDON_DATA_POSITION[0]]),
             player_resource=int(clean_data[self.ADDON_DATA_POSITION[1]]),
@@ -53,7 +53,6 @@ class OcrParser(BaseParser):
         pos = 0
 
         for s in clean:
-            try:
                 s = s.replace(" ", "")
                 s = s.replace(",", "")
                 if not s:
@@ -69,7 +68,5 @@ class OcrParser(BaseParser):
                     val = s
                     res[self.ADDON_DATA_POSITION[pos]] = val
                     pos += 1
-            except Exception as e:
-                raise RecoverableException()
 
         return res

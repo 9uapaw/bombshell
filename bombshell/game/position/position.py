@@ -28,7 +28,7 @@ class Position:
 
         return area.encloses_point(other.point)
 
-    def calculate_distance_from(self, other: 'Position'):
+    def calculate_distance_from(self, other: 'Position') -> float:
         return math.sqrt((self.point.x - other.point.x)**2 + (self.point.y - other.point.y)**2)
 
     def __eq__(self, other: 'Position'):

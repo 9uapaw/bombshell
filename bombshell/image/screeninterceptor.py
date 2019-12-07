@@ -18,8 +18,7 @@ if sys.platform == 'win32':
     from mss_real_shotter import mss_real_shotter
 
 
-
-class Screen:
+class ScreenInterceptor:
 
         def __init__(self, screen_size: (int, int, int, int)):
             self.screen_size = screen_size

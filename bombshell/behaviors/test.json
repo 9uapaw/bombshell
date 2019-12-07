@@ -1,0 +1,34 @@
+{
+  "grind": {
+    "grind": [],
+    "pull": [
+      {
+        "parent": "",
+        "key": "1",
+        "behavior": {
+          "unit": "Target",
+          "attrs": "distance",
+          "ops": "EQUALS",
+          "attr_value": "25 yard",
+          "actions": "cast",
+          "action_value": "22"
+        }
+      },
+      {
+        "parent": [
+          "1"
+        ],
+        "key": "2",
+        "behavior": {
+          "unit": "Character",
+          "attrs": "is in combat",
+          "ops": "EQUALS",
+          "attr_value": "True",
+          "actions": "cast",
+          "action_value": "3"
+        }
+      }
+    ],
+    "non_combat": []
+  }
+}

@@ -1,39 +1,32 @@
 import time
 from typing import Tuple, Type
 
-from PIL import Image
-
-from core.config import Config
 from core.frame import Frame
-from core.logger import Logger
 from game.behavior.character_behavior import CharacterBehavior
 from game.control.control import CharacterController
-from game.player.character import Character
 from game.position.waypoint import PositionStorage
-from game.states.base import BaseState
-from game.states.combat.attack import AttackState
-from game.states.move import MoveState
-from game.target import Target
-import game.states.grind
-from image.screen import Screen
+from game.states.base import BaseState, TransitionType
+from game.states.idle import IdleState
+from image.screeninterceptor import ScreenInterceptor
 from image.screenscuttler import ScreenScuttler, ScreenObjects
 
 
 class SimpleLootState(BaseState):
 
-    def __init__(self, controller: CharacterController, behavior: CharacterBehavior, waypoints: PositionStorage = None, previous_state: BaseState = None):
-        super().__init__(controller, behavior, waypoints)
+    def __init__(self, controller: CharacterController, behavior: CharacterBehavior, waypoints: PositionStorage = None,
+                 transition_state: BaseState = None, transition: TransitionType = TransitionType.SAME_LEVEL):
+        super().__init__(controller, behavior, waypoints, transition_state, transition)
         self.engaged = False
         self.screen_res: Tuple[int, int, int, int] = (0, 40, 800, 640)
-        self.screen = Screen(self.screen_res)
+        self.screen = ScreenInterceptor(self.screen_res)
         self.scuttler = ScreenScuttler()
         self.waypoint = waypoints
         self.finished_looting = False
 
     def interpret(self, frame: Frame):
+        self.log("Looting")
         self.controller.switch_to_previous_target()
         self.controller.interact_with_target()
         time.sleep(2)
 
-    def transition(self, frame: Frame) -> Type[BaseState] or None:
-        return AttackState
+        self.set_next_state(IdleState)

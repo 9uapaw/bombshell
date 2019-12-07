@@ -13,6 +13,10 @@ from game.position.position import Direction
 class CharacterController(metaclass=abc.ABCMeta):
 
     @classmethod
+    def write(cls, text: str):
+        raise NotImplementedError()
+
+    @classmethod
     def move_forward(cls):
         raise NotImplementedError()
 
@@ -66,6 +70,12 @@ class CharacterController(metaclass=abc.ABCMeta):
 
 
 class BasicController(CharacterController):
+
+    @classmethod
+    def write(cls, text: str):
+        pyautogui.position('Enter')
+        pyautogui.typewrite(text)
+        pyautogui.position('Enter')
 
     @classmethod
     def interact_with_target(cls):

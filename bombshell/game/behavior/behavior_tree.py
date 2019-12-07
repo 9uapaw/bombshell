@@ -20,20 +20,20 @@ class BehaviorTree:
             else:
                 self._tree[p] = [node]
 
-    def traverse(self) -> Generator[BehaviorAction, Tuple[Character, Target], None]:
+    def traverse(self) -> Generator[BehaviorEntry, Tuple[Character, Target], None]:
         if '' not in self._tree:
             yield []
 
         yield from self._traverse([''])
 
-    def _traverse(self, parent_indexes: List[str]) -> Generator[BehaviorAction, Tuple[Character, Target], None]:
+    def _traverse(self, parent_indexes: List[str]) -> Generator[BehaviorEntry, Tuple[Character, Target], None]:
         for parent_index in parent_indexes:
             for node in self._tree.get(parent_index, []):
                 res = yield
                 if res:
                     character, target = res
                     if node.check(character, target):
-                        yield node.get_action()
+                        yield node
                         yield from self._traverse([node.index])
                 else:
                     print('no')

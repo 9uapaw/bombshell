@@ -20,6 +20,38 @@
       ],
       "key": "2",
       "behavior": {
+        "unit": "Character",
+        "attrs": "resource",
+        "ops": "GREATER EQUALS",
+        "attr_value": "10",
+        "actions": "cast",
+        "action_value": "1",
+        "action_duration": "0.5",
+        "description": "Autoattack"
+      }
+    },
+    {
+      "parent": [
+        "1"
+      ],
+      "key": "3",
+      "behavior": {
+        "unit": "Character",
+        "attrs": "resource",
+        "ops": "GREATER EQUALS",
+        "attr_value": "10",
+        "actions": "cast",
+        "action_value": "t",
+        "action_duration": "2",
+        "description": "Interact with target"
+      }
+    },
+    {
+      "parent": [
+        "1"
+      ],
+      "key": "4",
+      "behavior": {
         "unit": "Tick",
         "attrs": "second",
         "ops": "GREATER EQUALS",
@@ -34,7 +66,7 @@
       "parent": [
         "1"
       ],
-      "key": "3",
+      "key": "5",
       "behavior": {
         "unit": "Character",
         "attrs": "resource",
@@ -44,22 +76,6 @@
         "action_value": "2",
         "action_duration": "3",
         "description": "Casting Shadow bolt"
-      }
-    },
-    {
-      "parent": [
-        "1"
-      ],
-      "key": "4",
-      "behavior": {
-        "unit": "Character",
-        "attrs": "resource",
-        "ops": "GREATER EQUALS",
-        "attr_value": "10",
-        "actions": "cast",
-        "action_value": "1",
-        "action_duration": "0.1",
-        "description": "Autoattack"
       }
     }
   ],
@@ -89,7 +105,7 @@
         "unit": "Target",
         "attrs": "health",
         "ops": "GREATER EQUALS",
-        "attr_value": "70",
+        "attr_value": "80",
         "actions": "cast",
         "action_value": "6",
         "action_duration": "3",
@@ -103,13 +119,13 @@
       "key": "3",
       "behavior": {
         "unit": "Target",
-        "attrs": "distance",
-        "ops": "EQUALS",
-        "attr_value": "8 yard",
+        "attrs": "health",
+        "ops": "GREATER EQUALS",
+        "attr_value": "80",
         "actions": "cast",
-        "action_value": "2",
-        "action_duration": "2.5",
-        "description": "Pulling with Shadow Bolt"
+        "action_value": "9",
+        "action_duration": "1",
+        "description": "Pulling with Curse of Agony"
       }
     }
   ],
