@@ -1,5 +1,5 @@
 import time
-
+import uuid
 import cv2
 from PIL import Image
 import numpy as np
@@ -42,6 +42,7 @@ class StartComponent:
             try:
                 data = self._extractor.extract_data_from_screen(screen)
             except ExtractException as e:
+                screen.save(f"errorimages\\{str(uuid.uuid4().hex)}.bmp")
                 Logger.error("Error while extracting data from addon. Data extracted: {}", e.partial)
                 if self._extract_error_count <= GlobalConfig.config.core.extract_error_threshold:
                     self._extract_error_count += 1
