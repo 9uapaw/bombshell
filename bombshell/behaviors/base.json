@@ -21,13 +21,13 @@
       "key": "2",
       "behavior": {
         "unit": "Character",
-        "attrs": "resource",
-        "ops": "GREATER EQUALS",
-        "attr_value": "10",
+        "attrs": "health",
+        "ops": "LESS EQUALS",
+        "attr_value": "25",
         "actions": "cast",
-        "action_value": "1",
-        "action_duration": "0.5",
-        "description": "Autoattack"
+        "action_value": "/",
+        "action_duration": "1.5",
+        "description": "Casting Fear"
       }
     },
     {
@@ -36,13 +36,29 @@
       ],
       "key": "3",
       "behavior": {
+        "unit": "Tick",
+        "attrs": "second",
+        "ops": "GREATER EQUALS",
+        "attr_value": "20",
+        "actions": "cast",
+        "action_value": "1",
+        "action_duration": "0.1",
+        "description": "Autoattack"
+      }
+    },
+    {
+      "parent": [
+        "3"
+      ],
+      "key": "4",
+      "behavior": {
         "unit": "Character",
         "attrs": "resource",
         "ops": "GREATER EQUALS",
         "attr_value": "10",
         "actions": "cast",
         "action_value": "t",
-        "action_duration": "2",
+        "action_duration": "1",
         "description": "Interact with target"
       }
     },
@@ -50,7 +66,37 @@
       "parent": [
         "1"
       ],
-      "key": "4",
+      "key": "5",
+      "behavior": {
+        "unit": "Character",
+        "attrs": "first class resource",
+        "ops": "EQUALS",
+        "attr_value": "False",
+        "actions": "void",
+        "description": "First class specific resource is not available"
+      }
+    },
+    {
+      "parent": [
+        "5"
+      ],
+      "key": "6",
+      "behavior": {
+        "unit": "Target",
+        "attrs": "health",
+        "ops": "LESS EQUALS",
+        "attr_value": "30",
+        "actions": "cast",
+        "action_value": "'",
+        "action_duration": "3",
+        "description": "Casting Drain Soul"
+      }
+    },
+    {
+      "parent": [
+        "1"
+      ],
+      "key": "7",
       "behavior": {
         "unit": "Tick",
         "attrs": "second",
@@ -66,7 +112,7 @@
       "parent": [
         "1"
       ],
-      "key": "5",
+      "key": "8",
       "behavior": {
         "unit": "Character",
         "attrs": "resource",
@@ -76,6 +122,22 @@
         "action_value": "2",
         "action_duration": "3",
         "description": "Casting Shadow bolt"
+      }
+    },
+    {
+      "parent": [
+        "1"
+      ],
+      "key": "9",
+      "behavior": {
+        "unit": "Character",
+        "attrs": "has pet",
+        "ops": "EQUALS",
+        "attr_value": "True",
+        "actions": "cast",
+        "action_value": ",",
+        "action_duration": "0.1",
+        "description": "Attacking with pet"
       }
     }
   ],
@@ -108,7 +170,7 @@
         "attr_value": "80",
         "actions": "cast",
         "action_value": "6",
-        "action_duration": "3",
+        "action_duration": "1.5",
         "description": "Pulling with Corruption"
       }
     },
@@ -172,10 +234,38 @@
         "attrs": "has pet",
         "ops": "EQUALS",
         "attr_value": "False",
+        "actions": "void",
+        "description": "Character has no pet"
+      }
+    },
+    {
+      "parent": [
+        "3"
+      ],
+      "key": "4",
+      "behavior": {
+        "unit": "Character",
+        "attrs": "first class resource",
+        "ops": "EQUALS",
+        "attr_value": "True",
+        "actions": "void",
+        "description": "First class specific resource is available"
+      }
+    },
+    {
+      "parent": [
+        "4"
+      ],
+      "key": "5",
+      "behavior": {
+        "unit": "Character",
+        "attrs": "resource",
+        "ops": "GREATER EQUALS",
+        "attr_value": "30",
         "actions": "cast",
         "action_value": "5",
         "action_duration": "11",
-        "description": "Summoning Imp"
+        "description": "Summoning Voidwalker"
       }
     }
   ]

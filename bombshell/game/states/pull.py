@@ -12,7 +12,7 @@ from game.player.character import Character
 from game.position.waypoint import PositionStorage
 from game.states.base import BaseState, TransitionType
 from game.states.combat.combat import CombatState
-from game.states.move import MoveState
+from game.states.move.move import MoveState
 from game.target import Target
 
 
@@ -42,4 +42,3 @@ class PullState(BaseState):
             self.log("Finished pull sequence")
         else:
             self.set_next_state(CombatState)
-

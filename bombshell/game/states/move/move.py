@@ -9,6 +9,7 @@ from game.position.waypoint import PositionStorage
 from game.player.character import Character
 from game.control.control import CharacterController
 from game.states.base import BaseState, TransitionType
+from game.states.move.stuck import StuckResolverState
 from game.target import Target
 
 
@@ -18,9 +19,8 @@ class MoveState(BaseState):
                  transition_state: 'BaseState' = None, transition: TransitionType = TransitionType.SAME_LEVEL):
         super().__init__(controller, behavior, waypoints, transition_state, transition)
         self.waypoint_follower = PositionFollower(self.controller, self.waypoints)
+        self.set_current_sub_state(StuckResolverState)
 
     def interpret(self, frame: Frame):
         self.waypoint_follower.move(frame.character)
-
-    def transition(self, frame: Frame) -> BaseState or None:
-        pass
+        self.interpret_sub_state(frame)

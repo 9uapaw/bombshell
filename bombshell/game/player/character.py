@@ -1,4 +1,5 @@
 import enum
+from typing import Tuple
 
 from core.data import ExtractedData
 from game.player.attributes import Resource, LastAbilityExecution, CastingState
@@ -21,6 +22,7 @@ class Character:
         self.last_ability = LastAbilityExecution.SUCCESS
         self.is_inventory_full = False
         self.has_pet = False
+        self.first_class_resource = False
 
     def update(self, data: ExtractedData):
         self.hp = data.player_health
@@ -32,6 +34,7 @@ class Character:
         self.casting = data.casting
         self.is_inventory_full = data.is_inventory_full
         self.has_pet = data.player_has_pet
+        self.first_class_resource = data.player_first_resource_available
 
     def switch_moving(self):
         self.is_moving = not self.is_moving

@@ -22,7 +22,7 @@ class StartState(BaseState):
     def interpret(self, frame: Frame):
         if frame.character.hp == 0:
             self.persistent_state['last_position'] = frame.character.position
-            self._next_state = game.states.dead.DeadState(self.controller, self.behavior, self.waypoints)
+            self._next_state = game.states.dead.DeadState(self.controller, self.behavior, self.waypoints, self)
 
             return
 

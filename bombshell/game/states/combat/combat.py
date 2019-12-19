@@ -4,7 +4,7 @@ from game.control.control import CharacterController
 from game.position.waypoint import PositionStorage
 from game.states.base import BaseState, TransitionType
 from game.states.combat.attack import AttackState
-from game.states.move import MoveState
+from game.states.move.move import MoveState
 from game.states.simple_loot import SimpleLootState
 
 

@@ -13,7 +13,7 @@ from game.position.transform import find_best_waypoint_route
 from game.position.waypoint import PositionStorage
 from game.states.base import BaseState, TransitionType
 import game.states.grind
-from game.states.move import MoveState
+from game.states.move.move import MoveState
 from game.target import Target
 from image.screenscuttler import ScreenScuttler, ScreenObjects
 
@@ -39,7 +39,7 @@ class DeadState(BaseState):
             # if release_button:
             #     self.controller.click_in_middle(release_button)
             #     self._released = True
-            self.controller.write(RELEASE_SPIRIT)
+            self.controller.write(RELEASE_SPI.RIT)
             self._released = True
 
         else:

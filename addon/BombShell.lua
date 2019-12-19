@@ -60,7 +60,7 @@ FONT_SIZE = 32
 START = 80
 LINE_SPACE = 40
 DATA = {"text", "mana", "posx", "posy", "facing", "playerState", "targetHealth", "targetState", "targetId" }
-PLAYER_STATE = {combat=1, casting=2, last_ability=3, inventory=4, hasPet=5}
+PLAYER_STATE = {combat=1, casting=2, last_ability=3, inventory=4, hasPet=5, firstResource=6}
 TARGET_STATE = {distance=1}
 
 for k, v in ipairs(DATA) do
@@ -128,6 +128,17 @@ function GetSpellState()
     end
 
     return 0
+end
+
+function IsFirstClassResourceAvailable()
+    local soulShards = GetItemCount("Soul Shard")
+    local available = 0
+
+    if soulShards > 0 then
+        available = 1
+    end
+
+    return available
 end
 
 function GetPlayerCastingState()
@@ -225,6 +236,7 @@ frame:SetScript(
             SetTargetState("distance", "0")
             SetPlayerState("inventory",  IsInventoryFull())
             SetPlayerState("hasPet",  IsPetExist())
+            SetPlayerState("firstResource", IsFirstClassResourceAvailable())
             frame.targetHealth:SetText("" .. -1)
             frame.targetId:SetText("-1")
         elseif (event == "UNIT_HEALTH") then
@@ -272,6 +284,7 @@ frame:SetScript(
 
         SetPlayerState("casting", GetPlayerCastingState())
         SetTargetState("distance", distance)
+        SetPlayerState("firstResource", IsFirstClassResourceAvailable())
     end
 )
 

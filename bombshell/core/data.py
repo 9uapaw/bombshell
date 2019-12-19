@@ -26,4 +26,5 @@ class ExtractedData:
     last_ability: LastAbilityExecution
     is_inventory_full: bool
     player_has_pet: bool
+    player_first_resource_available: bool
 

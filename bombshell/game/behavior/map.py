@@ -13,7 +13,8 @@ ATTRIBUTES = {
         'health': 'hp',
         'resource': 'resource',
         'is in combat': 'is_in_combat',
-        'has pet': 'has_pet'
+        'has pet': 'has_pet',
+        'first class resource': 'first_class_resource'
     },
     'Target': {
         'health': 'hp',
@@ -38,6 +39,7 @@ _CONTINOUS = {
 OPERATORS = {
     "is in combat": _DISCRETE,
     "has pet": _DISCRETE,
+    "first class resource": _DISCRETE,
     "health": _CONTINOUS,
     "resource": _CONTINOUS,
     "distance": _DISCRETE,
@@ -52,6 +54,7 @@ VALUE_MAP = {
     "distance": lambda d: _DISTANCE_VALUES[d],
     "is in combat": lambda c: {"True": True, "False": False}[c],
     "has pet": lambda c: {"True": True, "False": False}[c],
+    "first class resource": lambda c: {"True": True, "False": False}[c],
     "health": int,
     "resource": int,
     "second": float

@@ -73,9 +73,9 @@ class BasicController(CharacterController):
 
     @classmethod
     def write(cls, text: str):
-        pyautogui.position('Enter')
+        pyautogui.press('enter')
         pyautogui.typewrite(text)
-        pyautogui.position('Enter')
+        pyautogui.press('enter')
 
     @classmethod
     def interact_with_target(cls):

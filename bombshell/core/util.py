@@ -24,3 +24,20 @@ def spin(amount: float):
     now = time.time()
     while time.time() - now <= amount:
         pass
+
+
+class FixedList:
+
+    def __init__(self, capacity: int):
+        self._c = capacity
+        self._truncate = capacity // 2
+        self.data = []
+
+    def append(self, o: any):
+        if len(self.data) <= self._c:
+            self.data.append(o)
+        else:
+            self.data = self.data[-self._truncate:]
+
+    def last_n(self, n: int) -> list:
+        return self.data[-n:]

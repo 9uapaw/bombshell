@@ -14,7 +14,7 @@ from game.states.base import BaseState, TransitionType
 from game.states.combat.combat import CombatState
 from game.states.dead import DeadState
 from game.states.facing_wrong import FacingWrongRecoveryState
-from game.states.move import MoveState
+from game.states.move.move import MoveState
 from game.states.pull import PullState
 from game.states.simple_loot import SimpleLootState
 

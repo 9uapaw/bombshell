@@ -14,7 +14,6 @@ from game.position.waypoint import PositionStorage
 from game.states.base import BaseState, TransitionType
 import game.states.grind
 from game.states.facing_wrong import FacingWrongRecoveryState
-from game.states.move import MoveState
 from game.states.simple_loot import SimpleLootState
 from game.target import Target
 import game.states.loot

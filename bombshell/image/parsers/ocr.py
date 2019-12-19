@@ -15,7 +15,7 @@ class OcrParser(BaseParser):
         'x',
         'y',
         'facing',
-        ['combat', 'casting', 'last_ability', 'inventory', 'has_pet'],
+        ['combat', 'casting', 'last_ability', 'inventory', 'has_pet', 'first_resource'],
         'target_health',
         ['distance'],
         'target_guid'
@@ -40,7 +40,8 @@ class OcrParser(BaseParser):
             target_id=int(str(clean_data[self.ADDON_DATA_POSITION[8]])[:5], 16) if len(clean_data[self.ADDON_DATA_POSITION[8]]) > 2 else int(clean_data[self.ADDON_DATA_POSITION[8]]),
             target_guid=int(str(clean_data[self.ADDON_DATA_POSITION[8]]), 16) if len(clean_data[self.ADDON_DATA_POSITION[8]]) > 2 else int(clean_data[self.ADDON_DATA_POSITION[8]]),
                 is_inventory_full=bool(clean_data[self.ADDON_DATA_POSITION[5][3]]),
-                player_has_pet=bool(clean_data[self.ADDON_DATA_POSITION[5][4]])
+                player_has_pet=bool(clean_data[self.ADDON_DATA_POSITION[5][4]]),
+                player_first_resource_available=bool(clean_data[self.ADDON_DATA_POSITION[5][5]])
             )
 
             return data

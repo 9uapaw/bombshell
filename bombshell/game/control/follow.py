@@ -44,10 +44,10 @@ class PositionFollower:
 
         if angle_difference <= GlobalConfig.config.movement.turn_threshold:
             return None
-
-        if character.is_moving:
-            self.controller.stop()
-            character.switch_moving()
+        elif angle_difference >= GlobalConfig.config.movement.stop_threshold:
+            if character.is_moving:
+                self.controller.stop()
+                character.is_moving = False
 
         Logger.debug('Current angle: {}'.format(character.facing))
         Logger.debug('Waypoint: {} - {} rad on the {}'.format(waypoint_trajectory.end_point, angle_difference, direction.name))

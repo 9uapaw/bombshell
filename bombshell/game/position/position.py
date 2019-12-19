@@ -14,6 +14,8 @@ class Position:
 
     def __init__(self, x: float, y: float):
         self.point = Point(x, y)
+        self.x = x
+        self.y = y
 
     def is_close_to(self, other: 'Position', threshold: float):
         x_diff = self.point.x * threshold if self.point.x else threshold

@@ -24,6 +24,8 @@ class MovementMagicNumbers:
     waypoint_difference_threshold = 0.01
     rad_per_sec: float = pi
     turn_on_search: Tuple[float, float] = (1, pi)
+    stuck_threshold = 0.1
+    stop_threshold = 2.2
 
 
 @dataclass
@@ -73,7 +75,7 @@ class GlobalConfig:
             cls.config.behavior = load_from_file(global_conf['behavior'])
             cls.config.waypoint = load_from_file(global_conf['waypoint'])
         except Exception as e:
-            Logger.warning("Unable to load global config: 'global.json'", True)
+            Logger.warning("Unable to load global config: 'global.json'")
 
     @classmethod
     def load_from_data(cls, data: dict):

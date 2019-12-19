@@ -31,12 +31,6 @@ class BaseState:
         self.next_state = None  # type: 'BaseState' or None
 
         if transition_state:
-            # if transition == TransitionType.SAME_LEVEL:
-            #     self.level = transition_state.level
-            #     self.log_prefix = "{}:{}".format(self.level, self.__class__.__name__)
-            # else:
-            #     self.level = "{}:{}".format(transition_state.level, self.__class__.__name__)
-            #     self.log_prefix = self.level
             self.level = "{}:{}".format(transition_state.level, self.__class__.__name__)
         else:
             self.level = "{}".format(self.__class__.__name__)
@@ -72,7 +66,6 @@ class BaseState:
         if not self.current_sub_state:
             self.current_sub_state = state(self.controller, self.behavior, self.waypoints, self, TransitionType.SUB_LEVEL)
         elif type(self.current_sub_state) != state:
-            print(self, state, self.current_sub_state)
             self.log("SubState change by ParentState: {} -> {}".format(self.current_sub_state.__class__.__name__, state.__name__))
             self.current_sub_state = state(self.controller, self.behavior, self.waypoints, self, TransitionType.SUB_LEVEL)
             return True
