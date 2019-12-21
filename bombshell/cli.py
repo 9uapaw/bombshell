@@ -30,6 +30,8 @@ def start(config: str):
 @click.option("--debug", is_flag=True, help="Set this for verbose log messages")
 def main(debug: bool):
     if debug:
+        pilLogger = logging.getLogger('PIL')
+        pilLogger.setLevel(logging.INFO)
         logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
     else:
         logging.basicConfig(stream=sys.stdout, level=logging.INFO)
