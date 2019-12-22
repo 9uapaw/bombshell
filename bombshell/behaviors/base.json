@@ -98,14 +98,14 @@
       ],
       "key": "7",
       "behavior": {
-        "unit": "Tick",
-        "attrs": "second",
+        "unit": "Target",
+        "attrs": "health",
         "ops": "GREATER EQUALS",
         "attr_value": "10",
         "actions": "cast",
-        "action_value": "4",
-        "action_duration": "2",
-        "description": "Casting Immolate"
+        "action_value": "=",
+        "action_duration": "4",
+        "description": "Casting Drain Life"
       }
     },
     {
@@ -114,9 +114,9 @@
       ],
       "key": "8",
       "behavior": {
-        "unit": "Character",
-        "attrs": "resource",
-        "ops": "GREATER EQUALS",
+        "unit": "Target",
+        "attrs": "health",
+        "ops": "LESS EQUALS",
         "attr_value": "10",
         "actions": "cast",
         "action_value": "2",
@@ -266,6 +266,37 @@
         "action_value": "5",
         "action_duration": "11",
         "description": "Summoning Voidwalker"
+      }
+    },
+    {
+      "parent": [
+        ""
+      ],
+      "key": "6",
+      "behavior": {
+        "unit": "Character",
+        "attrs": "resource",
+        "ops": "LESS EQUALS",
+        "attr_value": "80",
+        "actions": "void",
+        "description": "Mana is lower, than 80%"
+      }
+    },
+    {
+      "parent": [
+        "6"
+      ],
+      "key": "7",
+      "behavior": {
+        "unit": "Character",
+        "attrs": "health",
+        "ops": "GREATER EQUALS",
+        "attr_value": "80",
+        "actions": "cast",
+        "action_value": "0",
+        "action_duration": "0.5",
+        "stop": "0",
+        "description": "Casting LifeTap"
       }
     }
   ]

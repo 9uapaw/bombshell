@@ -94,9 +94,13 @@ class BaseState:
                 if desc:
                     self.log(desc)
 
-                if character.is_moving:
-                    character.is_moving = False
-                    self.controller.stop()
+                if not bool(node.behavior.get('stop', "1")):
+                    if character.is_moving:
+                        character.is_moving = False
+                        self.controller.stop()
+
+                if node.behavior.get('actions') == 'void':
+                    return True
 
                 action = node.get_action()
                 action.execute(self.controller)
