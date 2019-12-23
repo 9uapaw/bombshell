@@ -69,6 +69,7 @@ for k, v in ipairs(DATA) do
     t:SetJustifyH("LEFT")
     t:SetTextColor(0, 0, 0, 1)
     t:SetFont(FONT, FONT_SIZE)
+    t:SetShadowOffset(0,0)
     frame[v] = t
 end
 
