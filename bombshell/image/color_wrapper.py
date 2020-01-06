@@ -24,7 +24,7 @@ class ColorWrapper():
     def rgb2hex(self, r, g, b):
         return '#{:02x}{:02x}{:02x}'.format(r, g, b)
 
-    def get_range_indicator(self, value):
+    def get_target_hp_indicator(self, value):
         if value == 16777215:
             return -1
 
@@ -54,7 +54,7 @@ class ColorWrapper():
         converted_values[3] = str(converted_values[3])
         converted_values.append(str(int(colors[4][1:7], 16) / 1000000))
         converted_values.append(str(int(colors[5][1:7], 16)))
-        converted_values.append(str(self.get_range_indicator(int(colors[6][1:7], 16))))
+        converted_values.append(str(self.get_target_hp_indicator(int(colors[6][1:7], 16))))
         converted_values.append(str(int(colors[7][1:7], 16)))
         converted_values.append(str(self.get_target_guid(colors[8][1:7] + colors[9][1:7] + colors[10][1:3])))
         return converted_values
