@@ -1,76 +1,156 @@
+local A, T = ...
+
+local dataStorage = {playerHp="-1", playerMana="-1", x="0", y="0", facing="0", playerState="000000", targetHp="-1", targetState="0", targetId="-1"}
+local frameStorage = {playerHp=nil, playerMana=nil, xInt=nil, xDec=nil, yInt=nil, yDec=nil, facing=nil, playerState=nil, targetHp=nil, targetState=nil, targetId1=nil, targetId2=nil, targetId3=nil}
+
+PLAYER_STATE = {combat=1, casting=2, last_ability=3, inventory=4, hasPet=5, firstResource=6}
+TARGET_STATE = {distance=1}
+
+BOX_SIZE = 5
+MAX_COUNT_IN_ROW = 20
+
 frame = CreateFrame("Frame", "MainFrame", UIParent)
-frame:ClearAllPoints()
-frame:SetHeight(600)
-frame:SetWidth(320)
+
+function init() 
+  local count = 0
+
+  for k, v in ipairs(frameStorage) do
+    local heightFromCorner = 0
+    if (count > MAX_COUNT_IN_ROW) then
+      heightFromCorner = math.floor(count / MAX_COUNT_IN_ROW) 
+    end
+
+    local frame = CreateFrame(k, "MainFrame", UIParent)
+    frame:ClearAllPoints()
+    frame:SetPoint("LEFT", 0, heightFromCorner)
+    frame:SetHeight(BOX_SIZE)
+    frame:SetWidth(BOX_SIZE)
+    frame.texture = frame:CreateTexture(nil, "BACKGROUND")
+    frame.texture:SetAllPoints(true)
+    frame.texture:SetColorTexture(1, 1, 1, 1)
+    frame:Show()
+
+    frameStorage[key] = frame
+  end
+end
+
+function StoreValue(key, value) 
+    dataStorage[key] = value
+end
+
+function SetColor(key, rgb)
+  frameStorage[key].texture:SetColorTexture(rgb["r"], rgb["g"], rgb["b"], 1)
+end
+
+function ValueToNormalizedRGB(unit, value)
+  if unit == 'percentage' then
+    return T.ToNormalizedRGB(T.ToRGB(T.ToHex(value, 10)))
+  elseif unit == 'state' then
+    return T.ToNormalizedRGB(T.ToRGB(T.ToHex(new, 16)))
+  elseif unit == 'coordinate' then
+    return T.FloatToNormalizedRGBPairs(value)
+  elseif unit == "facing" then
+    return T.FloatToNormalizedRGB(value)
+  elseif unit == "id" then
+    if value == "-1" then
+      rgbs = {part1={1, 1, 1}, part2={1, 1, 1}, part3={1, 1, 1}}
+      return rgbs
+    end
+
+    local part1 = ToNormalizedRGB(string.sub(value, 1, 6))
+    local part2 = ToNormalizedRGB(string.sub(value, 7, 12))
+    local part3 = ToNormalizedRGB(string.sub(value, 13, 18))
+    local rgbs = {part1, part2, part3}
+    return rgbs
+  end
+end
 
 -- HELPER FUNCTIONS --
-
-function starts_with(str, start)
-   return str:sub(1, #start) == start
-end
-
-function split(s, delimiter)
-    result = {};
-    for match in (s..delimiter):gmatch("(.-)"..delimiter) do
-        table.insert(result, match);
-    end
-    return result;
-end
-
-function replace_char(pos, str, r)
-    return str:sub(1, pos-1) .. r .. str:sub(pos+1)
-end
+starts_with = T.starts_with
+split = T.split
+replace_char = T.replace_char
 
 -- END OF HELPER FUNCTIONS --
 
 function SetPlayerState(attr, val)
-    local current = frame.playerState:GetText()
+    local current = dataStorage["playerState"]
 
     if (not current) then
         current = string.rep("0", table.getn(PLAYER_STATE))
     end
 
-    frame.playerState:SetText(replace_char(PLAYER_STATE[attr], current,val))
-    end
+    local new = replace_char(PLAYER_STATE[attr], current,val)
+    local rgb = ValueToNormalizedRGB("state", new)
+
+    SetColor("playerState", rgb)
+    StoreValue("playerState", val)
+end
 
 function SetTargetState(attr, val)
-    local current = frame.targetState:GetText()
+    local current = dataStorage["targetState"]
 
     if (not current) then
         current = string.rep("0", table.getn(TARGET_STATE))
     end
 
-    frame.targetState:SetText(replace_char(TARGET_STATE[attr], current, val))
+    local new = replace_char(TARGET_STATE[attr], current, val)
+    local rgb = ValueToNormalizedRGB("state", new)
+
+    SetColor("targetState", rgb)
+    StoreValue("targetState", val)
 end
 
 function SetTargetGuid()
     local guid = UnitGUID("target")
     local target = GetTargetHealth()
+    local new = "-1"
     if not guid or target == -1 then
-        guid = "-1"
+      new = "-1"
+    else 
+      guid = split(guid, "-")
+      new = guid[6] .. guid[7]
     end
-    guid = split(guid, "-")
 
-    frame.targetId:SetText(guid[6] .. guid[7])
+    local rgb = ValueToNormalizedRGB("id", new)
+    SetColor("targetId1", rgb[1])
+    SetColor("targetId2", rgb[2])
+    SetColor("targetId3", rgb[3])
+
+    StoreValue("targetId", new)
 end
 
-PARENT = "GameFontNormal"
-FONT = "Interface\\AddOns\\BombShell\\data\\font\\default.ttf"
-FONT_SIZE = 32
-START = 80
-LINE_SPACE = 40
-DATA = {"text", "mana", "posx", "posy", "facing", "playerState", "targetHealth", "targetState", "targetId" }
-PLAYER_STATE = {combat=1, casting=2, last_ability=3, inventory=4, hasPet=5, firstResource=6}
-TARGET_STATE = {distance=1}
+function SetPlayerHealth(val)
+  SetColor("playerHealth", ValueToNormalizedRGB(val))
+  StoreValue("playerHealth", val)
+end
 
-for k, v in ipairs(DATA) do
-    local t = frame:CreateFontString(v, "BACKGROUND", PARENT)
-    t:SetPoint("CENTER", 0, START - k * LINE_SPACE)
-    t:SetJustifyH("LEFT")
-    t:SetTextColor(0, 0, 0, 1)
-    t:SetFont(FONT, FONT_SIZE)
-    t:SetShadowOffset(0,0)
-    frame[v] = t
+function SetPlayerMana(val)
+  SetColor("playerMana", ValueToNormalizedRGB(val))
+  StoreValue("playerMana", val)
+end
+
+function SetTargetHealth(val)
+  SetColor("targetHealth", ValueToNormalizedRGB(val))
+  StoreValue("targetHealth", val)
+end
+
+function SetCoordinates(x, y)
+  local xInt, xDec = ValueToNormalizedRGB(x)
+  local yInt, yDec = ValueToNormalizedRGB(y)
+
+  SetColor("xInt", xInt)
+  SetColor("xDec", xDec)
+  SetColor("yInt", yInt)
+  SetColor("yDec", yDec)
+
+  StoreValue("x", x)
+  StoreValue("y", y)
+
+end
+
+function SetFacing(val)
+  SetColor("facing", ValueToNormalizedRGB(val))
+  StoreValue("facing", val)
 end
 
 function GetPlayerHealth()
@@ -202,17 +282,6 @@ function GetTruePosition()
     return -1, -1
 end
 
-frame:SetPoint("LEFT", 0, 200)
-
-frame:SetBackdrop(
-    {
-        insets = {left = 4, right = 4, top = 4, bottom = 4},
-        backdropColor = {r = 1, g = 1, b = 1, a = 0}
-    }
-)
-frame.texture = frame:CreateTexture(nil, "BACKGROUND")
-frame.texture:SetAllPoints(true)
-frame.texture:SetColorTexture(1, 1, 1, 1)
 
 DEFAULT_CHAT_FRAME:AddMessage("ENTER WORLD")
 frame:RegisterEvent("UNIT_HEALTH")
@@ -238,16 +307,16 @@ frame:SetScript(
             SetPlayerState("inventory",  IsInventoryFull())
             SetPlayerState("hasPet",  IsPetExist())
             SetPlayerState("firstResource", IsFirstClassResourceAvailable())
-            frame.targetHealth:SetText("" .. -1)
-            frame.targetId:SetText("-1")
+            SetTargetHealth(GetTargetHealth())
+            SetTargetGuid()
         elseif (event == "UNIT_HEALTH") then
             local health = GetPlayerHealth()
             local targetHealth = GetTargetHealth()
-            frame.text:SetText("" .. health)
-            frame.targetHealth:SetText("" .. targetHealth)
+            SetPlayerHealth(health)
+            SetTargetHealth(targetHealth)
         elseif (event == "UNIT_POWER_UPDATE") then
             local mana = GetPlayerMana()
-            frame.mana:SetText("" .. mana)
+            SetPlayerMana(mana)
         elseif (event == "PLAYER_REGEN_ENABLED") then
             SetPlayerState("combat", "0")
         elseif (event == "PLAYER_REGEN_DISABLED") then
@@ -257,9 +326,9 @@ frame:SetScript(
             local targetHealth = GetTargetHealth()
             local distance = GetTargetDistance()
             SetTargetState("distance", distance)
-            frame.targetHealth:SetText("" .. targetHealth)
+            SetTargetHealth(targetHealth)
             if targetHealth == -1 then
-                frame.targetId:SetText("-1")
+                SetTargetGuid("-1")
             else
                 SetTargetGuid()
             end
@@ -278,15 +347,17 @@ frame:SetScript(
     function(self, event)
         local posX, posY = GetTruePosition()
         local distance = GetTargetDistance()
-        frame.posx:SetText("" .. string.sub(posX, 0, 8))
-        frame.posy:SetText("" .. string.sub(posY, 0, 8))
 
-        frame.facing:SetText("" .. string.sub(GetFacing(), 0, 8))
+        local facing = "" .. string.sub(GetFacing(), 0, 8)
 
+        SetCoordinates(posX, posY)
+        SetFacing(facing)
         SetPlayerState("casting", GetPlayerCastingState())
         SetTargetState("distance", distance)
         SetPlayerState("firstResource", IsFirstClassResourceAvailable())
     end
 )
+
+init()
 
 frame:Show()
