@@ -1,28 +1,31 @@
 local A, T = ...
 
-local dataStorage = {playerHp="-1", playerMana="-1", x="0", y="0", facing="0", playerState="000000", targetHp="-1", targetState="0", targetId="-1"}
-local frameStorage = {playerHp=nil, playerMana=nil, xInt=nil, xDec=nil, yInt=nil, yDec=nil, facing=nil, playerState=nil, targetHp=nil, targetState=nil, targetId1=nil, targetId2=nil, targetId3=nil}
+local dataStorage = {playerHp="-1", playerMana="-1", x="0", y="0", facing="0", playerState="000000", targetHp="-1", targetState="000000", targetId="-1"}
+local frameStorage = {playerHp=0, playerMana=0, xInt=0, xDec=0, yInt=0, yDec=0, facing=0, playerState=0, targetHp=0, targetState=0, targetId1=0, targetId2=0, targetId3=0}
 
 PLAYER_STATE = {combat=1, casting=2, last_ability=3, inventory=4, hasPet=5, firstResource=6}
 TARGET_STATE = {distance=1}
 
 BOX_SIZE = 5
+ANCHOR = "TOPLEFT"
 MAX_COUNT_IN_ROW = 20
 
 frame = CreateFrame("Frame", "MainFrame", UIParent)
+frame:SetPoint("TOPLEFT", 0, 0)
 
 function init() 
   local count = 0
+  local x = 0
 
-  for k, v in ipairs(frameStorage) do
+  for k, v in pairs(frameStorage) do
     local heightFromCorner = 0
     if (count > MAX_COUNT_IN_ROW) then
       heightFromCorner = math.floor(count / MAX_COUNT_IN_ROW) 
     end
 
-    local frame = CreateFrame(k, "MainFrame", UIParent)
+    local frame = CreateFrame("Frame", k, UIParent)
     frame:ClearAllPoints()
-    frame:SetPoint("LEFT", 0, heightFromCorner)
+    frame:SetPoint("TOPLEFT", x, heightFromCorner)
     frame:SetHeight(BOX_SIZE)
     frame:SetWidth(BOX_SIZE)
     frame.texture = frame:CreateTexture(nil, "BACKGROUND")
@@ -30,7 +33,10 @@ function init()
     frame.texture:SetColorTexture(1, 1, 1, 1)
     frame:Show()
 
-    frameStorage[key] = frame
+    frameStorage[k] = frame
+
+    x = x + BOX_SIZE
+    count = count + 1
   end
 end
 
@@ -39,27 +45,31 @@ function StoreValue(key, value)
 end
 
 function SetColor(key, rgb)
-  frameStorage[key].texture:SetColorTexture(rgb["r"], rgb["g"], rgb["b"], 1)
+    frameStorage[key].texture:SetColorTexture(rgb["r"], rgb["g"], rgb["b"], 1)
 end
 
 function ValueToNormalizedRGB(unit, value)
   if unit == 'percentage' then
     return T.ToNormalizedRGB(T.ToRGB(T.ToHex(value, 10)))
   elseif unit == 'state' then
-    return T.ToNormalizedRGB(T.ToRGB(T.ToHex(new, 16)))
+    return T.ToNormalizedRGB(T.ToRGB(T.ToHex(value, 16)))
   elseif unit == 'coordinate' then
     return T.FloatToNormalizedRGBPairs(value)
   elseif unit == "facing" then
     return T.FloatToNormalizedRGB(value)
   elseif unit == "id" then
     if value == "-1" then
-      rgbs = {part1={1, 1, 1}, part2={1, 1, 1}, part3={1, 1, 1}}
+      rgbs = {{r=1, g=1, b=1}, {r=1, g=1, b=1}, {r=1, g=1, b=1}}
       return rgbs
     end
+    
+    local hex1 = T.ToHex(string.sub(value, 1, 6), 16)
+    local hex2 = T.ToHex(string.sub(value, 7, 12), 16)
+    local hex3 = T.ToHex(string.sub(value, 13, 18), 16)
 
-    local part1 = ToNormalizedRGB(string.sub(value, 1, 6))
-    local part2 = ToNormalizedRGB(string.sub(value, 7, 12))
-    local part3 = ToNormalizedRGB(string.sub(value, 13, 18))
+    local part1 = ToNormalizedRGB(ToRGB(hex1))
+    local part2 = ToNormalizedRGB(ToRGB(hex2))
+    local part3 = ToNormalizedRGB(ToRGB(hex3))
     local rgbs = {part1, part2, part3}
     return rgbs
   end
@@ -83,21 +93,21 @@ function SetPlayerState(attr, val)
     local rgb = ValueToNormalizedRGB("state", new)
 
     SetColor("playerState", rgb)
-    StoreValue("playerState", val)
+    StoreValue("playerState", new)
 end
 
 function SetTargetState(attr, val)
     local current = dataStorage["targetState"]
 
     if (not current) then
-        current = string.rep("0", table.getn(TARGET_STATE))
+        current = string.rep("0", 6)
     end
 
     local new = replace_char(TARGET_STATE[attr], current, val)
     local rgb = ValueToNormalizedRGB("state", new)
 
     SetColor("targetState", rgb)
-    StoreValue("targetState", val)
+    StoreValue("targetState", new)
 end
 
 function SetTargetGuid()
@@ -120,28 +130,28 @@ function SetTargetGuid()
 end
 
 function SetPlayerHealth(val)
-  SetColor("playerHealth", ValueToNormalizedRGB(val))
-  StoreValue("playerHealth", val)
+  SetColor("playerHp", ValueToNormalizedRGB("percentage", val))
+  StoreValue("playerHp", val)
 end
 
 function SetPlayerMana(val)
-  SetColor("playerMana", ValueToNormalizedRGB(val))
+  SetColor("playerMana", ValueToNormalizedRGB("percentage", val))
   StoreValue("playerMana", val)
 end
 
 function SetTargetHealth(val)
-  SetColor("targetHealth", ValueToNormalizedRGB(val))
-  StoreValue("targetHealth", val)
+  SetColor("targetHp", ValueToNormalizedRGB("percentage", val))
+  StoreValue("targetHp", val)
 end
 
 function SetCoordinates(x, y)
-  local xInt, xDec = ValueToNormalizedRGB(x)
-  local yInt, yDec = ValueToNormalizedRGB(y)
+  local rgbX = ValueToNormalizedRGB("coordinate", x)
+  local rgbY  = ValueToNormalizedRGB("coordinate", y)
 
-  SetColor("xInt", xInt)
-  SetColor("xDec", xDec)
-  SetColor("yInt", yInt)
-  SetColor("yDec", yDec)
+  SetColor("xInt", rgbX[1])
+  SetColor("xDec", rgbX[2])
+  SetColor("yInt", rgbY[1])
+  SetColor("yDec", rgbY[2])
 
   StoreValue("x", x)
   StoreValue("y", y)
@@ -149,7 +159,7 @@ function SetCoordinates(x, y)
 end
 
 function SetFacing(val)
-  SetColor("facing", ValueToNormalizedRGB(val))
+  SetColor("facing", ValueToNormalizedRGB("facing", val))
   StoreValue("facing", val)
 end
 
@@ -283,7 +293,6 @@ function GetTruePosition()
 end
 
 
-DEFAULT_CHAT_FRAME:AddMessage("ENTER WORLD")
 frame:RegisterEvent("UNIT_HEALTH")
 frame:RegisterEvent("UNIT_POWER_UPDATE")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -299,8 +308,6 @@ frame:SetScript(
     function(self, event, ...)
         if (event == "PLAYER_ENTERING_WORLD") then
             DEFAULT_CHAT_FRAME:AddMessage("ENTER WORLD")
-            frame.text:SetText("" .. GetPlayerHealth())
-            frame.mana:SetText("" .. GetPlayerMana())
             SetPlayerState("combat", "0")
             SetPlayerState("last_ability", "0")
             SetTargetState("distance", "0")
@@ -311,9 +318,9 @@ frame:SetScript(
             SetTargetGuid()
         elseif (event == "UNIT_HEALTH") then
             local health = GetPlayerHealth()
-            local targetHealth = GetTargetHealth()
+            local targetHp = GetTargetHealth()
             SetPlayerHealth(health)
-            SetTargetHealth(targetHealth)
+            SetTargetHealth(targetHp)
         elseif (event == "UNIT_POWER_UPDATE") then
             local mana = GetPlayerMana()
             SetPlayerMana(mana)
@@ -323,11 +330,11 @@ frame:SetScript(
             SetPlayerState("combat", "1")
         elseif (event == "PLAYER_TARGET_CHANGED") then
             local tuid = UnitLevel("target")
-            local targetHealth = GetTargetHealth()
+            local targetHp = GetTargetHealth()
             local distance = GetTargetDistance()
             SetTargetState("distance", distance)
-            SetTargetHealth(targetHealth)
-            if targetHealth == -1 then
+            SetTargetHealth(targetHp)
+            if targetHp == -1 then
                 SetTargetGuid("-1")
             else
                 SetTargetGuid()
@@ -359,5 +366,4 @@ frame:SetScript(
 )
 
 init()
-
 frame:Show()

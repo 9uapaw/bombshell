@@ -1,11 +1,5 @@
 local A, T = ...
 
-T.ToNormalizedRGB = ToNormalizedRGB
-T.ToHex = ToHex
-T.ToRGB = ToRGB
-T.split = split
-T.replace_char = replace_char
-T.starts_with = starts_with
 
 local b = "10101010111000110"
 
@@ -18,7 +12,7 @@ function ToHex(number, base)
   if (base ~= 16) then
     hex = tonumber(number, base)
   else
-    return number
+    hex = tonumber(number, 16)
   end
 
   return string.format("%06x", hex)
@@ -81,5 +75,12 @@ function replace_char(pos, str, r)
     return str:sub(1, pos-1) .. r .. str:sub(pos+1)
 end
 
-print(FloatToNormalizedRGBPairs("343.2315123235")[2]["b"])
-print(ToHex("010201", 16))
+T.ToNormalizedRGB = ToNormalizedRGB
+T.ToHex = ToHex
+T.ToRGB = ToRGB
+T.FloatToNormalizedRGBPairs = FloatToNormalizedRGBPairs
+T.FloatToNormalizedRGB = FloatToNormalizedRGB
+T.split = split
+T.replace_char = replace_char
+T.starts_with = starts_with
+
