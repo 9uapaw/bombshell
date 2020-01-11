@@ -1,12 +1,13 @@
 local A, T = ...
 
 local dataStorage = {playerHp="-1", playerMana="-1", x="0", y="0", facing="0", playerState="000000", targetHp="-1", targetState="000000", targetId="-1"}
-local frameStorage = {playerHp=0, playerMana=0, xInt=0, xDec=0, yInt=0, yDec=0, facing=0, playerState=0, targetHp=0, targetState=0, targetId1=0, targetId2=0, targetId3=0}
+local frameStorage = {playerResource=0, xInt=0, xDec=0, yInt=0, yDec=0, facing=0, playerState=0, targetHp=0, targetState=0, targetId1=0, targetId2=0, targetId3=0}
 
 PLAYER_STATE = {combat=1, casting=2, last_ability=3, inventory=4, hasPet=5, firstResource=6}
 TARGET_STATE = {distance=1}
+COLOR_ORDER = {"playerResource", "xInt", "xDec", "yInt", "yDec", "facing", "playerState", "targetHp", "targetState", "targetId1", "targetId2", "targetId3"}
 
-BOX_SIZE = 5
+BOX_SIZE = 20
 ANCHOR = "TOPLEFT"
 MAX_COUNT_IN_ROW = 20
 
@@ -16,8 +17,7 @@ frame:SetPoint("TOPLEFT", 0, 0)
 function init() 
   local count = 0
   local x = 0
-
-  for k, v in pairs(frameStorage) do
+  for i, k in ipairs(COLOR_ORDER) do
     local heightFromCorner = 0
     if (count > MAX_COUNT_IN_ROW) then
       heightFromCorner = math.floor(count / MAX_COUNT_IN_ROW) 
@@ -51,6 +51,11 @@ end
 function ValueToNormalizedRGB(unit, value)
   if unit == 'percentage' then
     return T.ToNormalizedRGB(T.ToRGB(T.ToHex(value, 10)))
+  elseif unit == 'playerResource' then
+    print(value)
+    local rgb = T.ToRGB(value)
+    print(rgb["r"], rgb["g"], rgb["b"])
+    return T.ToNormalizedRGB(T.ToRGB(value))
   elseif unit == 'state' then
     return T.ToNormalizedRGB(T.ToRGB(T.ToHex(value, 16)))
   elseif unit == 'coordinate' then
@@ -130,12 +135,18 @@ function SetTargetGuid()
 end
 
 function SetPlayerHealth(val)
-  SetColor("playerHp", ValueToNormalizedRGB("percentage", val))
+  local resource = dataStorage["playerMana"]
+  local new = string.format("%03d", val) .. string.format("%03d", resource)
+
+  SetColor("playerResource", ValueToNormalizedRGB("playerResource", new))
   StoreValue("playerHp", val)
 end
 
 function SetPlayerMana(val)
-  SetColor("playerMana", ValueToNormalizedRGB("percentage", val))
+  local resource = dataStorage["playerHp"]
+  local new = string.format("%03d", resource) .. string.format("%03d", val)
+
+  SetColor("playerResource", ValueToNormalizedRGB("playerResource", new))
   StoreValue("playerMana", val)
 end
 
