@@ -38,9 +38,13 @@ function init()
     x = x + BOX_SIZE
     count = count + 1
   end
+
+  dataStorage["playerHp"] = 100
+  dataStorage["playerMana"] = 100
+
 end
 
-function StoreValue(key, value) 
+function StoreValue(key, value)
     dataStorage[key] = value
 end
 
@@ -52,9 +56,9 @@ function ValueToNormalizedRGB(unit, value)
   if unit == 'percentage' then
     return T.ToNormalizedRGB(T.ToRGB(T.ToHex(value, 10)))
   elseif unit == 'playerResource' then
-    print(value)
-    local rgb = T.ToRGB(value)
-    print(rgb["r"], rgb["g"], rgb["b"])
+    --print(value)
+    local rgb = T.ToHPManaRGB(value)
+    --print(rgb["r"], rgb["g"], rgb["b"])
     return T.ToNormalizedRGB(T.ToRGB(value))
   elseif unit == 'state' then
     return T.ToNormalizedRGB(T.ToRGB(T.ToHex(value, 16)))
@@ -67,7 +71,7 @@ function ValueToNormalizedRGB(unit, value)
       rgbs = {{r=1, g=1, b=1}, {r=1, g=1, b=1}, {r=1, g=1, b=1}}
       return rgbs
     end
-    
+
     local hex1 = T.ToHex(string.sub(value, 1, 6), 16)
     local hex2 = T.ToHex(string.sub(value, 7, 12), 16)
     local hex3 = T.ToHex(string.sub(value, 13, 18), 16)
@@ -121,7 +125,7 @@ function SetTargetGuid()
     local new = "-1"
     if not guid or target == -1 then
       new = "-1"
-    else 
+    else
       guid = split(guid, "-")
       new = guid[6] .. guid[7]
     end
@@ -136,7 +140,10 @@ end
 
 function SetPlayerHealth(val)
   local resource = dataStorage["playerMana"]
-  local new = string.format("%03d", val) .. string.format("%03d", resource)
+  local hexrep = string.sub(T.ToHex(val), -3)
+  local new = hexrep .. string.sub(T.ToHex(resource), -3)
+
+  print("MANA:" .. resource .. "HEX: " .. new)
 
   SetColor("playerResource", ValueToNormalizedRGB("playerResource", new))
   StoreValue("playerHp", val)
@@ -144,7 +151,10 @@ end
 
 function SetPlayerMana(val)
   local resource = dataStorage["playerHp"]
-  local new = string.format("%03d", resource) .. string.format("%03d", val)
+  local hexrep = string.sub(T.ToHex(val) , -3)
+  local new = string.sub(T.ToHex(resource), -3) .. hexrep
+
+  print("HP:" .. resource .. "HEX: " .. new)
 
   SetColor("playerResource", ValueToNormalizedRGB("playerResource", new))
   StoreValue("playerMana", val)

@@ -18,6 +18,16 @@ function ToHex(number, base)
   return string.format("%06x", hex)
 end
 
+function ToHPManaRGB(hex)
+  local rgb = {r=0, g=0, b=0}
+
+  rgb["r"] = tonumber(hex:sub(1, 2))
+  rgb["g"] = tonumber(hex:sub(3, 4))
+  rgb["b"] = tonumber(hex:sub(5, 6))
+
+  return rgb
+end
+
 function ToRGB(hex)
   local rgb = {r=0, g=0, b=0}
 
@@ -51,7 +61,7 @@ function FloatToNormalizedRGBPairs(float)
 
   local intHex = ToHex(intPart, 10)
   local decHex = ToHex(string.sub(decPart, 0, 6), 10)
-  
+
   local rgbs = {}
   rgbs[1] = ToNormalizedRGB(ToRGB(intHex))
   rgbs[2] = ToNormalizedRGB(ToRGB(decHex))
@@ -83,4 +93,5 @@ T.FloatToNormalizedRGB = FloatToNormalizedRGB
 T.split = split
 T.replace_char = replace_char
 T.starts_with = starts_with
+T.ToHPManaRGB = ToHPManaRGB
 
