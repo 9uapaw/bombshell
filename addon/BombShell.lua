@@ -39,8 +39,8 @@ function init()
     count = count + 1
   end
 
-  dataStorage["playerHp"] = 100
-  dataStorage["playerMana"] = 100
+  dataStorage["playerHp"] = "064"
+  dataStorage["playerMana"] = "064"
 
 end
 
@@ -56,10 +56,12 @@ function ValueToNormalizedRGB(unit, value)
   if unit == 'percentage' then
     return T.ToNormalizedRGB(T.ToRGB(T.ToHex(value, 10)))
   elseif unit == 'playerResource' then
-    --print(value)
+    print(value)
     local rgb = T.ToHPManaRGB(value)
-    --print(rgb["r"], rgb["g"], rgb["b"])
-    return T.ToNormalizedRGB(T.ToRGB(value))
+    print("Player RGB: ", rgb["r"], rgb["g"], rgb["b"])
+    local normalizedRgb = T.ToNormalizedRGB(rgb)
+    print("Player Normalized RGB: ", normalizedRgb["r"], normalizedRgb["g"], normalizedRgb["b"])
+    return normalizedRgb
   elseif unit == 'state' then
     return T.ToNormalizedRGB(T.ToRGB(T.ToHex(value, 16)))
   elseif unit == 'coordinate' then

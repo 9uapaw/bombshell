@@ -31,9 +31,9 @@ end
 function ToRGB(hex)
   local rgb = {r=0, g=0, b=0}
 
-  rgb["r"] = tonumber(hex:sub(1, 2), 16)
-  rgb["g"] = tonumber(hex:sub(3, 4), 16)
-  rgb["b"] = tonumber(hex:sub(5, 6), 16)
+  rgb["r"] = tonumber(hex:sub(1, 2))
+  rgb["g"] = tonumber(hex:sub(3, 4))
+  rgb["b"] = tonumber(hex:sub(5, 6))
 
   return rgb
 end
