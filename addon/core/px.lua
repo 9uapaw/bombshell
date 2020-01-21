@@ -8,7 +8,7 @@ function ToHex(number, base)
     return "FFFFFF"
   end
 
-  local hex = number 
+  local hex = number
   if (base ~= 16) then
     hex = tonumber(number, base)
   else
@@ -21,9 +21,9 @@ end
 function ToHPManaRGB(hex)
   local rgb = {r=0, g=0, b=0}
 
-  rgb["r"] = tonumber(hex:sub(1, 2))
-  rgb["g"] = tonumber(hex:sub(3, 4))
-  rgb["b"] = tonumber(hex:sub(5, 6))
+  rgb["r"] = (hex:sub(1, 2))
+  rgb["g"] = (hex:sub(3, 4))
+  rgb["b"] = (hex:sub(5, 6))
 
   return rgb
 end
@@ -31,17 +31,17 @@ end
 function ToRGB(hex)
   local rgb = {r=0, g=0, b=0}
 
-  rgb["r"] = tonumber(hex:sub(1, 2))
-  rgb["g"] = tonumber(hex:sub(3, 4))
-  rgb["b"] = tonumber(hex:sub(5, 6))
+  rgb["r"] = (hex:sub(1, 2))
+  rgb["g"] = (hex:sub(3, 4))
+  rgb["b"] = (hex:sub(5, 6))
 
   return rgb
 end
 
 function ToNormalizedRGB(rgb)
-  rgb["r"] = rgb["r"] / 255
-  rgb["g"] = rgb["g"] / 255
-  rgb["b"] = rgb["b"] / 255
+  rgb["r"] = tonumber(rgb["r"], 16) / 255
+  rgb["g"] = tonumber(rgb["g"], 16) / 255
+  rgb["b"] = tonumber(rgb["b"], 16) / 255
 
   return rgb
 end

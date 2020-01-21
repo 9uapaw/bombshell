@@ -3,6 +3,8 @@ from typing import Tuple, List, Dict
 
 from PIL.Image import Image
 import pytesseract
+
+from image.color_wrapper import ColorWrapper
 from core.data import ExtractedData, DistanceRange
 from core.logger import Logger
 from etc.const import ADDON_DATA_POSITION
@@ -20,10 +22,10 @@ class ImageExtractor:
         self.screen_roi_range = roi
         self.policy = policy if policy else RecoverPolicy()
         self.parser = OcrParser()
-        self._ocr = OcrWrapper()
+        self._color = ColorWrapper()
 
     def extract_data_from_screen(self, screen: Image) -> ExtractedData or None:
-        raw_data = self._ocr.image_to_string(self._crop_image(screen))
+        raw_data = self._color.image_to_string(self._crop_image(screen))
 
         data = self.parser.parse(raw_data)
         Logger.debug("Parsed data: {}".format(data))
@@ -31,7 +33,7 @@ class ImageExtractor:
         return data
 
     def end(self):
-        self._ocr.end()
+        self._color.end()
 
     def _crop_image(self, screen: Image) -> Image:
         return screen.crop(self.screen_roi_range)

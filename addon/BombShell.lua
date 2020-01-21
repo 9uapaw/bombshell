@@ -39,8 +39,8 @@ function init()
     count = count + 1
   end
 
-  dataStorage["playerHp"] = "064"
-  dataStorage["playerMana"] = "064"
+  dataStorage["playerHp"] = "100"
+  dataStorage["playerMana"] = "100"
 
 end
 
