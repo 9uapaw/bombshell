@@ -56,11 +56,11 @@ function ValueToNormalizedRGB(unit, value)
   if unit == 'percentage' then
     return T.ToNormalizedRGB(T.ToRGB(T.ToHex(value, 10)))
   elseif unit == 'playerResource' then
-    print(value)
+    --print(value)
     local rgb = T.ToHPManaRGB(value)
-    print("Player RGB: ", rgb["r"], rgb["g"], rgb["b"])
+    --print("Player RGB: ", rgb["r"], rgb["g"], rgb["b"])
     local normalizedRgb = T.ToNormalizedRGB(rgb)
-    print("Player Normalized RGB: ", normalizedRgb["r"], normalizedRgb["g"], normalizedRgb["b"])
+    --print("Player Normalized RGB: ", normalizedRgb["r"], normalizedRgb["g"], normalizedRgb["b"])
     return normalizedRgb
   elseif unit == 'state' then
     return T.ToNormalizedRGB(T.ToRGB(T.ToHex(value, 16)))
