@@ -1,16 +1,10 @@
-import sys
-from typing import Tuple, List, Dict
+from typing import Tuple
 
 from PIL.Image import Image
-import pytesseract
 
-from image.color_wrapper import ColorWrapper
-from core.data import ExtractedData, DistanceRange
+from image.converters.color_wrapper import ColorWrapper
+from core.data import ExtractedData
 from core.logger import Logger
-from etc.const import ADDON_DATA_POSITION
-from exception.core import RecoverableException, ExtractException
-from game.player.character import LastAbilityExecution
-from image.ocr_wrapper import OcrWrapper
 from image.parsers.ocr import OcrParser
 from image.policies.extract_policy import ExtractPolicy
 from image.policies.recover import RecoverPolicy

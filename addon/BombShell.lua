@@ -49,6 +49,9 @@ function StoreValue(key, value)
 end
 
 function SetColor(key, rgb)
+    if key == "playerResource" then
+      print("SET COLOR: ", key, rgb["r"], rgb["g"], rgb["b"])
+    end
     frameStorage[key].texture:SetColorTexture(rgb["r"], rgb["g"], rgb["b"], 1)
 end
 
@@ -56,11 +59,11 @@ function ValueToNormalizedRGB(unit, value)
   if unit == 'percentage' then
     return T.ToNormalizedRGB(T.ToRGB(T.ToHex(value, 10)))
   elseif unit == 'playerResource' then
-    --print(value)
+    print(value)
     local rgb = T.ToHPManaRGB(value)
-    --print("Player RGB: ", rgb["r"], rgb["g"], rgb["b"])
+    print("Player RGB: ", rgb["r"], rgb["g"], rgb["b"])
     local normalizedRgb = T.ToNormalizedRGB(rgb)
-    --print("Player Normalized RGB: ", normalizedRgb["r"], normalizedRgb["g"], normalizedRgb["b"])
+    print("Player Normalized RGB: ", normalizedRgb["r"], normalizedRgb["g"], normalizedRgb["b"])
     return normalizedRgb
   elseif unit == 'state' then
     return T.ToNormalizedRGB(T.ToRGB(T.ToHex(value, 16)))
@@ -338,6 +341,8 @@ frame:SetScript(
             SetPlayerState("hasPet",  IsPetExist())
             SetPlayerState("firstResource", IsFirstClassResourceAvailable())
             SetTargetHealth(GetTargetHealth())
+            SetPlayerHealth(GetPlayerHealth())
+            SetPlayerMana(GetPlayerMana())
             SetTargetGuid()
         elseif (event == "UNIT_HEALTH") then
             local health = GetPlayerHealth()

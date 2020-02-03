@@ -57,7 +57,7 @@ class Config:
     grind_policy: GrindPolicies = GrindPolicies()
 
     roi: Tuple[int, int, int, int] = (0, 0, 240, 360)
-    screen_res: Tuple[int, int, int, int] = (0, 40, 800, 640)
+    screen_res: Tuple[int, int, int, int] = (0, 25, 800, 640)
 
 
 class GlobalConfig:

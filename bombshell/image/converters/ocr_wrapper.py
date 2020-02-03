@@ -3,12 +3,14 @@ import sys
 
 from PIL import Image
 # from pytesseract import pytesseract
+from image.converters.base import BaseImageToString
+
 locale.setlocale(locale.LC_ALL, 'C')
 from tesserocr import PyTessBaseAPI
 import tesserocr
 
 
-class OcrWrapper:
+class OcrWrapper(BaseImageToString):
 
     _OPTIONS = ('tessedit_char_whitelist', '0123456789ABCDEF.-')
 
