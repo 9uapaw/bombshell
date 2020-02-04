@@ -46,7 +46,7 @@ class OcrParser(BaseParser):
 
             return data
         except Exception as e:
-            raise ExtractException(clean_data)
+            raise ExtractException(raw)
 
     def _extract_value(self, raw: List[str]) -> Dict[(str, List[float])]:
         clean = [v for v in raw if v]

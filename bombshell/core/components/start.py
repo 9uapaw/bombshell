@@ -41,8 +41,11 @@ class StartComponent:
             time_before = time.time()
             try:
                 data = self._extractor.extract_data_from_screen(screen)
+                delta = time.time() - time_before
+                Logger.debug("Elapsed time after extraction: {}".format(delta))
+                self._state_handler.update(data, screen)
             except ExtractException as e:
-                screen.save(f"errorimages\\{str(uuid.uuid4().hex)}.bmp")
+                # screen.save(f"errorimages\\{str(uuid.uuid4().hex)}.bmp")
                 Logger.error("Error while extracting data from addon. Data extracted: {}", e.partial)
                 if self._extract_error_count <= GlobalConfig.config.core.extract_error_threshold:
                     self._extract_error_count += 1
@@ -54,12 +57,10 @@ class StartComponent:
                 if self._recover_error_count <= GlobalConfig.config.core.recoverable_error_threshold:
                     self._recover_error_count += 1
                     self._state_handler = StateHandler(self._controller, self._behavior, self._waypoints)
+                    continue
                 else:
                     raise UnrecoverableException(str(e))
 
-            delta = time.time() - time_before
-            Logger.debug("Elapsed time after extraction: {}".format(delta))
-            self._state_handler.update(data, screen)
 
     def _show_window(self, screen: Image):
         roi = screen.crop((0, 0, 240, 360))

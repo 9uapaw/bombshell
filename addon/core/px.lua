@@ -25,7 +25,6 @@ function ToHPManaRGB(hex)
   rgb["g"] = tonumber(hex:sub(3, 4), 16)
   rgb["b"] = tonumber(hex:sub(5, 6), 16)
 
-  print("HP MANA RGB: ", rgb["r"], rgb["g"], rgb["b"])
   return rgb
 end
 

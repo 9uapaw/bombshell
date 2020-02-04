@@ -31,7 +31,7 @@ function init()
     frame.texture = frame:CreateTexture(nil, "BACKGROUND")
     frame.texture:SetAllPoints(true)
     frame.texture:SetColorTexture(1, 1, 1, 1)
-    frame:Show()
+    -- frame:Show()
 
     frameStorage[k] = frame
 
@@ -49,9 +49,10 @@ function StoreValue(key, value)
 end
 
 function SetColor(key, rgb)
-    if key == "playerResource" then
-      print("SET COLOR: ", key, rgb["r"], rgb["g"], rgb["b"])
-    end
+    -- if key == "playerState" then
+     -- print("SET COLOR NORMALIZED RGB: ", key, rgb["r"], rgb["g"], rgb["b"])
+     -- print("SET COLOR RGB: ", key, rgb["r"] * 255, rgb["g"] * 255, rgb["b"] * 255)
+    -- end
     frameStorage[key].texture:SetColorTexture(rgb["r"], rgb["g"], rgb["b"], 1)
 end
 
@@ -59,14 +60,11 @@ function ValueToNormalizedRGB(unit, value)
   if unit == 'percentage' then
     return T.ToNormalizedRGB(T.ToRGB(T.ToHex(value, 10)))
   elseif unit == 'playerResource' then
-    print(value)
     local rgb = T.ToHPManaRGB(value)
-    print("Player RGB: ", rgb["r"], rgb["g"], rgb["b"])
     local normalizedRgb = T.ToNormalizedRGB(rgb)
-    print("Player Normalized RGB: ", normalizedRgb["r"], normalizedRgb["g"], normalizedRgb["b"])
     return normalizedRgb
   elseif unit == 'state' then
-    return T.ToNormalizedRGB(T.ToRGB(T.ToHex(value, 16)))
+    return T.ToNormalizedRGB(T.ToRGB(value))
   elseif unit == 'coordinate' then
     return T.FloatToNormalizedRGBPairs(value)
   elseif unit == "facing" then
@@ -148,8 +146,6 @@ function SetPlayerHealth(val)
   local hexrep = string.sub(T.ToHex(val), -3)
   local new = hexrep .. string.sub(T.ToHex(resource), -3)
 
-  print("MANA:" .. resource .. "HEX: " .. new)
-
   SetColor("playerResource", ValueToNormalizedRGB("playerResource", new))
   StoreValue("playerHp", val)
 end
@@ -158,8 +154,6 @@ function SetPlayerMana(val)
   local resource = dataStorage["playerHp"]
   local hexrep = string.sub(T.ToHex(val) , -3)
   local new = string.sub(T.ToHex(resource), -3) .. hexrep
-
-  print("HP:" .. resource .. "HEX: " .. new)
 
   SetColor("playerResource", ValueToNormalizedRGB("playerResource", new))
   StoreValue("playerMana", val)
@@ -385,8 +379,8 @@ frame:SetScript(
 
         local facing = "" .. string.sub(GetFacing(), 0, 8)
 
-        SetCoordinates(posX, posY)
-        SetFacing(facing)
+        -- SetCoordinates(posX, posY)
+        -- SetFacing(facing)
         SetPlayerState("casting", GetPlayerCastingState())
         SetTargetState("distance", distance)
         SetPlayerState("firstResource", IsFirstClassResourceAvailable())
