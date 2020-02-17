@@ -30,7 +30,7 @@ function init()
     frame:SetWidth(BOX_SIZE)
     frame.texture = frame:CreateTexture(nil, "BACKGROUND")
     frame.texture:SetAllPoints(true)
-    frame.texture:SetColorTexture(1, 1, 1, 1)
+    frame.texture:SetColorTexture(0, 0, 0, 1)
     -- frame:Show()
 
     frameStorage[k] = frame
@@ -39,9 +39,6 @@ function init()
     count = count + 1
   end
 
-  dataStorage["playerHp"] = "100"
-  dataStorage["playerMana"] = "100"
-
 end
 
 function StoreValue(key, value)
@@ -49,10 +46,10 @@ function StoreValue(key, value)
 end
 
 function SetColor(key, rgb)
-    -- if key == "playerState" then
-     -- print("SET COLOR NORMALIZED RGB: ", key, rgb["r"], rgb["g"], rgb["b"])
-     -- print("SET COLOR RGB: ", key, rgb["r"] * 255, rgb["g"] * 255, rgb["b"] * 255)
-    -- end
+    --if key == "playerState" then
+     --print("SET COLOR NORMALIZED RGB: ", key, rgb["r"], rgb["g"], rgb["b"])
+     --print("SET COLOR RGB: ", key, rgb["r"] * 255, rgb["g"] * 255, rgb["b"] * 255)
+    --end
     frameStorage[key].texture:SetColorTexture(rgb["r"], rgb["g"], rgb["b"], 1)
 end
 
@@ -102,6 +99,10 @@ function SetPlayerState(attr, val)
     end
 
     local new = replace_char(PLAYER_STATE[attr], current,val)
+    if new == current then
+      return
+    end
+
     local rgb = ValueToNormalizedRGB("state", new)
 
     SetColor("playerState", rgb)
@@ -116,6 +117,9 @@ function SetTargetState(attr, val)
     end
 
     local new = replace_char(TARGET_STATE[attr], current, val)
+    if new == current then
+      return
+    end
     local rgb = ValueToNormalizedRGB("state", new)
 
     SetColor("targetState", rgb)
@@ -356,11 +360,7 @@ frame:SetScript(
             local distance = GetTargetDistance()
             SetTargetState("distance", distance)
             SetTargetHealth(targetHp)
-            if targetHp == -1 then
-                SetTargetGuid("-1")
-            else
-                SetTargetGuid()
-            end
+            SetTargetGuid()
         elseif (event == "COMBAT_LOG_EVENT_UNFILTERED") then
             SetPlayerState("last_ability",  GetSpellState())
         elseif (event == "LOOT_CLOSED") then
@@ -379,8 +379,8 @@ frame:SetScript(
 
         local facing = "" .. string.sub(GetFacing(), 0, 8)
 
-        -- SetCoordinates(posX, posY)
-        -- SetFacing(facing)
+        SetCoordinates(posX, posY)
+        SetFacing(facing)
         SetPlayerState("casting", GetPlayerCastingState())
         SetTargetState("distance", distance)
         SetPlayerState("firstResource", IsFirstClassResourceAvailable())

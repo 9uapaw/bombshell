@@ -43,6 +43,7 @@ class StartComponent:
                 data = self._extractor.extract_data_from_screen(screen)
                 delta = time.time() - time_before
                 Logger.debug("Elapsed time after extraction: {}".format(delta))
+                time.sleep(0.025)
                 self._state_handler.update(data, screen)
             except ExtractException as e:
                 # screen.save(f"errorimages\\{str(uuid.uuid4().hex)}.bmp")
@@ -60,7 +61,6 @@ class StartComponent:
                     continue
                 else:
                     raise UnrecoverableException(str(e))
-
 
     def _show_window(self, screen: Image):
         roi = screen.crop((0, 0, 240, 360))

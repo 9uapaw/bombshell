@@ -20,8 +20,8 @@ class CombatMagicNumbers:
 @dataclass
 class MovementMagicNumbers:
     rad_per_turn: float = 0.0534
-    turn_threshold: float = 0.2
-    waypoint_difference_threshold = 0.01
+    turn_threshold: float = 0.3
+    waypoint_difference_threshold = 0.03
     rad_per_sec: float = pi
     turn_on_search: Tuple[float, float] = (1, pi)
     stuck_threshold = 0.1

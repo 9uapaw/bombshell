@@ -61,6 +61,8 @@ class OcrParser(BaseParser):
                 if not isinstance(self.ADDON_DATA_POSITION[pos], str):
                     local_pos = 0
                     for c in s:
+                        if local_pos > len(self.ADDON_DATA_POSITION[pos]) - 1:
+                            break
                         val = float(c)
                         res[self.ADDON_DATA_POSITION[pos][local_pos]] = val
                         local_pos += 1
