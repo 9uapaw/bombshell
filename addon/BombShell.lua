@@ -12,6 +12,7 @@ ANCHOR = "TOPLEFT"
 MAX_COUNT_IN_ROW = 20
 
 frame = CreateFrame("Frame", "MainFrame", UIParent)
+frame:ClearAllPoints()
 frame:SetPoint("TOPLEFT", 0, 0)
 
 function init() 
@@ -29,9 +30,9 @@ function init()
     frame:SetHeight(BOX_SIZE)
     frame:SetWidth(BOX_SIZE)
     frame.texture = frame:CreateTexture(nil, "BACKGROUND")
-    frame.texture:SetAllPoints(true)
-    frame.texture:SetColorTexture(0, 0, 0, 1)
-    -- frame:Show()
+    --frame.texture:SetAllPoints()
+    --frame.texture:SetColorTexture(1, 1, 1, 1)
+     frame:Show()
 
     frameStorage[k] = frame
 
@@ -41,16 +42,30 @@ function init()
 
 end
 
+function round(number, decimals)
+    local power = 10^decimals
+    return math.floor(number * power) / power
+end
+
+function GetStoredValue(key)
+    return dataStorage[key]
+end
+
 function StoreValue(key, value)
     dataStorage[key] = value
 end
 
 function SetColor(key, rgb)
     --if key == "playerState" then
-     --print("SET COLOR NORMALIZED RGB: ", key, rgb["r"], rgb["g"], rgb["b"])
-     --print("SET COLOR RGB: ", key, rgb["r"] * 255, rgb["g"] * 255, rgb["b"] * 255)
+     print("SET COLOR NORMALIZED RGB: ", key, rgb["r"], rgb["g"], rgb["b"])
+     print("SET COLOR RGB: ", key, rgb["r"] * 255, rgb["g"] * 255, rgb["b"] * 255)
     --end
-    frameStorage[key].texture:SetColorTexture(rgb["r"], rgb["g"], rgb["b"], 1)
+    if frameStorage[key] == 0 then
+        return
+    end
+
+    frameStorage[key].texture:SetColorTexture(round(rgb["r"], 10), round(rgb["g"], 10), round(rgb["b"], 10))
+    frameStorage[key].texture:SetAllPoints()
 end
 
 function ValueToNormalizedRGB(unit, value)
@@ -91,7 +106,7 @@ replace_char = T.replace_char
 
 -- END OF HELPER FUNCTIONS --
 
-function SetPlayerState(attr, val)
+function SetPlayerState(attr, val, force)
     local current = dataStorage["playerState"]
 
     if (not current) then
@@ -99,7 +114,7 @@ function SetPlayerState(attr, val)
     end
 
     local new = replace_char(PLAYER_STATE[attr], current,val)
-    if new == current then
+    if not force and new == current then
       return
     end
 
@@ -109,7 +124,7 @@ function SetPlayerState(attr, val)
     StoreValue("playerState", new)
 end
 
-function SetTargetState(attr, val)
+function SetTargetState(attr, val, force)
     local current = dataStorage["targetState"]
 
     if (not current) then
@@ -117,9 +132,10 @@ function SetTargetState(attr, val)
     end
 
     local new = replace_char(TARGET_STATE[attr], current, val)
-    if new == current then
+    if not force and new == current then
       return
     end
+
     local rgb = ValueToNormalizedRGB("state", new)
 
     SetColor("targetState", rgb)
@@ -332,12 +348,13 @@ frame:SetScript(
     function(self, event, ...)
         if (event == "PLAYER_ENTERING_WORLD") then
             DEFAULT_CHAT_FRAME:AddMessage("ENTER WORLD")
-            SetPlayerState("combat", "0")
-            SetPlayerState("last_ability", "0")
-            SetTargetState("distance", "0")
-            SetPlayerState("inventory",  IsInventoryFull())
-            SetPlayerState("hasPet",  IsPetExist())
-            SetPlayerState("firstResource", IsFirstClassResourceAvailable())
+            init()
+            SetPlayerState("combat", "0", true)
+            SetPlayerState("last_ability", "0", true)
+            SetTargetState("distance", "0", true)
+            SetPlayerState("inventory",  IsInventoryFull(), true)
+            SetPlayerState("hasPet",  IsPetExist(), true)
+            SetPlayerState("firstResource", IsFirstClassResourceAvailable(), true)
             SetTargetHealth(GetTargetHealth())
             SetPlayerHealth(GetPlayerHealth())
             SetPlayerMana(GetPlayerMana())
@@ -375,17 +392,23 @@ frame:SetScript(
     "OnUpdate",
     function(self, event)
         local posX, posY = GetTruePosition()
+        local storedX = GetStoredValue("x")
+        local storedY = GetStoredValue("y")
+        local storedFacing = GetStoredValue("facing")
         local distance = GetTargetDistance()
 
         local facing = "" .. string.sub(GetFacing(), 0, 8)
 
-        SetCoordinates(posX, posY)
-        SetFacing(facing)
+        if storedX ~= posX or storedY ~= posY then
+            SetCoordinates(posX, posY)
+        end
+
+        if storedFacing ~= facing then
+            SetFacing(facing)
+        end
+
         SetPlayerState("casting", GetPlayerCastingState())
         SetTargetState("distance", distance)
         SetPlayerState("firstResource", IsFirstClassResourceAvailable())
     end
 )
-
-init()
-frame:Show()
