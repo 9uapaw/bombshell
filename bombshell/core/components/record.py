@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Dict
 
 from core.config import Config, GlobalConfig
+from core.data_sanitizer import DataSanitizer
 from core.logger import Logger
 from game.control.control import CharacterController
 from game.position.position import Position
@@ -17,6 +18,7 @@ class RecordComponent:
     def __init__(self, controller: CharacterController, extractor: ImageExtractor, interceptor: ScreenInterceptor):
         self.screen = interceptor
         self.extractor = extractor
+        self._data_sanitizer = DataSanitizer()
         self.waypoints = {}
 
     def record(self, record_data: Dict[str, str]):
@@ -28,6 +30,7 @@ class RecordComponent:
         try:
             for screen in self.screen.capture():
                 data = self.extractor.extract_data_from_screen(screen)
+                self._data_sanitizer.sanitize_data(data)
 
                 current_position = Position(data.player_position[0], data.player_position[1])
                 if not self.waypoints['waypoints']:

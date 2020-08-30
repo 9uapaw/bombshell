@@ -32,9 +32,8 @@ if __name__ == '__main__':
         # loot.interpret(Frame(None, None, screen))
         time.sleep(2)
         rgb_im = screen.convert('RGB')
-        rgb_im.show()
-        # print(parser.image_to_string(screen))
-        # print('*'*30)
+        print(parser.image_to_string(screen))
+        print('*'*30)
         # _show_window(screen)
 
 

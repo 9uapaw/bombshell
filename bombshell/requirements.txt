@@ -5,3 +5,4 @@ mss
 numpy
 PIL
 python-imageseach-drov0
+sklearn

@@ -5,6 +5,7 @@ from PIL import Image
 import numpy as np
 
 from core.config import Config, GlobalConfig
+from core.data_sanitizer import DataSanitizer
 from core.logger import Logger
 from exception.core import ExtractException, RecoverableException, UnrecoverableException, CoreException
 from game.behavior.character_behavior import CharacterBehavior
@@ -21,6 +22,7 @@ class StartComponent:
         self.config = config
         self._behavior = CharacterBehavior()
         self._waypoints = PositionStorage()
+        self._data_sanitizer = DataSanitizer()
         self._controller = controller
         self._state_handler = StateHandler(controller, self._behavior, self._waypoints)
 
@@ -41,9 +43,10 @@ class StartComponent:
             time_before = time.time()
             try:
                 data = self._extractor.extract_data_from_screen(screen)
+                self._data_sanitizer.sanitize_data(data)
                 delta = time.time() - time_before
                 Logger.debug("Elapsed time after extraction: {}".format(delta))
-                time.sleep(0.025)
+                time.sleep(0.05)
                 self._state_handler.update(data, screen)
             except ExtractException as e:
                 # screen.save(f"errorimages\\{str(uuid.uuid4().hex)}.bmp")
