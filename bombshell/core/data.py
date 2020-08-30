@@ -16,6 +16,8 @@ class ExtractedData:
     player_health: int
     player_resource: int
     player_position: Tuple[float, float]
+    pet_health: int
+    pet_mana: int
     target_health: int
     target_distance: DistanceRange
     combat: bool
@@ -27,4 +29,5 @@ class ExtractedData:
     is_inventory_full: bool
     player_has_pet: bool
     player_first_resource_available: bool
+    target_in_combat: bool
 

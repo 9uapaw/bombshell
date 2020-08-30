@@ -27,6 +27,10 @@ class MovementMagicNumbers:
     stuck_threshold = 0.1
     stop_threshold = 2.2
 
+    stuck_last_n_position = 4
+    stuck_turn_range = (0.2, 1.2)
+    stuck_first_level_threshold = 3  # How many times does the first stuck level need to occur to trigger second level
+
 
 @dataclass
 class KeyboardLayout:
@@ -40,7 +44,7 @@ class CoreConfig:
     extract_error_threshold = 3
     recoverable_error_threshold = 3
 
-    difference_between_two_waypoints = 2
+    difference_between_two_waypoints = 1
 
 
 @dataclass
@@ -56,8 +60,8 @@ class Config:
     combat: CombatMagicNumbers = CombatMagicNumbers()
     grind_policy: GrindPolicies = GrindPolicies()
 
-    roi: Tuple[int, int, int, int] = (0, 0, 240, 360)
-    screen_res: Tuple[int, int, int, int] = (0, 25, 800, 640)
+    roi: Tuple[int, int, int, int] = (0, 0, 500, 500)
+    screen_res: Tuple[int, int, int, int] = (0, 45, 1650, 1050)
 
 
 class GlobalConfig:

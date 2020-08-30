@@ -27,7 +27,7 @@ class GrindState(BaseState):
         self.waypoint_follower = PositionFollower(self.controller, self.waypoints)
 
         self._last_target_switch = time.time()
-        self.set_current_sub_state(MoveState)
+        self.create_sub_state(MoveState)
 
     def interpret(self, frame: Frame):
         if frame.character.hp == 0:
@@ -40,16 +40,17 @@ class GrindState(BaseState):
             self.persistent_state['corpse_position'] = frame.character.position
             frame.character.current_waypoint = 0
             self.set_next_state(DeadState)
+            time.sleep(2)
             return
 
         if frame.character.is_in_combat and not self.is_current_sub_state(PullState):
-            if self.set_current_sub_state(CombatState):
+            if self.create_sub_state(CombatState):
                 self.log("Character is in combat.")
                 return
 
         if frame.target.hp > 0 and (
                 frame.target.distance == DistanceRange.cast or frame.target.distance == DistanceRange.melee) and not frame.character.is_in_combat:
-            if self.set_current_sub_state(PullState):
+            if self.create_sub_state(PullState):
                 self.log("Target is alive and is in range.")
                 return
 

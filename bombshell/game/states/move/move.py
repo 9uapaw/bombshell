@@ -19,7 +19,7 @@ class MoveState(BaseState):
                  transition_state: 'BaseState' = None, transition: TransitionType = TransitionType.SAME_LEVEL):
         super().__init__(controller, behavior, waypoints, transition_state, transition)
         self.waypoint_follower = PositionFollower(self.controller, self.waypoints)
-        self.set_current_sub_state(StuckResolverState)
+        self.create_sub_state(StuckResolverState)
 
     def interpret(self, frame: Frame):
         self.waypoint_follower.move(frame.character)

@@ -240,6 +240,36 @@
     },
     {
       "parent": [
+        ""
+      ],
+      "key": "20",
+      "behavior": {
+        "unit": "Character",
+        "attrs": "has pet",
+        "ops": "EQUALS",
+        "attr_value": "True",
+        "actions": "void",
+        "description": " Character has pet"
+      }
+    },
+    {
+      "parent": [
+        "20"
+      ],
+      "key": "21",
+      "behavior": {
+        "unit": "Character",
+        "attrs": "pet health",
+        "ops": "LESS EQUALS",
+        "attr_value": "50",
+        "actions": "cast",
+        "action_value": ";",
+        "action_duration": "5",
+        "description": "Casting Health Tunnel to pet"
+      }
+    },
+    {
+      "parent": [
         "3"
       ],
       "key": "4",

@@ -1,7 +1,6 @@
 import enum
 import math
 
-from attr import dataclass
 from sympy import Point, Line, Ellipse, Circle
 
 
@@ -86,5 +85,3 @@ class Trajectory:
 
     def __repr__(self):
         return "<{}, {}>".format(self.start_point, self.end_point)
-
-

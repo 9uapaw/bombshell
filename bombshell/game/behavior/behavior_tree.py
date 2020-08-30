@@ -35,7 +35,3 @@ class BehaviorTree:
                     if node.check(character, target):
                         yield node
                         yield from self._traverse([node.index])
-                else:
-                    print('no')
-
-

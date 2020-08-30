@@ -2,19 +2,14 @@ import operator
 
 from etc.const import GREATER, GREATER_EQUALS, LESS, LESS_EQUALS, EQUALS, NOT_EQUALS
 
-UNIT = {
-    'Character': 'character',
-    'Target': 'target',
-    'Tick': 'tick'
-}
-
 ATTRIBUTES = {
     'Character': {
         'health': 'hp',
         'resource': 'resource',
         'is in combat': 'is_in_combat',
         'has pet': 'has_pet',
-        'first class resource': 'first_class_resource'
+        'first class resource': 'first_class_resource',
+        'pet health': 'pet_hp',
     },
     'Target': {
         'health': 'hp',
@@ -41,33 +36,20 @@ OPERATORS = {
     "has pet": _DISCRETE,
     "first class resource": _DISCRETE,
     "health": _CONTINOUS,
+    "pet health": _CONTINOUS,
     "resource": _CONTINOUS,
     "distance": _DISCRETE,
     "second": _CONTINOUS
 }
 
-_PERCENT_VALUES = list(map(str, range(0, 101)))
 _DISTANCE_VALUES = {"25 yard": 2, "8 yard": 1, "out of range": 0}
-_BOOLEAN_VALUES = ["True", "False"]
-_TIME_VALUES = list(map(str, [1, 2, 2.5, 3, 5, 10, 50, 100, 500, 1000, 1800, 3600]))
-VALUE_MAP = {
+VALUE_CONVERTER = {
     "distance": lambda d: _DISTANCE_VALUES[d],
     "is in combat": lambda c: {"True": True, "False": False}[c],
     "has pet": lambda c: {"True": True, "False": False}[c],
     "first class resource": lambda c: {"True": True, "False": False}[c],
     "health": int,
     "resource": int,
-    "second": float
-}
-ATTR_VALUES = {
-    "is in combat": _BOOLEAN_VALUES,
-    "health": _PERCENT_VALUES,
-    "resource": _PERCENT_VALUES,
-    "distance": list(_DISTANCE_VALUES.keys()),
-    "second": _TIME_VALUES
-}
-
-ACTIONS = {
-    'cast': 'Cast',
-    'do nothing': 'Void'
+    "second": float,
+    "pet health": int
 }

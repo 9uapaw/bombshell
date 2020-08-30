@@ -17,8 +17,10 @@ class OcrParser(BaseParser):
         'facing',
         ['combat', 'casting', 'last_ability', 'inventory', 'has_pet', 'first_resource'],
         'target_health',
-        ['distance'],
-        'target_guid'
+        ['distance', 'combat'],
+        'target_guid',
+        'pet_health',
+        'pet_mana'
     ]
 
     def parse(self, raw: str) -> ExtractedData:
@@ -37,11 +39,14 @@ class OcrParser(BaseParser):
             last_ability=LastAbilityExecution(clean_data[self.ADDON_DATA_POSITION[5][2]]),
             target_health=int(clean_data[self.ADDON_DATA_POSITION[6]]),
             target_distance=DistanceRange(clean_data[self.ADDON_DATA_POSITION[7][0]]),
+            target_in_combat=bool(clean_data[self.ADDON_DATA_POSITION[7][1]]),
             target_id=int(str(clean_data[self.ADDON_DATA_POSITION[8]])[:5], 16) if len(clean_data[self.ADDON_DATA_POSITION[8]]) > 2 else int(clean_data[self.ADDON_DATA_POSITION[8]]),
             target_guid=int(str(clean_data[self.ADDON_DATA_POSITION[8]]), 16) if len(clean_data[self.ADDON_DATA_POSITION[8]]) > 2 else int(clean_data[self.ADDON_DATA_POSITION[8]]),
-                is_inventory_full=bool(clean_data[self.ADDON_DATA_POSITION[5][3]]),
-                player_has_pet=bool(clean_data[self.ADDON_DATA_POSITION[5][4]]),
-                player_first_resource_available=bool(clean_data[self.ADDON_DATA_POSITION[5][5]])
+            is_inventory_full=bool(clean_data[self.ADDON_DATA_POSITION[5][3]]),
+            player_has_pet=bool(clean_data[self.ADDON_DATA_POSITION[5][4]]),
+            player_first_resource_available=bool(clean_data[self.ADDON_DATA_POSITION[5][5]]),
+            pet_health=int(clean_data[self.ADDON_DATA_POSITION[9]]),
+            pet_mana=int(clean_data[self.ADDON_DATA_POSITION[10]]),
             )
 
             return data

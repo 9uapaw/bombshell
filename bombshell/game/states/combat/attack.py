@@ -1,22 +1,11 @@
-import time
-
-from PIL import Image
-
-from core.config import GlobalConfig
 from core.frame import Frame
-from core.logger import Logger
 from game.behavior.character_behavior import CharacterBehavior
 from game.control.control import CharacterController
 from game.player.attributes import LastAbilityExecution
-from game.player.character import Character
-from game.control.follow import PositionFollower
 from game.position.waypoint import PositionStorage
 from game.states.base import BaseState, TransitionType
-import game.states.grind
 from game.states.facing_wrong import FacingWrongRecoveryState
 from game.states.simple_loot import SimpleLootState
-from game.target import Target
-import game.states.loot
 
 
 class AttackState(BaseState):

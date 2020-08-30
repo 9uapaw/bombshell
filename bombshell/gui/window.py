@@ -1,6 +1,6 @@
 import threading
 
-import PySimpleGUIQt as sg
+# import PySimpleGUIQt as sg
 
 from core.config import GlobalConfig
 from core.game_loop import GameLoop

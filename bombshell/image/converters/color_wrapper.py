@@ -7,8 +7,9 @@ from image.converters.base import BaseImageToString
 
 class ColorWrapper(BaseImageToString):
 
-    xy_threshold = 0
-    colorpixel_size = 15
+    Y_THRESHOLD = 10
+    COLORPIXEL_SIZE = 28
+    X_THRESHOLD = 5
 
     ADDON_DATA_SEQUENCE = [
         ['hp', 'mana'],
@@ -19,10 +20,11 @@ class ColorWrapper(BaseImageToString):
         'facing',
         ['combat', 'casting', 'last_ability', 'inventory', 'has_pet', 'first_resource'],
         'target_health',
-        ['distance'],
+        ['distance', 'combat'],
         'target_guid1',
         'target_guid2',
-        'target_guid3'
+        'target_guid3',
+        'pet_resource'
         # THIS IS ACTUALLY 3 COLORS COMBINED
     ]
 
@@ -30,7 +32,7 @@ class ColorWrapper(BaseImageToString):
         pixel_information = image.load()
         colors = []
         for x in range(len(self.ADDON_DATA_SEQUENCE)):
-            hexval = pixel_information[(x * self.colorpixel_size) + 9, self.xy_threshold + 10]
+            hexval = pixel_information[(x * self.COLORPIXEL_SIZE) + self.X_THRESHOLD, self.Y_THRESHOLD]
             color = self._rgb2hex(hexval[2], hexval[1], hexval[0])
             colors.append(color)
 
@@ -41,7 +43,8 @@ class ColorWrapper(BaseImageToString):
             self._to_state(colors, 6),
             self._to_target_hp(colors),
             self._to_state(colors, 8),
-            self._to_target_guid(colors)
+            self._to_target_guid(colors),
+            self._to_hp_mana(colors, 12),
         ]
 
         res = "".join(converted_values)
@@ -49,8 +52,8 @@ class ColorWrapper(BaseImageToString):
         return res
 
     @staticmethod
-    def _to_hp_mana(colors: List[str]) -> str:
-        hex_val = colors[0]
+    def _to_hp_mana(colors: List[str], i: int = 0) -> str:
+        hex_val = colors[i]
 
         return "{}\n{}\n".format(str(int(hex_val[1:4], 16)), str(int(hex_val[4:7], 16)))
 
@@ -91,7 +94,7 @@ class ColorWrapper(BaseImageToString):
         guid = colors[9][1:7] + colors[10][1:7] + colors[11][1:3]
 
         if guid == "ffffffffffffff":
-            return "-1"
+            return "-1" "\n"
         else:
             return guid + "\n"
 

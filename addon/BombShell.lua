@@ -1,11 +1,11 @@
 local A, T = ...
 
-local dataStorage = {playerHp="-1", playerMana="-1", x="0", y="0", facing="0", playerState="000000", targetHp="-1", targetState="000000", targetId="-1"}
-local frameStorage = {playerResource=0, xInt=0, xDec=0, yInt=0, yDec=0, facing=0, playerState=0, targetHp=0, targetState=0, targetId1=0, targetId2=0, targetId3=0}
+local dataStorage = {playerHp="-1", playerMana="-1", x="0", y="0", facing="0", playerState="000000", targetHp="-1", targetState="000000", targetId="-1", petHp="-1", petMana="-1"}
+local frameStorage = {playerResource=0, xInt=0, xDec=0, yInt=0, yDec=0, facing=0, playerState=0, targetHp=0, targetState=0, targetId1=0, targetId2=0, targetId3=0, petResource=0}
 
 PLAYER_STATE = {combat=1, casting=2, last_ability=3, inventory=4, hasPet=5, firstResource=6}
-TARGET_STATE = {distance=1}
-COLOR_ORDER = {"playerResource", "xInt", "xDec", "yInt", "yDec", "facing", "playerState", "targetHp", "targetState", "targetId1", "targetId2", "targetId3"}
+TARGET_STATE = {distance=1, combat=2}
+COLOR_ORDER = {"playerResource", "xInt", "xDec", "yInt", "yDec", "facing", "playerState", "targetHp", "targetState", "targetId1", "targetId2", "targetId3", "petResource"}
 
 BOX_SIZE = 20
 ANCHOR = "TOPLEFT"
@@ -57,8 +57,8 @@ end
 
 function SetColor(key, rgb)
     --if key == "playerState" then
-     print("SET COLOR NORMALIZED RGB: ", key, rgb["r"], rgb["g"], rgb["b"])
-     print("SET COLOR RGB: ", key, rgb["r"] * 255, rgb["g"] * 255, rgb["b"] * 255)
+    -- print("SET COLOR NORMALIZED RGB: ", key, rgb["r"], rgb["g"], rgb["b"])
+    -- print("SET COLOR RGB: ", key, rgb["r"] * 255, rgb["g"] * 255, rgb["b"] * 255)
     --end
     if frameStorage[key] == 0 then
         return
@@ -71,7 +71,7 @@ end
 function ValueToNormalizedRGB(unit, value)
   if unit == 'percentage' then
     return T.ToNormalizedRGB(T.ToRGB(T.ToHex(value, 10)))
-  elseif unit == 'playerResource' then
+  elseif unit == 'playerResource' or unit == 'petResource' then
     local rgb = T.ToHPManaRGB(value)
     local normalizedRgb = T.ToNormalizedRGB(rgb)
     return normalizedRgb
@@ -179,6 +179,24 @@ function SetPlayerMana(val)
   StoreValue("playerMana", val)
 end
 
+function SetPetHealth(val)
+    local resource = dataStorage["petMana"]
+    local hexrep = string.sub(T.ToHex(val), -3)
+    local new = hexrep .. string.sub(T.ToHex(resource), -3)
+
+    SetColor("petResource", ValueToNormalizedRGB("petResource", new))
+    StoreValue("petHp", val)
+end
+
+function SetPetMana(val)
+    local resource = dataStorage["petHp"]
+    local hexrep = string.sub(T.ToHex(val) , -3)
+    local new = string.sub(T.ToHex(resource), -3) .. hexrep
+
+    SetColor("petResource", ValueToNormalizedRGB("petResource", new))
+    StoreValue("petMana", val)
+end
+
 function SetTargetHealth(val)
   SetColor("targetHp", ValueToNormalizedRGB("percentage", val))
   StoreValue("targetHp", val)
@@ -227,6 +245,27 @@ function GetTargetHealth()
     return perc
 end
 
+function GetPetHealth()
+    local max = UnitHealthMax("pet")
+    if max == 0 then
+        return 0
+    end
+    local perc = floor(UnitHealth("pet") / max * 100)
+
+    return perc
+end
+
+function GetPetMana()
+    local max = UnitPowerMax("pet")
+    if max == 0 then
+        return 0
+    end
+
+    local perc = floor(UnitPower("pet") / max * 100)
+
+    return perc
+end
+
 function GetTargetDistance()
     local distance = 0
     if (CheckInteractDistance("target", 3)) then
@@ -236,6 +275,15 @@ function GetTargetDistance()
     end
 
     return distance
+end
+
+function IsTargetInCombat()
+    local isInCombat = 0
+    if (UnitAffectingCombat("target")) then
+        isInCombat = 1
+    end
+
+    return isInCombat
 end
 
 function GetSpellState()
@@ -339,6 +387,9 @@ frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:RegisterEvent("PLAYER_REGEN_DISABLED")
 frame:RegisterEvent("PLAYER_REGEN_ENABLED")
 frame:RegisterEvent("PLAYER_TARGET_CHANGED")
+frame:RegisterEvent("PLAYER_DEAD")
+frame:RegisterEvent("CORPSE_IN_RANGE")
+frame:RegisterEvent("PLAYER_UNGHOST")
 frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 frame:RegisterEvent("LOOT_CLOSED")
 frame:RegisterEvent("UNIT_PET")
@@ -358,12 +409,16 @@ frame:SetScript(
             SetTargetHealth(GetTargetHealth())
             SetPlayerHealth(GetPlayerHealth())
             SetPlayerMana(GetPlayerMana())
+            SetPetHealth(GetPetHealth())
+            SetPetMana(GetPetMana())
             SetTargetGuid()
         elseif (event == "UNIT_HEALTH") then
             local health = GetPlayerHealth()
             local targetHp = GetTargetHealth()
+            local petHp = GetPetHealth()
             SetPlayerHealth(health)
             SetTargetHealth(targetHp)
+            SetPetHealth(petHp)
         elseif (event == "UNIT_POWER_UPDATE") then
             local mana = GetPlayerMana()
             SetPlayerMana(mana)
@@ -384,6 +439,20 @@ frame:SetScript(
             SetPlayerState("inventory",  IsInventoryFull())
         elseif (event == "UNIT_PET") then
             SetPlayerState("hasPet",  IsPetExist())
+        elseif (event == "PLAYER_DEAD") then
+            RepopMe()
+            SetPlayerHealth(0)
+            C_Timer.After(5, function()
+                SetPlayerHealth(0)
+            end)
+        elseif (event == "PLAYER_UNGHOST") then
+            SetPlayerHealth(GetPlayerHealth())
+        elseif (event == "CORPSE_IN_RANGE") then
+            DEFAULT_CHAT_FRAME:AddMessage("Corpse is in range")
+            C_Timer.After(1, function()
+                DEFAULT_CHAT_FRAME:AddMessage("Retrieving corpse")
+                RetrieveCorpse()
+            end)
         end
     end
 )
@@ -396,6 +465,7 @@ frame:SetScript(
         local storedY = GetStoredValue("y")
         local storedFacing = GetStoredValue("facing")
         local distance = GetTargetDistance()
+        local isTargetInCombat = IsTargetInCombat()
 
         local facing = "" .. string.sub(GetFacing(), 0, 8)
 
@@ -409,6 +479,7 @@ frame:SetScript(
 
         SetPlayerState("casting", GetPlayerCastingState())
         SetTargetState("distance", distance)
+        SetTargetState("combat", isTargetInCombat)
         SetPlayerState("firstResource", IsFirstClassResourceAvailable())
     end
 )

@@ -1,15 +1,16 @@
 import time
 
-import pyautogui
+import numpy as np
 from PIL import Image
+from core.config import GlobalConfig
 from cv2 import cv2
 
-from core.config import GlobalConfig
+from core.frame import Frame
 from exception.core import CoreException
+from game.control.control import BasicController
+from game.states.loot import LootState
 from image.converters.color_wrapper import ColorWrapper
 from image.screeninterceptor import ScreenInterceptor
-
-import numpy as np
 
 extractor = ScreenInterceptor(GlobalConfig.config.screen_res)
 parser = ColorWrapper()
@@ -27,10 +28,13 @@ def _show_window(screen: Image):
 
 if __name__ == '__main__':
     for screen in extractor.capture():
-        time.sleep(0.1)
+        # loot = LootState(BasicController(), None)
+        # loot.interpret(Frame(None, None, screen))
+        time.sleep(2)
         rgb_im = screen.convert('RGB')
-        print(parser.image_to_string(screen))
-        print('*'*30)
+        rgb_im.show()
+        # print(parser.image_to_string(screen))
+        # print('*'*30)
         # _show_window(screen)
 
 

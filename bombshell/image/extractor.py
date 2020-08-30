@@ -6,15 +6,12 @@ from image.converters.color_wrapper import ColorWrapper
 from core.data import ExtractedData
 from core.logger import Logger
 from image.parsers.ocr import OcrParser
-from image.policies.extract_policy import ExtractPolicy
-from image.policies.recover import RecoverPolicy
 
 
 class ImageExtractor:
 
-    def __init__(self, roi: Tuple, policy: ExtractPolicy=None):
+    def __init__(self, roi: Tuple):
         self.screen_roi_range = roi
-        self.policy = policy if policy else RecoverPolicy()
         self.parser = OcrParser()
         self._color = ColorWrapper()
 

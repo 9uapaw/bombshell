@@ -13,7 +13,7 @@ class CombatState(BaseState):
     def __init__(self, controller: CharacterController, behavior: CharacterBehavior, waypoints: PositionStorage = None,
                  transition_state: BaseState = None, transition: TransitionType = TransitionType.SAME_LEVEL):
         super().__init__(controller, behavior, waypoints, transition_state, transition)
-        self.set_current_sub_state(AttackState)
+        self.create_sub_state(AttackState)
 
     def interpret(self, frame: Frame):
         self.interpret_sub_state(frame)

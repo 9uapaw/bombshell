@@ -16,9 +16,11 @@ class Target:
         self.distance = DistanceRange.out_of_range
         self.npc_id = -1
         self.uid = -1
+        self.combat = False
 
     def update(self, data: ExtractedData):
         self.hp = data.target_health
         self.distance = data.target_distance
         self.npc_id = data.target_id
         self.uid = data.target_guid
+        self.combat = data.target_in_combat

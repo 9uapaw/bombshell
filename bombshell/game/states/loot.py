@@ -14,6 +14,8 @@ from game.target import Target
 import game.states.grind
 from image.screeninterceptor import ScreenInterceptor
 from image.screenscuttler import ScreenScuttler, ScreenObjects
+from python_imagesearch.imagesearch import *
+
 
 
 class LootState(BaseState):
@@ -29,9 +31,10 @@ class LootState(BaseState):
         self.finished_looting = False
 
     def interpret(self, frame: Frame):
-        while not self.finished_looting:
-            gen = self.screen.capture()
-            self._check_through_screen(gen)
+        # gen = self.screen.capture()
+        # # self._check_through_screen(gen)
+        pos = imagesearcharea("./assets/image/loot_icon.png", 0, 0, 800, 600, 0.8, frame.screen)
+        print("position is ", pos)
 
     def transition(self, frame: Frame) -> BaseState or None:
         if self.finished_looting:

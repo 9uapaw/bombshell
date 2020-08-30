@@ -23,6 +23,8 @@ class Character:
         self.is_inventory_full = False
         self.has_pet = False
         self.first_class_resource = False
+        self.pet_hp = 0
+        self.pet_mana = 0
 
     def update(self, data: ExtractedData):
         self.hp = data.player_health
@@ -35,6 +37,8 @@ class Character:
         self.is_inventory_full = data.is_inventory_full
         self.has_pet = data.player_has_pet
         self.first_class_resource = data.player_first_resource_available
+        self.pet_hp = data.pet_health
+        self.pet_mana = data.pet_mana
 
     def switch_moving(self):
         self.is_moving = not self.is_moving

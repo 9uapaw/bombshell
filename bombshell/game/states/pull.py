@@ -27,7 +27,7 @@ class PullState(BaseState):
 
     def interpret(self, frame: Frame):
         if time.time() - self._last_pull > GlobalConfig.config.combat.wait_after_pull and not frame.character.is_in_combat:
-            self.log("Pull was unsuccessful.")
+            self.log("Pull was unsuccessful")
             self.set_next_state(MoveState)
             return
 
@@ -35,7 +35,7 @@ class PullState(BaseState):
             self.controller.stop()
             frame.character.is_moving = False
 
-        if not frame.character.is_in_combat:
+        if not frame.character.is_in_combat and not frame.target.combat:
             while self.do_behavior('pull', frame.character, frame.target):
                 pass
 

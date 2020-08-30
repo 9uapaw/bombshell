@@ -50,19 +50,19 @@ class BaseState:
             transition = self.current_sub_state.transition(frame)
 
             if transition:
-                self.transition_sub_state(transition)
+                self.set_sub_state(transition)
 
             return True
         else:
             return False
 
-    def transition_sub_state(self, state: 'BaseState') -> bool:
+    def set_sub_state(self, state: 'BaseState') -> bool:
         self.log("SubState transition by previous SubState: {} -> {}".format(self.current_sub_state.__class__.__name__, state.__class__.__name__))
         self.current_sub_state = state
 
         return True
 
-    def set_current_sub_state(self, state: Type['BaseState']) -> bool:
+    def create_sub_state(self, state: Type['BaseState']) -> bool:
         if not self.current_sub_state:
             self.current_sub_state = state(self.controller, self.behavior, self.waypoints, self, TransitionType.SUB_LEVEL)
         elif type(self.current_sub_state) != state:

@@ -3,10 +3,6 @@ import time
 from typing import Tuple
 
 import pyautogui
-import pynput
-from pynput.keyboard import Controller
-
-from core.logger import Logger
 from game.position.position import Direction
 
 
@@ -62,10 +58,6 @@ class CharacterController(metaclass=abc.ABCMeta):
 
     @classmethod
     def move_mouse(cls, x: int, y: int):
-        raise NotImplementedError()
-
-    @classmethod
-    def click_in_middle(cls, area: Tuple[Tuple[int, int], Tuple[int, int], Tuple[int, int], Tuple[int, int]]):
         raise NotImplementedError()
 
 

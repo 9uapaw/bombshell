@@ -5,7 +5,7 @@ from typing import List
 from core.logger import Logger
 from etc.const import GREATER, GREATER_EQUALS, LESS, LESS_EQUALS, EQUALS, NOT_EQUALS, VOID
 from game.behavior.action import BehaviorAction, CastAction, NullAction
-from game.behavior.map import OPERATORS, ATTRIBUTES, VALUE_MAP
+from game.behavior.map import OPERATORS, ATTRIBUTES, VALUE_CONVERTER
 from game.player.character import Character
 from game.target import Target
 
@@ -43,7 +43,7 @@ class CharacterNode(BehaviorEntry):
             attr = time.time() - self._last_tick
 
         self._last_tick = time.time()
-        comparable_value = VALUE_MAP[self.behavior['attrs']](self.behavior['attr_value'])
+        comparable_value = VALUE_CONVERTER[self.behavior['attrs']](self.behavior['attr_value'])
 
         res = OPERATORS[self.behavior['attrs']][self.behavior['ops']](attr, comparable_value)
         Logger.debug("Attribute: {} {} {} = {}".format(attr, self.behavior['ops'], comparable_value, res))

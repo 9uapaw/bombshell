@@ -1,4 +1,5 @@
 import enum
+from dataclasses import dataclass
 from typing import Tuple
 import cv2
 import os
@@ -7,7 +8,6 @@ import numpy
 
 # methods = ['cv2.TM_CCOEFF', 'cv2.TM_CCOEFF_NORMED', 'cv2.TM_CCORR',
 #             'cv2.TM_CCORR_NORMED', 'cv2.TM_SQDIFF', 'cv2.TM_SQDIFF_NORMED']
-from attr import dataclass
 
 
 class ScreenObjects(enum.Enum):

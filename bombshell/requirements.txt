@@ -1,0 +1,7 @@
+click
+sympy
+pyautogui
+mss
+numpy
+PIL
+python-imageseach-drov0
